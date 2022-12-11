@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Keyboard</title>
+    <link href="/2022/12/11/Keyboard/"/>
+    <url>/2022/12/11/Keyboard/</url>
+    
+    <content type="html"><![CDATA[<p>其他轴体</p><table><thead><tr><th align="right">游戏轴体</th><th align="right">线性轴</th><th align="right"></th><th align="right">段落轴（有声+无声）</th></tr></thead><tbody><tr><td align="right">灰木V3  0.52</td><td align="right">G黄Pro</td><td align="right">G黄Pro2.0</td><td align="right">高特青轴</td></tr><tr><td align="right">g银pro双段  0.91</td><td align="right">G红Pro</td><td align="right">G红Pro2.0</td><td align="right">高特金轴</td></tr><tr><td align="right">g银pro2.0  1.26</td><td align="right">G白Pro</td><td align="right">G白Pro2.0</td><td align="right">凯华BOX白</td></tr><tr><td align="right">g银pro2双段  1.18</td><td align="right">G白Pro双段弹簧</td><td align="right">G白Pro2.0双段弹簧</td><td align="right">凯华BOX白v2</td></tr><tr><td align="right">集贤白轴v2  1.35</td><td align="right">凯华BOX红</td><td align="right">凯华BOX红v2</td><td align="right">凯华Box jade</td></tr><tr><td align="right">AKKO CS银  1.45</td><td align="right"></td><td align="right"></td><td align="right">凯华Box navy</td></tr><tr><td align="right">黛白轴R2  2.00</td><td align="right"></td><td align="right"></td><td align="right">凯华Box 极地狐轴</td></tr><tr><td align="right">TTC快银V1  3.10</td><td align="right">KTT白菜豆腐轴</td><td align="right">蔷薇奶油V3</td><td align="right">凯华 白枭轴</td></tr><tr><td align="right">TTC快银V2  3.70</td><td align="right"></td><td align="right"></td><td align="right"></td></tr></tbody></table><table><thead><tr><th>静音轴</th><th></th><th></th><th></th></tr></thead><tbody><tr><td>高特水蜜桃</td><td>高特奶油黄</td><td>虎盐海默Pro</td><td>HAPE轴</td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td>TTC静浅云</td><td>TTC静音茶</td><td>TTC静音红</td><td>TTC静音月白</td></tr><tr><td>凯华夜阑Pro线性</td><td>凯华夜阑Pro段落</td><td>深海无声PRO孤岛</td><td>深海无声PRO鲸落</td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2022/12/11/hello-world/"/>
+    <url>/2022/12/11/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
