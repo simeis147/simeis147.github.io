@@ -1,0 +1,1 @@
+import{_ as a,W as r,X as t,Y as n,a0 as e,a2 as s}from"./framework-f482b5e1.js";const c={},o=e("h1",{id:"spring",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#spring","aria-hidden":"true"},"#"),s(" Spring")],-1);function d(i,_){return r(),t("div",null,[o,n(" more ")])}const h=a(c,[["render",d],["__file","index.html.vue"]]);export{h as default};

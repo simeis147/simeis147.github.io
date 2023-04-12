@@ -1,0 +1,1 @@
+import{_ as o,W as t,X as r,a0 as e,a2 as a}from"./framework-f482b5e1.js";const s={},n=e("h1",{id:"springboot7",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#springboot7","aria-hidden":"true"},"#"),a(" SpringBoot7")],-1),c=[n];function i(_,d){return t(),r("div",null,c)}const l=o(s,[["render",i],["__file","springboot07.html.vue"]]);export{l as default};
