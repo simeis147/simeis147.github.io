@@ -6,6 +6,10 @@ order: number
 category: 
   - 项目
   - 瑞吉外卖
+# 侧边栏
+# sidebar: false
+# 路径导航
+# breadcrumb: false
 ---
 
 # 瑞吉外卖
