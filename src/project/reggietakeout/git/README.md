@@ -1,6 +1,6 @@
 ---
 date: 2023-04-11
-index: false
+index: true
 order: 2
-title: Git
+title: 2 Git
 ---

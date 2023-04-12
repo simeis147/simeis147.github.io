@@ -1,6 +1,6 @@
 ---
 date: 2023-04-11
-index: false
+index: true
 order: 3
-title: Linux
+title: 3 Linux
 ---
