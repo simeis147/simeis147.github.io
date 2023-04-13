@@ -22,10 +22,6 @@ category:
 
 ![ ](./assets/springboot02/image-20221213234154699.png)
 
-> 查询的部门的信息：部门ID、部门名称、修改时间
->
-> 通过页面原型以及需求描述，可以看到，部门查询，是不需要考虑分页操作的。
-
 #### 1.1.2 接口文档
 
 **部门列表查询**:
@@ -88,8 +84,6 @@ category:
 ![ ](./assets/springboot02/image-20221213235157345.png)
 
 #### 1.1.4 功能开发
-
-通过查看接口文档：部门列表查询
 
 > 请求路径：/depts
 >
@@ -164,7 +158,7 @@ public interface DeptMapper {
 
 #### 1.1.5 功能测试
 
-功能开发完成后，我们就可以启动项目，然后打开postman，发起GET请求，访问 ：[http://localhost:8080/depts](http://localhost:8080/depts)
+启动项目，打开postman，发起GET请求，访问 ：[http://localhost:8080/depts](http://localhost:8080/depts)
 
 ![ ](./assets/springboot02/image-20220904130315247.png)
 
@@ -263,8 +257,6 @@ public interface DeptMapper {
 
 #### 1.3.4 功能开发
 
-通过查看接口文档：删除部门
-
 > 请求路径：/depts/{id}
 >
 > 请求方式：DELETE
@@ -348,13 +340,11 @@ public interface DeptMapper {
 
 #### 1.3.5 功能测试
 
-删除功能开发完成后，重新启动项目，使用postman，发起DELETE请求：
+重新启动项目，使用postman，发起DELETE请求：
 
 ![ ](./assets/springboot02/image-20221214112451600.png)
 
 #### 1.3.6 前后端联调
-
-打开浏览器，测试后端功能接口：
 
 ![ ](./assets/springboot02/image-20221214113708369.png)
 
@@ -362,13 +352,9 @@ public interface DeptMapper {
 
 ### 1.4 新增部门
 
-前面已完成了`查询部门`、`删除部门`两个功能，下面继续完成`新增部门`功能。
-
 #### 1.4.1 需求
 
 ![ ](./assets/springboot02/image-20220904150427982.png)
-
-点击 "新增部门" 按钮，弹出新增部门对话框，输入部门名称，点击 "保存" ，将部门信息保存到数据库。
 
 #### 1.4.2 接口文档
 
@@ -432,7 +418,7 @@ public interface DeptMapper {
 >
 > - 前端请求路径：/depts
 > - 前端请求方式：POST
-> - 前端请求参数 (Json格式)：{ "name": "教研部" }
+> - 前端请求参数：Json格式：\{ "name": "教研部" \}
 >
 > 问题1：如何限定请求方式是POST？
 >
@@ -535,13 +521,11 @@ public interface DeptMapper {
 
 #### 1.4.5 功能测试
 
-新增功能开发完成后，重新启动项目，使用postman，发起POST请求：
+重新启动项目，使用postman，发起POST请求：
 
 ![ ](./assets/springboot02/image-20221214153758708.png)
 
-#### 1.4.6 前后端联调
-
-打开浏览器，测试后端功能接口：
+#### 1.4.6 前后端联调 
 
 ![ ](./assets/springboot02/image-20221215105446189.png)
 
@@ -551,20 +535,18 @@ public interface DeptMapper {
 
 部门管理的`查询`、`删除`、`新增`功能全部完成了，接下来对controller层的代码进行优化。
 
-首先看下目前controller层代码：
-
 ![ ](./assets/springboot02/image-20221215110553435.png)
 
 > 以上三个方法上的请求路径，存在一个共同点：都是以`/depts`作为开头。
 
-在Spring当中为了简化请求路径的定义，可以把公共的请求路径，直接抽取到类上，在类上加一个注解@RequestMapping，并指定请求路径"/depts"。代码参照如下：
+在Spring当中为了简化请求路径的定义，可以把公共的请求路径，直接抽取到类上，在类上加一个注解@RequestMapping，并指定请求路径"/depts"
 
 ![ ](./assets/springboot02/image-20221215111110219.png)
 
 > 优化前后的对比：
 >
 > ![ ](./assets/springboot02/image-20221215111309042.png)
-> 注意事项：一个完整的请求路径，应该是类上@RequestMapping的value属性 + 方法上的 @RequestMapping的value属性
+> 注意事项：一个完整的请求路径，应该是类上@RequestMapping的value属性 + 方法上的@RequestMapping的value属性
 
 ## 2. 员工管理
 
@@ -586,21 +568,23 @@ public interface DeptMapper {
 
 ![ ](./assets/springboot02/image-20221215141233541.png)
 
-要想从数据库中进行分页查询，要使用`LIMIT`关键字，格式为：limit  开始索引  每页显示的条数
+要想从数据库中进行分页查询，要使用`LIMIT`关键字  
+
+格式为：limit  开始索引  每页显示的条数
 
 > 查询第1页数据的SQL语句是：
 >
 > ```sql
-> select * from emp  limit 0,10;
+> select * from emp limit 0,10;
 > ```
 >
 > 查询第2页数据的SQL语句是：
 >
 > ```sql
-> select * from emp  limit 10,10;
+> select * from emp limit 10,10;
 > ```
 >
-> 开始索引的计算公式：   开始索引 = (当前页码 - 1)  *  每页显示条数
+> 开始索引的计算公式：开始索引 = (当前页码 - 1)  *  每页显示条数
 
 结论：
 

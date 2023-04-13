@@ -4,7 +4,7 @@ import { searchProPlugin } from "vuepress-plugin-search-pro";
 
 export default defineUserConfig({
   base: "/",
-
+  port: 7000,
   locales: {
     "/": {
       lang: "zh-CN",

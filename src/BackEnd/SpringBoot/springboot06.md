@@ -5,7 +5,7 @@ category:
   - SpringBoot
 ---
 
-# SpingBoot原理
+# SpringBoot原理
 
 ## 1. 配置优先级
 

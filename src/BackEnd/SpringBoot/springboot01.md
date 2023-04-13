@@ -88,7 +88,7 @@ create table emp (
 -- 员工表测试数据
 INSERT INTO emp
     (id, username, password, name, gender, 
-    image, job, entrydate,dept_id，create_time, update_time) 
+    image, job, entrydate,dept_id,create_time, update_time) 
 VALUES
 (1,'jinyong','123456','金庸',1,'1.jpg',4,'2000-01-01',2,now(),now()),
 (2,'zhangwuji','123456','张无忌',1,'2.jpg',2,'2015-01-01',2,now(),now()),
@@ -359,8 +359,6 @@ public class EmpController {
 案例是基于当前最为主流的前后端分离模式进行开发
 
 ![ ](./assets/springboot01/image-20221213230911102.png)
-
-在前后端分离的开发模式中，前后端开发人员都需要根据提前定义好的接口文档，来进行前后端功能的开发。
 
 ---
 
