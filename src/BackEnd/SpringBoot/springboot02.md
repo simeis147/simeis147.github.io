@@ -721,8 +721,6 @@ public interface DeptMapper {
 
 **功能开发**:
 
-通过查看接口文档：员工列表查询
-
 > 请求路径：/emps
 >
 > 请求方式：GET
