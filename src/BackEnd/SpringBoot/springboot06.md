@@ -3,164 +3,814 @@ order: 6
 date: 2023-04-08
 category: 
   - SpringBoot
+  - AOP
 ---
 
-# SpringBoot原理
+# SpringBoot事务、AOP
 
-## 1. 配置优先级
+## 1. 事务管理
 
-SpringBoot项目当中支持的三类配置文件：
+### 1.1 事务回顾
 
-- application.properties
-- application.yml
-- application.yaml
+**事务**是一组操作的集合，它是一个不可分割的工作单位。事务会把所有的操作作为一个整体，一起向数据库提交或者是撤销操作请求。所以这组操作要么同时成功，要么同时失败。
 
-properties、yaml、yml三种配置文件同时存在
+::: info 事务的操作
 
-![ ](./assets/springboot06/image-20230113144757856.png)
+1. 开启事务（一组操作开始前，开启事务）：start transaction / begin ;
+2. 提交事务（这组操作全部成功后，提交事务）：commit ;
+3. 回滚事务（中间任何一个操作出现异常，回滚事务）：rollback ;
 
-> properties、yaml、yml三种配置文件，优先级最高的是properties
+:::
 
-yaml、yml两种配置文件同时存在
+### 1.2 Spring事务管理
 
-![ ](./assets/springboot06/image-20230113145158771.png)
+#### 1.2.1 案例
 
-> 配置文件优先级排名（从高到低）：
->
-> 1. properties配置文件
-> 2. yml配置文件（主流）
-> 3. yaml配置文件
+需求：当部门解散了不仅需要把部门信息删除了，还需要把该部门下的员工数据也删除了。
 
-在SpringBoot为了增强程序的扩展性，还支持另外两种常见的配置方式：
+步骤：
 
-1. Java系统属性配置 （格式： -Dkey=value）
+- 根据ID删除部门数据
+- 根据部门ID删除该部门下的员工
 
-   ```shell
-   -Dserver.port=9000
-   ```
+代码实现：
 
-2. 命令行参数 （格式：--key=value）
+1. DeptServiceImpl
 
-   ```shell
-   --server.port=10010
-   ```
+    ```java
+    @Slf4j
+    @Service
+    public class DeptServiceImpl implements DeptService {
+        @Autowired
+        private DeptMapper deptMapper;
 
-如何来指定Java系统属性和命令行参数呢？
+        @Autowired
+        private EmpMapper empMapper;
 
-- 编辑启动程序的配置信息
 
-![ ](./assets/springboot06/image-20230113162746634.png)
+        //根据部门id，删除部门信息及部门下的所有员工
+        @Override
+        public void delete(Integer id){
+            //根据部门id删除部门信息
+            deptMapper.deleteById(id);
 
-![ ](./assets/springboot06/image-20230113162639630.png)
+            //删除部门下的所有员工信息
+            empMapper.deleteByDeptId(id);   
+        }
+    }
+    ```
 
-重启服务，同时配置Tomcat端口(三种配置文件、系统属性、命令行参数)，测试哪个Tomcat端口号生效：
+2. DeptMapper
 
-![ ](./assets/springboot06/image-20230113165006550.png)
+    ```java
+    @Mapper
+    public interface DeptMapper {
+        /**
+         * 根据id删除部门信息
+         * @param id   部门id
+         */
+        @Delete("delete from dept where id = #{id}")
+        void deleteById(Integer id);
+    }
+    ```
 
-删除命令行参数配置，重启SpringBoot服务：
+3. EmpMapper
 
-![ ](./assets/springboot06/image-20230113170841253.png)
+    ```java
+    @Mapper
+    public interface EmpMapper {
 
-> 优先级： 命令行参数 >  系统属性参数 > properties参数 > yml参数 > yaml参数
+        //根据部门id删除部门下所有员工
+        @Delete("delete from emp where dept_id=#{deptId}")
+        public int deleteByDeptId(Integer deptId);
+        
+    }
+    ```
 
-思考：如果项目已经打包上线了，如何来设置Java系统属性和命令行参数呢？
+重启SpringBoot服务，使用postman测试部门删除：
 
-```shell
-java -Dserver.port=9000 -jar XXXXX.jar --server.port=10010
-```
+![ ](./assets/springboot06/image-20230107140057729.png)
 
-演示打包程序运行时指定Java系统属性和命令行参数：
+代码正常情况下，dept表和Em表中的数据已删除
 
-1. 执行maven打包指令package，把项目打成jar文件
-2. 使用命令：java -jar 方式运行jar文件程序
+![ ](./assets/springboot06/image-20230107140130199.png)
 
-项目打包：
+![ ](./assets/springboot06/image-20230107140221425.png)
 
-![ ](./assets/springboot06/image-20230113172313655.png)
-
-![ ](./assets/springboot06/image-20230113172854016.png)
-
-运行jar程序：
-
-- 同时设置Java系统属性和命令行参数
-
-![ ](./assets/springboot06/image-20230113172659269.png)
-
-- 仅设置Java系统属性
-
-![ ](./assets/springboot06/image-20230113173228232.png)
-
-> 注意事项：
->
-> - Springboot项目进行打包时，需要引入插件 spring-boot-maven-plugin (基于官网骨架创建项目，会自动添加该插件)
-
-## 2. Bean管理
-
-Spring中的注解 @Component 以及三个衍生注解（@Controller、@Service、@Repository）来声明IOC容器中的bean对象
-
-### 2.1 获取Bean
-
-默认情况下，SpringBoot项目在启动的时候会自动的创建IOC容器(也称为Spring容器)，并且在启动的过程当中会自动的将bean对象都创建好，存放在IOC容器当中。应用程序在运行时需要依赖什么bean对象，就直接进行依赖注入就可以了。
-
-在Spring容器中提供了一些方法，可以主动从IOC容器中获取到bean对象，下面介绍3种常用方式：
-
-1. 根据name获取bean
-
-   ```java
-   Object getBean(String name)
-   ```
-
-2. 根据类型获取bean
-
-   ```java
-   <T> T getBean(Class<T> requiredType)
-   ```
-
-3. 根据name获取bean（带类型转换）
-
-   ```java
-   <T> T getBean(String name, Class<T> requiredType)
-   ```
-
-思考：要从IOC容器当中来获取到bean对象，需要先拿到IOC容器对象，怎么样才能拿到IOC容器呢？
-
-- 想获取到IOC容器，直接将IOC容器对象注入进来就可以了
-
-控制器：DeptController
+修改DeptServiceImpl类中代码，添加可能出现异常的代码：
 
 ```java
-@RestController
-@RequestMapping("/depts")
-public class DeptController {
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
 
     @Autowired
-    private DeptService deptService;
+    private EmpMapper empMapper;
 
-    public DeptController(){
-        System.out.println("DeptController constructor ....");
-    }
 
-    @GetMapping
-    public Result list(){
-        List<Dept> deptList = deptService.list();
-        return Result.success(deptList);
-    }
+    //根据部门id，删除部门信息及部门下的所有员工
+    @Override
+    public void delete(Integer id){
+        //根据部门id删除部门信息
+        deptMapper.deleteById(id);
+        
+        //模拟：异常发生
+        int i = 1/0;
 
-    @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id)  {
-        deptService.delete(id);
-        return Result.success();
-    }
-
-    @PostMapping
-    public Result save(@RequestBody Dept dept){
-        deptService.save(dept);
-        return Result.success();
+        //删除部门下的所有员工信息
+        empMapper.deleteByDeptId(id);   
     }
 }
 ```
 
+重启SpringBoot服务，使用postman测试部门删除：
+
+![ ](./assets/springboot06/image-20230107140618199.png)
+
+![ ](./assets/springboot06/image-20230107140706301.png)
+
+查看数据库表：
+
+- 删除了2号部门
+
+![ ](./assets/springboot06/image-20230107140726701.png)
+
+- 2号部门下的员工数据没有删除
+
+![ ](./assets/springboot06/image-20230107140221425.png)
+
+**以上程序出现的问题：即使程序运行抛出了异常，部门依然删除了，但是部门下的员工却没有删除，造成了数据的不一致。**
+
+#### 1.2.2 原因分析
+
+- 先执行根据id删除部门的操作，这步执行完毕，数据库表 dept 中的数据就已经删除了。
+- 执行 1/0 操作，抛出异常
+- 抛出异常之前，下面所有的代码都不会执行了，根据部门ID删除该部门下的员工，这个操作也不会执行 。
+
+此时，在delete删除业务功能中添加事务
+
+![ ](./assets/springboot06/image-20230107141652636.png)
+
+在方法运行之前，开启事务，如果方法成功执行，就提交事务，如果方法执行的过程当中出现异常了，就回滚事务。
+
+#### 1.2.3 Transactional注解
+
+::: info @Transactional作用
+
+在方法执行开始之前开启事务，方法执行完毕之后提交事务。如果这个方法执行的过程当中出现了异常，就会进行事务的回滚操作。
+
+:::
+
+::: info @Transactional注解
+
+一般会在业务层当中来控制事务，因为在业务层当中，一个业务功能可能会包含多个数据访问的操作。  
+
+在业务层来控制事务，可以将多个数据访问操作控制在一个事务范围内。
+
+:::
+
+::: tip @Transactional注解书写位置
+
+方法: 当前方法交给spring进行事务管理
+
+类: 当前类中所有的方法都交由spring进行事务管理
+
+接口: 接口下所有的实现类当中所有的方法都交给spring 进行事务管理
+
+:::
+
+在业务方法delete上加上 @Transactional 来控制事务
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Autowired
+    private EmpMapper empMapper;
+
+    
+    @Override
+    @Transactional  //当前方法添加了事务管理
+    public void delete(Integer id){
+        //根据部门id删除部门信息
+        deptMapper.deleteById(id);
+        
+        //模拟：异常发生
+        int i = 1/0;
+
+        //删除部门下的所有员工信息
+        empMapper.deleteByDeptId(id);   
+    }
+}
+```
+
+重启SpringBoot服务，使用postman测试：
+
+![ ](./assets/springboot06/image-20230107143339917.png)
+
+添加Spring事务管理后，由于服务端程序引发了异常，所以事务进行回滚。
+
+![ ](./assets/springboot06/image-20230107144312892.png)
+
+![ ](./assets/springboot06/image-20230107143720961.png)
+
+说明：在application.yml配置文件中开启事务管理日志，这样就可以在控制台看到和事务相关的日志信息了
+
+```yaml
+#spring事务管理日志
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+```
+
+### 1.3 事务进阶
+
+@Transactional注解当中的两个常见的属性：
+
+1. 异常回滚的属性：rollbackFor
+2. 事务传播行为：propagation
+
+#### 1.3.1 rollbackFor
+
+```java
+@Transactional
+public void delete(Integer id){
+        //根据部门id删除部门信息
+        deptMapper.deleteById(id);
+        
+        //模拟：异常发生
+        int i = 1/0;
+
+        //删除部门下的所有员工信息
+        empMapper.deleteByDeptId(id);   
+}
+```
+
+修改业务功能代码，在模拟异常的位置上直接抛出Exception异常（编译时异常）
+
+```java
+@Transactional
+public void delete(Integer id) throws Exception {
+        //根据部门id删除部门信息
+        deptMapper.deleteById(id);
+        
+        //模拟：异常发生
+        if(true){
+            throw new Exception("出现异常了```");
+        }
+
+        //删除部门下的所有员工信息
+        empMapper.deleteByDeptId(id);   
+}
+```
+
+> 说明：在service中向上抛出一个Exception编译时异常之后，由于是controller调用service，所以在controller中要有异常处理代码，此时选择在controller中继续把异常向上抛。
+>
+> ```java
+> @DeleteMapping("/depts/{id}")
+> public Result delete(@PathVariable Integer id) throws Exception {
+>      //日志记录
+>      log.info("根据id删除部门");
+>      //调用service层功能
+>      deptService.delete(id);
+>      //响应
+>      return Result.success();
+> }
+> ```
+
+重新启动服务后测试：
+
+抛出异常之后事务会不会回滚
+
+> 现有表中数据：
+>
+> ![ ](./assets/springboot06/image-20230107140726701.png)
+
+使用postman测试，删除5号部门
+
+![ ](./assets/springboot06/image-20230108142359592.png)
+
+发生了Exception异常，但事务依然提交了
+
+![ ](./assets/springboot06/image-20230108142555310.png)
+
+> dept表中数据：
+>
+> ![ ](./assets/springboot06/image-20230108142707351.png)
+
+结论：默认情况下，只有出现RuntimeException(运行时异常)才会回滚事务。
+
+配置@Transactional注解当中的rollbackFor属性，通过rollbackFor这个属性可以指定出现何种异常类型回滚事务。
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Autowired
+    private EmpMapper empMapper;
+
+    
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public void delete(Integer id){
+        //根据部门id删除部门信息
+        deptMapper.deleteById(id);
+        
+        //模拟：异常发生
+        int num = id/0;
+
+        //删除部门下的所有员工信息
+        empMapper.deleteByDeptId(id);   
+    }
+}
+```
+
+重新启动服务，测试删除部门的操作：
+
+![ ](./assets/springboot06/image-20230108184912155.png)
+
+控制台日志：执行了删除3号部门的操作， 因为异常又进行了事务回滚
+
+![ ](./assets/springboot06/image-20230108185432083.png)
+
+数据表：3号部门没有删除
+
+![ ](./assets/springboot06/image-20230107143720961.png)
+
+> 结论：
+>
+> - 在Spring的事务管理中，默认只有运行时异常 RuntimeException才会回滚。
+> - 如果还需要回滚指定类型的异常，可以通过rollbackFor属性来指定。
+
+#### 1.3.3 propagation
+
+这个属性是用来配置事务的传播行为的。
+
+![ ](./assets/springboot06/image-20230112152543953.png)
+
+所谓事务的传播行为，指的就是在A方法运行的时候，首先会开启一个事务，在A方法当中又调用了B方法， B方法自身也具有事务，那么B方法在运行的时候，到底是加入到A方法的事务当中来，还是B方法在运行的时候新建一个事务？这个就涉及到了事务的传播行为。
+
+常见的事务传播行为。
+
+| **属性值**    | **含义**                                                     |
+| ------------- | ------------------------------------------------------------ |
+| **REQUIRED**      | 【默认值】需要事务，有则加入，无则创建新事务                 |
+| **REQUIRES_NEW**  | 需要新事务，无论有无，总是创建新事务                         |
+| SUPPORTS      | 支持事务，有则加入，无则在无事务状态中运行                   |
+| NOT_SUPPORTED | 不支持事务，在无事务状态下运行,如果当前存在已有事务,则挂起当前事务 |
+| MANDATORY     | 必须有事务，否则抛异常                                       |
+| NEVER         | 必须没事务，否则抛异常                                       |
+| …             |                                                              |
+
+案例:
+
+**需求：** 解散部门时需要记录操作日志
+
+由于解散部门是一个非常重要而且非常危险的操作，所以在业务当中要求每一次执行解散部门的操作都需要留下痕迹，就是要记录操作日志。而且还要求无论是执行成功了还是执行失败了，都需要留下痕迹。
+
+**步骤：**
+
+1. 执行解散部门的业务：先删除部门，再删除部门下的员工（前面已实现）
+2. 记录解散部门的日志，到日志表（未实现）
+
+**准备工作：**
+
+1. 创建数据库表 dept_log 日志表：
+
+    ```sql
+    create table dept_log(
+        id int auto_increment comment '主键ID' primary key,
+        create_time datetime null comment '操作时间',
+        description varchar(300) null comment '操作描述'
+    )comment '部门操作日志表';
+    ```
+
+2. 引入资料中提供的实体类：DeptLog
+
+    ```java
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class DeptLog {
+        private Integer id;
+        private LocalDateTime createTime;
+        private String description;
+    }
+    ```
+
+3. 引入资料中提供的Mapper接口：DeptLogMapper
+
+    ```java
+    @Mapper
+    public interface DeptLogMapper {
+
+        @Insert("insert into dept_log(create_time,description) values(#{createTime},#{description})")
+        void insert(DeptLog log);
+
+    }
+    ```
+
+4. 引入资料中提供的业务接口：DeptLogService
+
+    ```java
+    public interface DeptLogService {
+        void insert(DeptLog deptLog);
+    }
+    ```
+
+5. 引入资料中提供的业务实现类：DeptLogServiceImpl
+
+    ```java
+    @Service
+    public class DeptLogServiceImpl implements DeptLogService {
+
+        @Autowired
+        private DeptLogMapper deptLogMapper;
+
+        @Transactional //事务传播行为：有事务就加入、没有事务就新建事务
+        @Override
+        public void insert(DeptLog deptLog) {
+            deptLogMapper.insert(deptLog);
+        }
+    }
+
+    ```
+
+**代码实现:**
+
 业务实现类：DeptServiceImpl
+
+```java
+@Slf4j
+@Service
+//@Transactional //当前业务实现类中的所有的方法，都添加了spring事务管理机制
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+    
+    @Autowired
+    private EmpMapper empMapper;
+
+    @Autowired
+    private DeptLogService deptLogService;
+
+
+    //根据部门id，删除部门信息及部门下的所有员工
+    @Override
+    @Log
+    @Transactional(rollbackFor = Exception.class) 
+    public void delete(Integer id) throws Exception {
+        try {
+            //根据部门id删除部门信息
+            deptMapper.deleteById(id);
+            //模拟：异常
+            if(true){
+                throw new Exception("出现异常了```");
+            }
+            //删除部门下的所有员工信息
+            empMapper.deleteByDeptId(id);
+        }finally {
+            //不论是否有异常，最终都要执行的代码：记录日志
+            DeptLog deptLog = new DeptLog();
+            deptLog.setCreateTime(LocalDateTime.now());
+            deptLog.setDescription("执行了解散部门的操作，此时解散的是"+id+"号部门");
+            //调用其他业务类中的方法
+            deptLogService.insert(deptLog);
+        }
+    }
+    
+    //省略其他代码...
+}
+```
+
+**测试:**
+
+重新启动SpringBoot服务，测试删除3号部门
+
+- 执行了删除3号部门操作
+- 执行了插入部门日志操作
+- 程序发生Exception异常
+- 执行事务回滚（删除、插入操作因为在一个事务范围内，两个操作都会被回滚）
+
+![ ](./assets/springboot06/image-20230109154025262.png)
+
+然后在dept_log表中没有记录日志数据
+
+![ ](./assets/springboot06/image-20230109154344393.png)
+
+**原因分析:**
+
+- 在执行delete操作时开启了一个事务
+
+- 当执行insert操作时，insert设置的事务传播行是默认值REQUIRED，表示有事务就加入，没有则新建事务
+
+- 此时：delete和insert操作使用了同一个事务，同一个事务中的多个操作，要么同时成功，要么同时失败，所以当异常发生时进行事务回滚，就会回滚delete和insert操作
+
+![ ](./assets/springboot06/image-20230109162420479.png)
+
+**解决方案：**
+
+在DeptLogServiceImpl类中insert方法上，添加  
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+
+> Propagation.REQUIRES_NEW  ：不论是否有事务，都创建新事务  ，运行在一个独立的事务中。
+
+```java
+@Service
+public class DeptLogServiceImpl implements DeptLogService {
+
+    @Autowired
+    private DeptLogMapper deptLogMapper;
+
+    //事务传播行为：不论是否有事务，都新建事务
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public void insert(DeptLog deptLog) {
+        deptLogMapper.insert(deptLog);
+    }
+}
+```
+
+重启SpringBoot服务，再次测试删除3号部门：
+
+![ ](./assets/springboot06/image-20230109170002879.png)
+
+> - REQUIRED ：大部分情况下都是用该传播行为即可。
+>
+> - REQUIRES_NEW ：不希望事务之间相互影响时，可以使用该传播行为。  
+>   比如：下订单前需要记录日志，不论订单保存成功与否，都需要保证日志记录能够记录成功。
+
+## 2. AOP基础
+
+### 2.1 AOP概述
+
+::: info 什么是AOP？
+
+- Aspect Oriented Programming（面向切面编程、面向方面编程）
+
+- 面向切面编程就是面向特定方法编程。
+
+:::
+
+比如，一个项目中开发了很多的业务功能。
+
+![ ](./assets/springboot06/image-20230112154547523.png)
+
+有一些业务功能执行效率比较低，执行耗时较长，需要针对于这些业务方法进行优化
+
+![ ](./assets/springboot06/image-20230112154605206.png)
+
+如果在每一个模块下的业务方法中，添加记录开始时间、结束时间、计算执行耗时的代码，就会让程序员的工作变得非常繁琐。
+
+![ ](./assets/springboot06/image-20230112154627546.png)
+
+> AOP的作用：在程序运行期间在不修改源代码的基础上对已有方法进行增强（无侵入性: 解耦）
+
+![ ](./assets/springboot06/image-20230112154530101.png)
+
+此时，调用部门管理的 list 业务方法时啊，并不会直接执行 list 方法的逻辑，而是会执行定义的 模板方法 ， 然后再模板方法中：
+
+- 记录方法运行开始时间
+- 运行原始的业务方法（那此时原始的业务方法，就是 list 方法）
+- 记录方法运行结束时间，计算方法执行耗时
+
+![ ](./assets/springboot06/image-20230112155813944.png)
+
+其实，AOP面向切面编程和OOP面向对象编程一样，它们都仅仅是一种编程思想，而动态代理技术是这种思想最主流的实现方式。  
+Spring的AOP是Spring框架的高级技术，旨在管理bean对象的过程中底层使用动态代理机制，对特定的方法进行编程(功能增强)。
+
+::: tip AOP的优势
+
+1. 减少重复代码
+2. 提高开发效率
+3. 维护方便
+
+:::
+
+### 2.2 AOP快速入门
+
+**需求：** 统计各个业务层方法执行耗时。
+
+**实现步骤：**
+
+1. 导入依赖：在pom.xml中导入AOP的依赖
+2. 编写AOP程序：针对于特定方法根据业务需要进行编程
+
+**pom.xml**:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+**AOP程序：TimeAspect**:
+
+```java
+@Component
+@Aspect //当前类为切面类
+@Slf4j
+public class TimeAspect {
+
+    @Around("execution(* com.itheima.service.*.*(..))") 
+    public Object recordTime(ProceedingJoinPoint pjp) throws Throwable {
+        //记录方法执行开始时间
+        long begin = System.currentTimeMillis();
+
+        //执行原始方法
+        Object result = pjp.proceed();
+
+        //记录方法执行结束时间
+        long end = System.currentTimeMillis();
+
+        //计算方法执行耗时
+        log.info(pjp.getSignature()+"执行耗时: {}毫秒",end-begin);
+
+        return result;
+    }
+}
+```
+
+重新启动SpringBoot服务测试程序：
+
+- 查询3号部门信息
+
+![ ](./assets/springboot06/image-20230110143404792.png)
+
+![ ](./assets/springboot06/image-20230110143611669.png)
+
+> 查询所有部门信息（同样执行AOP程序）
+>
+> ![ ](./assets/springboot06/image-20230110143815479.png)
+
+::: tip AOP的功能
+
+- 记录系统的操作日志
+  
+- 权限控制
+- 事务管理：Spring事务管理，底层其实也是通过AOP来实现的，只要添加@Transactional注解之后，AOP程序自动会在原始方法运行前先来开启事务，在原始方法运行完毕之后提交或回滚事务
+
+:::
+
+::: tip AOP面向切面编程的一些优势
+
+- 代码无侵入：没有修改原始的业务方法，就已经对原始的业务方法进行了功能的增强或者是功能的改变
+
+- 减少了重复代码
+- 提高开发效率
+
+- 维护方便
+  
+:::
+
+### 2.3 AOP核心概念
+
+**1. 连接点：JoinPoint**，可以被AOP控制的方法（暗含方法执行时的相关信息）
+
+例如：入门程序当中所有的业务方法都是可以被aop控制的方法。
+
+![ ](./assets/springboot06/image-20230112160708474.png)
+
+**2. 通知：Advice**，指哪些重复的逻辑，也就是共性功能（最终体现为一个方法）
+
+在入门程序中统计各个业务方法的执行耗时，在AOP面向切面编程当中，只需要将这部分重复的代码逻辑抽取出来单独定义。抽取出来的这一部分重复的逻辑，也就是共性的功能。
+
+![ ](./assets/springboot06/image-20230112160852883.png)
+
+**3. 切入点：PointCut**，匹配连接点的条件，通知仅会在切入点方法执行时被应用
+
+在通知当中，定义的共性功能到底要应用在哪些方法上？此时就涉及到了切入点pointcut概念。切入点指的是匹配连接点的条件。通知仅会在切入点方法运行时才会被应用。
+
+在aop的开发当中，通常会通过一个切入点表达式来描述切入点。
+
+![ ](./assets/springboot06/image-20230112161131937.png)
+
+假如：切入点表达式改为DeptServiceImpl.list()，此时就代表仅仅只有list这一个方法是切入点。只有list()方法在运行的时候才会应用通知。
+
+**4. 切面：Aspect**，描述通知与切入点的对应关系（通知+切入点）
+
+当通知和切入点结合在一起，就形成了一个切面。通过切面就能够描述当前aop程序需要针对于哪个原始方法，在什么时候执行什么样的操作。
+
+![ ](./assets/springboot06/image-20230112161335186.png)
+
+切面所在的类，一般称为**切面类**（被@Aspect注解标识的类）
+
+**5. 目标对象：Target**，通知所应用的对象
+
+目标对象指的就是通知所应用的对象，就称之为目标对象。
+
+![ ](./assets/springboot06/image-20230112161657667.png)
+
+  通知是如何与目标对象结合在一起，对目标对象当中的方法进行功能增强的。
+
+![ ](./assets/springboot06/image-20230112161821401.png)
+
+Spring的AOP底层是基于动态代理技术来实现的，也就是说在程序运行的时候，会自动的基于动态代理技术为目标对象生成一个对应的代理对象。在代理对象当中就会对目标对象当中的原始方法进行功能的增强。
+
+## 3. AOP进阶
+
+### 3.1 通知类型
+
+```java
+@Around("execution(* com.itheima.service.*.*(..))")
+public Object recordTime(ProceedingJoinPoint pjp) throws Throwable {
+    //记录方法执行开始时间
+    long begin = System.currentTimeMillis();
+    //执行原始方法
+    Object result = pjp.proceed();
+    //记录方法执行结束时间
+    long end = System.currentTimeMillis();
+    //计算方法执行耗时
+    log.info(pjp.getSignature()+"执行耗时: {}毫秒",end-begin);
+    return result;
+}
+```
+
+> 在通知方法上加上了@Around注解，就代表当前通知是一个环绕通知。
+
+::: tip Spring中AOP的通知类型：
+
+- @Around：环绕通知，此注解标注的通知方法在目标方法前、后都被执行
+- @Before：前置通知，此注解标注的通知方法在目标方法前被执行
+- @After ：后置通知，此注解标注的通知方法在目标方法后被执行，无论是否有异常都会执行
+- @AfterReturning ： 返回后通知，此注解标注的通知方法在目标方法后被执行，有异常不会执行
+- @AfterThrowing ： 异常后通知，此注解标注的通知方法发生异常后执行
+
+:::
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect1 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(JoinPoint joinPoint){
+        log.info("before ...");
+
+    }
+
+    //环绕通知
+    @Around("execution(* com.itheima.service.*.*(..))")
+    public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        log.info("around before ...");
+
+        //调用目标对象的原始方法执行
+        Object result = proceedingJoinPoint.proceed();
+        
+        //原始方法如果执行时有异常，环绕通知中的后置代码不会在执行了
+        
+        log.info("around after ...");
+        return result;
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(JoinPoint joinPoint){
+        log.info("after ...");
+    }
+
+    //返回后通知（程序在正常执行的情况下，会执行的后置通知）
+    @AfterReturning("execution(* com.itheima.service.*.*(..))")
+    public void afterReturning(JoinPoint joinPoint){
+        log.info("afterReturning ...");
+    }
+
+    //异常通知（程序在出现异常的情况下，执行的后置通知）
+    @AfterThrowing("execution(* com.itheima.service.*.*(..))")
+    public void afterThrowing(JoinPoint joinPoint){
+        log.info("afterThrowing ...");
+    }
+}
+
+```
+
+重新启动SpringBoot服务，进行测试：
+
+**1. 没有异常情况下：**
+
+- 使用postman测试查询所有部门数据
+
+![ ](./assets/springboot06/image-20230110165514461.png)
+
+- 查看idea中控制台日志输出
+
+![ ](./assets/springboot06/image-20230110165806934.png)
+
+> 程序没有发生异常的情况下，@AfterThrowing标识的通知方法不会执行。
+
+**2. 出现异常情况下：**
+
+修改DeptServiceImpl业务实现类中的代码： 添加异常
 
 ```java
 @Slf4j
@@ -171,14 +821,485 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public List<Dept> list() {
+
         List<Dept> deptList = deptMapper.list();
+
+        //模拟异常
+        int num = 10/0;
+
+        return deptList;
+    }
+    
+    //省略其他代码...
+}
+```
+
+重新启动SpringBoot服务，测试发生异常情况下通知的执行：
+
+- 查看idea中控制台日志输出
+
+![ ](./assets/springboot06/image-20230110171006874.png)
+
+> 程序发生异常的情况下：
+>
+> - @AfterReturning标识的通知方法不会执行，@AfterThrowing标识的通知方法执行
+>
+> - @Around环绕通知中原始方法调用时有异常，通知中的环绕后的代码逻辑也不会在执行了 （因为原始方法调用已经出异常了）
+
+::: warning 使用通知时的注意事项
+
+- @Around环绕通知需要自己调用 ProceedingJoinPoint.proceed() 来让原始方法执行，其他通知不需要考虑目标方法执行
+- @Around环绕通知方法的返回值，必须指定为Object，来接收原始方法的返回值，否则原始方法执行完毕，是获取不到返回值的。
+
+:::
+
+```java
+//前置通知
+@Before("execution(* com.itheima.service.*.*(..))")
+
+//环绕通知
+@Around("execution(* com.itheima.service.*.*(..))")
+  
+//后置通知
+@After("execution(* com.itheima.service.*.*(..))")
+
+//返回后通知（程序在正常执行的情况下，会执行的后置通知）
+@AfterReturning("execution(* com.itheima.service.*.*(..))")
+
+//异常通知（程序在出现异常的情况下，执行的后置通知）
+@AfterThrowing("execution(* com.itheima.service.*.*(..))")
+```
+
+怎么来解决这个切入点表达式重复的问题？ 答案就是：**抽取**
+
+Spring提供了@PointCut注解，作用是将公共的切入点表达式抽取出来，需要用到时引用该切入点表达式即可。
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect1 {
+
+    //切入点方法（公共的切入点表达式）
+    @Pointcut("execution(* com.itheima.service.*.*(..))")
+    private void pt(){
+
+    }
+
+    //前置通知（引用切入点）
+    @Before("pt()")
+    public void before(JoinPoint joinPoint){
+        log.info("before ...");
+
+    }
+
+    //环绕通知
+    @Around("pt()")
+    public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        log.info("around before ...");
+
+        //调用目标对象的原始方法执行
+        Object result = proceedingJoinPoint.proceed();
+        //原始方法在执行时：发生异常
+        //后续代码不在执行
+
+        log.info("around after ...");
+        return result;
+    }
+
+    //后置通知
+    @After("pt()")
+    public void after(JoinPoint joinPoint){
+        log.info("after ...");
+    }
+
+    //返回后通知（程序在正常执行的情况下，会执行的后置通知）
+    @AfterReturning("pt()")
+    public void afterReturning(JoinPoint joinPoint){
+        log.info("afterReturning ...");
+    }
+
+    //异常通知（程序在出现异常的情况下，执行的后置通知）
+    @AfterThrowing("pt()")
+    public void afterThrowing(JoinPoint joinPoint){
+        log.info("afterThrowing ...");
+    }
+}
+```
+
+需要注意的是：当切入点方法使用private修饰时，仅能在当前切面类中引用该表达式， 当外部其他切面类中也要引用当前类中的切入点表达式，就需要把private改为public  
+在引用的时候，具体的语法为：全类名.方法名()
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect2 {
+    //引用MyAspect1切面类中的切入点表达式
+    @Before("com.itheima.aspect.MyAspect1.pt()")
+    public void before(){
+        log.info("MyAspect2 -> before ...");
+    }
+}
+```
+
+### 3.2 通知顺序
+
+定义多个切面类：
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect2 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect2 -> before ...");
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect2 -> after ...");
+    }
+}
+
+```
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect3 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect3 -> before ...");
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect3 ->  after ...");
+    }
+}
+```
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect4 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect4 -> before ...");
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect4 -> after ...");
+    }
+}
+
+```
+
+重新启动SpringBoot服务，测试通知的执行顺序：
+
+> 备注：
+>
+> 1. 把DeptServiceImpl实现类中模拟异常的代码删除或注释掉。
+>
+> 2. 注释掉其他切面类(把@Aspect注释即可)，仅保留MyAspect2、MyAspect3、MyAspect4 ，这样就可以清晰看到执行的结果，而不被其他切面类干扰。
+
+- 使用postman测试查询所有部门数据
+
+![ ](./assets/springboot06/image-20230110165514461.png)
+
+- 查看idea中控制台日志输出
+
+![ ](./assets/springboot06/image-20230110211208549.png)
+
+默认按照切面类的类名字母排序：
+
+- 目标方法前的通知方法：字母排名靠前的先执行
+- 目标方法后的通知方法：字母排名靠前的后执行
+
+控制通知的执行顺序有两种方式：
+
+1. 修改切面类的类名（繁琐、不便管理）
+2. 使用Spring提供的@Order注解
+
+使用@Order注解，控制通知的执行顺序：
+
+```java
+@Slf4j
+@Component
+@Aspect
+@Order(2)  //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
+public class MyAspect2 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect2 -> before ...");
+    }
+
+    //后置通知 
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect2 -> after ...");
+    }
+}
+```
+
+```java
+@Slf4j
+@Component
+@Aspect
+@Order(3)  //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
+public class MyAspect3 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect3 -> before ...");
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect3 ->  after ...");
+    }
+}
+```
+
+```java
+@Slf4j
+@Component
+@Aspect
+@Order(1) //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
+public class MyAspect4 {
+    //前置通知
+    @Before("execution(* com.itheima.service.*.*(..))")
+    public void before(){
+        log.info("MyAspect4 -> before ...");
+    }
+
+    //后置通知
+    @After("execution(* com.itheima.service.*.*(..))")
+    public void after(){
+        log.info("MyAspect4 -> after ...");
+    }
+}
+```
+
+重新启动SpringBoot服务，测试通知执行顺序：
+
+![ ](./assets/springboot06/image-20230110212523787.png)
+
+### 3.3 切入点表达式
+
+描述切入点方法的一种表达式
+
+- 作用：主要用来决定项目中的哪些方法需要加入通知
+
+常见形式：
+
+   execution(……)：根据方法的签名来匹配
+
+  ![ ](./assets/springboot06/image-20230110214150215.png)
+
+   @annotation(……) ：根据注解匹配
+
+  ![ ](./assets/springboot06/image-20230110214242083.png)
+
+#### 3.3.1 execution
+
+execution主要根据方法的返回值、包名、类名、方法名、方法参数等信息来匹配，语法为：
+
+```java
+execution(访问修饰符?  返回值  包名.类名.?方法名(方法参数) throws 异常?)
+```
+
+其中带`?`的表示可以省略的部分
+
+- 访问修饰符：可省略（比如: public、protected）
+
+- 包名.类名： 可省略
+
+- throws 异常：可省略（注意是方法上声明抛出的异常，不是实际抛出的异常）
+
+示例：
+
+```java
+@Before("execution(void com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))")
+```
+
+可以使用通配符描述切入点
+
+- `*` ：单个独立的任意符号，可以通配任意返回值、包名、类名、方法名、任意类型的一个参数，也可以通配包、类、方法名的一部分
+
+- `..` ：多个连续的任意符号，可以通配任意层级的包，或任意类型、任意个数的参数
+
+::: tip 切入点表达式的语法规则
+
+1. 方法的访问修饰符可以省略
+2. 返回值可以使用`*`号代替（任意返回值类型）
+3. 包名可以使用`*`号代替，代表任意包（一层包使用一个`*`）
+4. 使用`..`配置包名，标识此包以及此包下的所有子包
+5. 类名可以使用`*`号代替，标识任意类
+6. 方法名可以使用`*`号代替，表示任意方法
+7. 可以使用 `*`  配置参数，一个任意类型的参数
+8. 可以使用`..` 配置参数，任意个任意类型的参数
+
+:::
+
+**切入点表达式示例**:
+
+- 省略方法的修饰符号
+
+  ```java
+  execution(void com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))
+  ```
+
+- 使用`*`代替返回值类型
+
+  ```java
+  execution(* com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))
+  ```
+
+- 使用`*`代替包名（一层包使用一个`*`）
+
+  ```java
+  execution(* com.itheima.*.*.DeptServiceImpl.delete(java.lang.Integer))
+  ```
+
+- 使用`..`省略包名
+
+  ```java
+  execution(* com..DeptServiceImpl.delete(java.lang.Integer))    
+  ```
+
+- 使用`*`代替类名
+
+  ```java
+  execution(* com..*.delete(java.lang.Integer))   
+  ```
+
+- 使用`*`代替方法名
+
+  ```java
+  execution(* com..*.*(java.lang.Integer))   
+  ```
+
+- 使用 `*` 代替参数
+
+  ```java
+  execution(* com.itheima.service.impl.DeptServiceImpl.delete(*))
+  ```
+  
+- 使用`..`省略参数
+
+  ```java
+  execution(* com..*.*(..))
+  ```
+
+注意事项：
+
+- 根据业务需要，可以使用 且（&&）、或（||）、非（!） 来组合比较复杂的切入点表达式。
+
+  ```java
+  execution(* com.itheima.service.DeptService.list(..)) || execution(* com.itheima.service.DeptService.delete(..))
+  ```
+
+切入点表达式的书写建议：
+
+- 所有业务方法名在命名时尽量规范，方便切入点表达式快速匹配。如：查询类方法都是 find 开头，更新类方法都是update开头
+
+  ```java
+  //业务类
+  @Service
+  public class DeptServiceImpl implements DeptService {
+      
+      public List<Dept> findAllDept() {
+         //省略代码...
+      }
+      
+      public Dept findDeptById(Integer id) {
+         //省略代码...
+      }
+      
+      public void updateDeptById(Integer id) {
+         //省略代码...
+      }
+      
+      public void updateDeptByMoreCondition(Dept dept) {
+         //省略代码...
+      }
+      //其他代码...
+  }
+  ```
+
+  ```java
+  //匹配DeptServiceImpl类中以find开头的方法
+  execution(* com.itheima.service.impl.DeptServiceImpl.find*(..))
+  ```
+
+- 描述切入点方法通常基于接口描述，而不是直接描述实现类，增强拓展性
+
+  ```java
+  execution(* com.itheima.service.DeptService.*(..))
+  ```
+
+- 在满足业务需要的前提下，尽量缩小切入点的匹配范围。如：包名匹配尽量不使用 ..，使用 * 匹配单个包
+
+  ```java
+  execution(* com.itheima.*.*.DeptServiceImpl.find*(..))
+  ```
+
+#### 3.3.2 @annotation
+
+实现步骤：
+
+1. 编写自定义注解
+
+2. 在业务类要做为连接点的方法上添加自定义注解
+
+**自定义注解**：MyLog
+
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyLog {
+}
+```
+
+**业务类**：DeptServiceImpl
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Override
+    @MyLog //自定义注解（表示：当前方法属于目标方法）
+    public List<Dept> list() {
+        List<Dept> deptList = deptMapper.list();
+        //模拟异常
+        //int num = 10/0;
         return deptList;
     }
 
     @Override
+    @MyLog  //自定义注解（表示：当前方法属于目标方法）
     public void delete(Integer id) {
+        //1. 删除部门
         deptMapper.delete(id);
     }
+
 
     @Override
     public void save(Dept dept) {
@@ -186,1536 +1307,367 @@ public class DeptServiceImpl implements DeptService {
         dept.setUpdateTime(LocalDateTime.now());
         deptMapper.save(dept);
     }
+
+    @Override
+    public Dept getById(Integer id) {
+        return deptMapper.getById(id);
+    }
+
+    @Override
+    public void update(Dept dept) {
+        dept.setUpdateTime(LocalDateTime.now());
+        deptMapper.update(dept);
+    }
 }
 ```
 
-Mapper接口：
+**切面类**:
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect6 {
+    //针对list方法、delete方法进行前置通知和后置通知
+
+    //前置通知
+    @Before("@annotation(com.itheima.anno.MyLog)")
+    public void before(){
+        log.info("MyAspect6 -> before ...");
+    }
+
+    //后置通知
+    @After("@annotation(com.itheima.anno.MyLog)")
+    public void after(){
+        log.info("MyAspect6 -> after ...");
+    }
+}
+```
+
+重启SpringBoot服务，测试查询所有部门数据，查看控制台日志：
+
+![ ](./assets/springboot06/image-20230110224447047.png)
+
+::: tip
+
+execution切入点表达式
+
+- 根据所指定的方法的描述信息来匹配切入点方法，这种方式也是最为常用的一种方式
+- 如果要匹配的切入点方法的方法名不规则，或者有一些比较特殊的需求，通过execution切入点表达式描述比较繁琐
+
+annotation 切入点表达式
+
+- 基于注解的方式来匹配切入点方法。这种方式虽然多一步操作，需要自定义一个注解，但是相对来比较灵活。需要匹配哪个方法，就在方法上加上对应的注解就可以了
+:::
+
+### 3.4 连接点
+
+连接点可以简单理解为可以被AOP控制的方法。
+
+在SpringAOP当中，连接点又特指方法的执行。
+
+在Spring中用JoinPoint抽象了连接点，用它可以获得方法执行时的相关信息，如目标类名、方法名、方法参数等。
+
+- 对于@Around通知，获取连接点信息只能使用ProceedingJoinPoint类型
+
+- 对于其他四种通知，获取连接点信息只能使用JoinPoint，它是ProceedingJoinPoint的父类型
+
+示例代码：
+
+```java
+@Slf4j
+@Component
+@Aspect
+public class MyAspect7 {
+
+    @Pointcut("@annotation(com.itheima.anno.MyLog)")
+    private void pt(){}
+   
+    //前置通知
+    @Before("pt()")
+    public void before(JoinPoint joinPoint){
+        log.info(joinPoint.getSignature().getName() + " MyAspect7 -> before ...");
+    }
+    
+    //后置通知
+    @Before("pt()")
+    public void after(JoinPoint joinPoint){
+        log.info(joinPoint.getSignature().getName() + " MyAspect7 -> after ...");
+    }
+
+    //环绕通知
+    @Around("pt()")
+    public Object around(ProceedingJoinPoint pjp) throws Throwable {
+        //获取目标类名
+        String name = pjp.getTarget().getClass().getName();
+        log.info("目标类名：{}",name);
+
+        //目标方法名
+        String methodName = pjp.getSignature().getName();
+        log.info("目标方法名：{}",methodName);
+
+        //获取方法执行时需要的参数
+        Object[] args = pjp.getArgs();
+        log.info("目标方法参数：{}", Arrays.toString(args));
+
+        //执行原始方法
+        Object returnValue = pjp.proceed();
+
+        return returnValue;
+    }
+}
+
+```
+
+重新启动SpringBoot服务，执行查询部门数据的功能：
+
+![ ](./assets/springboot06/image-20230110231629140.png)
+
+## 4. AOP案例
+
+### 4.1 需求
+
+需求：将案例中增、删、改相关接口的操作日志记录到数据库表中
+
+- 就是当访问部门管理和员工管理当中的增、删、改相关功能接口时，需要详细的操作日志，并保存在数据表中，便于后期数据追踪。
+
+操作日志信息包含：
+
+- 操作人、操作时间、执行方法的全类名、执行方法名、方法运行时参数、返回值、方法执行时长
+
+> 所记录的日志信息包括当前接口的操作人是谁操作的，什么时间点操作的，以及访问的是哪个类当中的哪个方法，在访问这个方法的时候传入进来的参数是什么，访问这个方法最终拿到的返回值是什么，以及整个接口方法的运行时长是多长时间。
+
+### 4.2 分析
+
+问题1：项目当中增删改相关的方法是不是有很多？
+
+- 很多
+
+问题2：需要针对每一个功能接口方法进行修改，在每一个功能接口当中都来记录这些操作日志吗？
+
+- 这种做法比较繁琐
+
+以上两个问题的解决方案：可以使用AOP解决(每一个增删改功能接口中要实现的记录操作日志的逻辑代码是相同)。
+
+> 可以把这部分记录操作日志的通用的、重复性的逻辑代码抽取出来定义在一个通知方法当中，通过AOP面向切面编程的方式，在不改动原始功能的基础上来对原始的功能进行增强。目前所增强的功能就是来记录操作日志，所以也可以使用AOP的技术来实现。使用AOP的技术来实现也是最为简单，最为方便的。
+
+问题3：既然要基于AOP面向切面编程的方式来完成的功能，那么要使用 AOP五种通知类型当中的哪种通知类型？
+
+- 答案：环绕通知
+
+> 所记录的操作日志当中包括：操作人、操作时间，访问的是哪个类、哪个方法、方法运行时参数、方法的返回值、方法的运行时长。
+>
+> 方法返回值，是在原始方法执行后才能获取到的。
+>
+> 方法的运行时长，需要原始方法运行之前记录开始时间，原始方法运行之后记录结束时间。通过计算获得方法的执行耗时。
+>
+>
+>
+> 基于以上的分析确定要使用Around环绕通知。
+
+问题4：最后一个问题，切入点表达式该怎么写？
+
+- 答案：使用annotation来描述表达式
+
+> 要匹配业务接口当中所有的增删改的方法，而增删改方法在命名上没有共同的前缀或后缀。此时如果使用execution切入点表达式也可以，但是会比较繁琐。 当遇到增删改的方法名没有规律时，就可以使用 annotation切入点表达式
+
+### 4.3 步骤
+
+案例的实现步骤其实就两步：
+
+- 准备工作
+  1. 引入AOP的起步依赖
+  2. 导入数据库表结构，并引入对应的实体类
+- 编码实现
+  1. 自定义注解@Log
+  2. 定义切面类，完成记录操作日志的逻辑
+
+### 4.4 实现
+
+#### 4.4.1 准备工作
+
+1. AOP起步依赖
+
+    ```xml
+    <!--AOP起步依赖-->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    ```
+
+2. 导入数据库表结构，并引入对应的实体类
+
+数据表
+
+```sql
+-- 操作日志表
+create table operate_log(
+    id int unsigned primary key auto_increment comment 'ID',
+    operate_user int unsigned comment '操作人',
+    operate_time datetime comment '操作时间',
+    class_name varchar(100) comment '操作的类名',
+    method_name varchar(100) comment '操作的方法名',
+    method_params varchar(1000) comment '方法参数',
+    return_value varchar(2000) comment '返回值',
+    cost_time bigint comment '方法执行耗时, 单位:ms'
+) comment '操作日志表';
+```
+
+实体类
+
+```java
+//操作日志实体类
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class OperateLog {
+    private Integer id; //主键ID
+    private Integer operateUser; //操作人ID
+    private LocalDateTime operateTime; //操作时间
+    private String className; //操作类名
+    private String methodName; //操作方法名
+    private String methodParams; //操作方法参数
+    private String returnValue; //操作方法返回值
+    private Long costTime; //操作耗时
+}
+```
+
+Mapper接口
 
 ```java
 @Mapper
-public interface DeptMapper {
-    //查询全部部门数据
-    @Select("select * from dept")
-    List<Dept> list();
+public interface OperateLogMapper {
 
-    //删除部门
-    @Delete("delete from dept where id = #{id}")
-    void delete(Integer id);
+    //插入日志数据
+    @Insert("insert into operate_log (operate_user, operate_time, class_name, method_name, method_params, return_value, cost_time) " +
+            "values (#{operateUser}, #{operateTime}, #{className}, #{methodName}, #{methodParams}, #{returnValue}, #{costTime});")
+    public void insert(OperateLog log);
 
-    //新增部门
-    @Insert("insert into dept(name, create_time, update_time) values (#{name},#{createTime},#{updateTime})")
-    void save(Dept dept);
-}
-
-```
-
-测试类：
-
-```java
-@SpringBootTest
-class SpringbootWebConfig2ApplicationTests {
-
-    @Autowired
-    private ApplicationContext applicationContext; //IOC容器对象
-
-    //获取bean对象
-    @Test
-    public void testGetBean(){
-        //根据bean的名称获取
-        DeptController bean1 = (DeptController) applicationContext.getBean("deptController");
-        System.out.println(bean1);
-
-        //根据bean的类型获取
-        DeptController bean2 = applicationContext.getBean(DeptController.class);
-        System.out.println(bean2);
-
-        //根据bean的名称 及 类型获取
-        DeptController bean3 = applicationContext.getBean("deptController", DeptController.class);
-        System.out.println(bean3);
-    }
 }
 ```
 
-程序运行后控制台日志：
+#### 4.4.2 编码实现
 
-![ ](./assets/springboot06/image-20230113211619818.png)
-
-> 问题：输出的bean对象地址值是一样的，说明IOC容器当中的bean对象有几个？
->
-> 答案：只有一个。        （默认情况下，IOC中的bean对象是单例）
->
-> 能不能将bean对象设置为非单例的(每次获取的bean都是一个新对象)？
->
-> 可以
-
-注意事项：
-
-- 上述所说的 【Spring项目启动时，会把其中的bean都创建好】还会受到作用域及延迟初始化影响，这里主要针对于默认的单例非延迟加载的bean而言。
-
-### 2.2 Bean作用域
-
-默认bean对象是单例模式(只有一个实例对象)。那么如何设置bean对象为非单例呢？需要设置bean的作用域。
-
-在Spring中支持五种作用域，后三种在web环境才生效：
-
-| **作用域**  | **说明**                                        |
-| ----------- | ----------------------------------------------- |
-| singleton   | 容器内同名称的bean只有一个实例（单例）（默认）  |
-| prototype   | 每次使用该bean时会创建新的实例（非单例）        |
-| request     | 每个请求范围内会创建新的实例（web环境中，了解） |
-| session     | 每个会话范围内会创建新的实例（web环境中，了解） |
-| application | 每个应用范围内会创建新的实例（web环境中，了解） |
-
-- 借助Spring中的@Scope注解来进行配置作用域
-
-![ ](./assets/springboot06/image-20230113214244144.png)
-
-**测试一**:
-
-- 控制器
+- 自定义注解@Log
 
 ```java
-//默认bean的作用域为：singleton (单例)
-@Lazy //延迟加载（第一次使用bean对象时，才会创建bean对象并交给ioc容器管理）
-@RestController
-@RequestMapping("/depts")
-public class DeptController {
-
-    @Autowired
-    private DeptService deptService;
-
-    public DeptController(){
-        System.out.println("DeptController constructor ....");
-    }
-
-    //省略其他代码...
-}
-```
-
-- 测试类
-
-```java
-@SpringBootTest
-class SpringbootWebConfig2ApplicationTests {
-
-    @Autowired
-    private ApplicationContext applicationContext; //IOC容器对象
-
-    //bean的作用域
-    @Test
-    public void testScope(){
-        for (int i = 0; i < 10; i++) {
-            DeptController deptController = applicationContext.getBean(DeptController.class);
-            System.out.println(deptController);
-        }
-    }
-}
-```
-
-重启SpringBoot服务，运行测试方法，查看控制台打印的日志：
-
-![ ](./assets/springboot06/image-20230114001348839.png)
-
-> 注意事项：
->
-> - IOC容器中的bean默认使用的作用域：singleton (单例)
->
-> - 默认singleton的bean，在容器启动时被创建，可以使用@Lazy注解来延迟初始化(延迟到第一次使用时)
-
-**测试二**:
-
-修改控制器DeptController代码：
-
-```java
-@Scope("prototype") //bean作用域为非单例
-@Lazy //延迟加载
-@RestController
-@RequestMapping("/depts")
-public class DeptController {
-
-    @Autowired
-    private DeptService deptService;
-
-    public DeptController(){
-        System.out.println("DeptController constructor ....");
-    }
-
-    //省略其他代码...
-}
-```
-
-重启SpringBoot服务，再次执行测试方法，查看控制台打印的日志：
-
-![ ](./assets/springboot06/image-20230114001736151.png)
-
-> 注意事项：
->
-> - prototype的bean，每一次使用该bean的时候都会创建一个新的实例
-> - 实际开发当中，绝大部分的Bean是单例的，也就是说绝大部分Bean不需要配置scope属性
-
-### 2.3 第三方Bean
-
-像controller、service，dao三层体系下编写的类(自定义类)。要声明这些bean，只需要在类上加上@Component以及它的这三个衍生注解（@Controller、@Service、@Repository），就可以来声明这个bean对象了。  
-但是在我们项目开发当中，还有一种情况就是这个类它不是我们自己编写的，而是我们引入的第三方依赖当中提供的。
-
-在pom.xml文件中，引入dom4j：
-
-```xml
-<!--Dom4j-->
-<dependency>
-    <groupId>org.dom4j</groupId>
-    <artifactId>dom4j</artifactId>
-    <version>2.1.3</version>
-</dependency>
-```
-
-> dom4j就是第三方组织提供的。 dom4j中的SAXReader类就是第三方编写的。
-
-需要使用到SAXReader对象时，直接进行依赖注入是不是就可以了呢？
-
-- 按照之前的做法，需要在SAXReader类上添加一个注解@Component（将当前类交给IOC容器管理）
-
-![ ](./assets/springboot06/image-20230114003903285.png)
-
-> 结论：第三方提供的类是只读的。无法在第三方类上添加@Component注解或衍生注解。
-
-那么我们应该怎样使用并定义第三方的bean呢？
-
-- 如果要管理的bean对象来自于第三方（不是自定义的），是无法用@Component 及衍生注解声明bean的，就需要用到 **@Bean** 注解。
-
-**解决方案1：在启动类上添加@Bean标识的方法**:
-
-```java
-@SpringBootApplication
-public class SpringbootWebConfig2Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-
-    //声明第三方bean
-    @Bean //将当前方法的返回值对象交给IOC容器管理, 成为IOC容器bean
-    public SAXReader saxReader(){
-        return new SAXReader();
-    }
-}
-
-```
-
-xml文件：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<emp>
-    <name>Tom</name>
-    <age>18</age>
-</emp>
-
-```
-
-测试类：
-
-```java
-@SpringBootTest
-class SpringbootWebConfig2ApplicationTests {
-
-    @Autowired
-    private SAXReader saxReader;
-
-    //第三方bean的管理
-    @Test
-    public void testThirdBean() throws Exception {
-        Document document = saxReader.read(this.getClass().getClassLoader().getResource("1.xml"));
-        Element rootElement = document.getRootElement();
-        String name = rootElement.element("name").getText();
-        String age = rootElement.element("age").getText();
-
-        System.out.println(name + " : " + age);
-    }
-
-    //省略其他代码...
-}
-
-```
-
-重启SpringBoot服务，执行测试方法后，控制台输出日志：
-
-```md
-Tom : 18
-```
-
-> **说明：以上在启动类中声明第三方Bean的作法，不建议使用（项目中要保证启动类的纯粹性）**
-
-**解决方案2：在配置类中定义@Bean标识的方法**:
-
-- 如果需要定义第三方Bean时， 通常会单独定义一个配置类
-
-```java
-@Configuration //配置类  (在配置类当中对第三方bean进行集中的配置管理)
-public class CommonConfig {
-
-    //声明第三方bean
-    @Bean //将当前方法的返回值对象交给IOC容器管理, 成为IOC容器bean
-          //通过@Bean注解的name/value属性指定bean名称, 如果未指定, 默认是方法名
-    public SAXReader reader(DeptService deptService){
-        System.out.println(deptService);
-        return new SAXReader();
-    }
-
-}
-
-```
-
-注释掉SpringBoot启动类中创建第三方bean对象的代码，重启服务，执行测试方法，查看控制台日志：
-
-```md
-Tom : 18
-```
-
-在方法上加上一个@Bean注解，Spring 容器在启动的时候，它会自动的调用这个方法，并将方法的返回值声明为Spring容器当中的Bean对象。
-
-> 注意事项 ：
->
-> - 通过@Bean注解的name或value属性可以声明bean的名称，如果不指定，默认bean的名称就是方法名。
->
-> - 如果第三方bean需要依赖其它bean对象，直接在bean定义方法中设置形参即可，容器会根据类型自动装配。
-
-关于Bean保持一个原则：
-
-- 如果是在项目当中自己定义的类，想将这些类交给IOC容器管理，直接使用@Component以及它的衍生注解来声明就可以。
-- 如果这个类它不是自己定义的，而是引入的第三方依赖当中提供的类，而且还想将这个类交给IOC容器管理。在配置类中定义一个方法，在方法上加上一个@Bean注解，通过这种方式来声明第三方的bean对象。
-
-## 3. SpringBoot原理
-
-![ ](./assets/springboot06/image-20230114171304644.png)
-
-繁琐主要体现在两个地方：
-
-1. 在pom.xml中依赖配置比较繁琐，在项目开发时，需要自己去找到对应的依赖，还需要找到依赖它所配套的依赖以及对应版本，否则就会出现版本冲突问题。
-2. 在使用Spring框架进行项目开发时，需要在Spring的配置文件中做大量的配置，这就造成Spring框架入门难度较大，学习成本较高。
-
-![ ](./assets/springboot06/image-20230114170610438.png)
-
-> 基于Spring存在的问题，官方在Spring框架4.0版本之后，又推出了一个全新的框架：SpringBoot。
->
-> 通过 SpringBoot来简化Spring框架的开发(是简化不是替代)
-
-SpringBoot框架之所以使用起来更简单更快捷，是因为SpringBoot框架底层提供了两个非常重要的功能：一个是起步依赖，一个是自动配置。
-
-![ ](./assets/springboot06/image-20230114172442018.png)
-
-> 通过SpringBoot所提供的起步依赖，就可以大大的简化pom文件当中依赖的配置，从而解决了Spring框架当中依赖配置繁琐的问题。
->
-> 通过自动配置的功能就可以大大的简化框架在使用时bean的声明以及bean的配置。只需要引入程序开发时所需要的起步依赖，项目开发时所用到常见的配置都已经有了，直接使用就可以了。
-
-### 3.1 起步依赖
-
-假如用的是Spring框架进行web程序的开发，引入web程序开发所需要的一些依赖。
-
-![ ](./assets/springboot06/image-20230114173645101.png)
-
-> spring-webmvc依赖：这是Spring框架进行web程序开发所需要的依赖
->
-> servlet-api依赖：Servlet基础依赖
->
-> jackson-databind依赖：JSON处理工具包
->
-> 如果要使用AOP，还需要引入aop依赖、aspect依赖
->
-> 项目中所引入的这些依赖，还需要保证版本匹配，否则就可能会出现版本冲突问题。
-
-SpringBoo只需要引入一个依赖就可以了，springboot-starter-web。
-
-![ ](./assets/springboot06/image-20230114174805852.png)
-
-为什么引入一个web开发的起步依赖，web开发所需要的所有的依赖都有了呢？
-
-因为Maven的依赖传递。
-
-> - 在SpringBoot提供的这些起步依赖当中，已提供了当前程序开发所需要的所有的常见依赖(官网地址：[https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#using.build-systems.starters])
->
-> - 比如：springboot-starter-web，这是web开发的起步依赖，在web开发的起步依赖当中，就集成了web开发中常见的依赖：json、web、webmvc、tomcat等。只需要引入这一个起步依赖，其他的依赖都会自动的通过Maven的依赖传递进来。
-
-**结论：起步依赖的原理就是Maven的依赖传递。**
-
-### 3.2 自动配置
-
-#### 3.2.1 概述
-
-SpringBoot的自动配置就是当Spring容器启动后，一些配置类、bean对象就自动存入到了IOC容器中，不需要手动去声明，从而简化了开发，省去了繁琐的配置操作。
-
-> 比如：要进行事务管理、要进行AOP程序的开发，此时就不需要再去手动的声明这些bean对象了
-
-- 运行SpringBoot启动类
-
-![ ](./assets/springboot06/image-20230114205745221.png)
-
-![ ](./assets/springboot06/image-20230114213945851.png)
-
-![ ](./assets/springboot06/image-20230114212750007.png)
-
-有两个CommonConfig，在第一个CommonConfig类中定义了一个bean对象，bean对象的名字叫reader。
-
-在第二个CommonConfig中它的bean名字叫commonConfig，为什么还会有这样一个bean对象呢？原因是在CommonConfig配置类上添加了一个注解@Configuration，而@Configuration底层就是@Component
-
-![ ](./assets/springboot06/image-20230114220159619.png)
-
-> 所以配置类最终也是SpringIOC容器当中的一个bean对象
-
-在IOC容器中除了自己定义的bean以外，还有很多SpringBoot在启动的时候加载进来的配置类。这些配置类加载进来之后，也会生成很多的bean对象。
-
-![ ](./assets/springboot06/image-20230114221341811.png)
-
-> 比如：配置类GsonAutoConfiguration里面有一个bean，bean的名字叫gson，它的类型是Gson。
->
-> com.google.gson.Gson是谷歌包中提供的用来处理JSON格式数据的。
-
-使用这些配置类中生成的bean对象时，使用@Autowired就自动注入了：
-
-```java
-import com.google.gson.Gson;
-import com.itheima.pojo.Result;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-public class AutoConfigurationTests {
-
-    @Autowired
-    private Gson gson;
-
-
-    @Test
-    public void testJson(){
-        String json = gson.toJson(Result.success());
-        System.out.println(json);
-    }
-}
-```
-
-添加断点，使用debug模式运行测试类程序：
-
-![ ](./assets/springboot06/image-20230114222245520.png)
-
-问题：项目中并没有声明谷歌提供的Gson这么一个bean对象，却可以通过@Autowired从Spring容器中注入bean对象，那么这个bean对象怎么来的？
-
-答案：SpringBoot项目在启动时通过自动配置完成了bean对象的创建。
-
-#### 3.2.2 常见方案
-
-引入对应的依赖之后，是如何将依赖jar包当中所提供的bean以及配置类直接加载到当前项目的SpringIOC容器当中的。
-
-> 准备工作：在Idea中导入"资料\03. 自动配置原理"下的itheima-utils工程
-
-1、在SpringBoot项目 spring-boot-web-config2 工程中，通过坐标引入itheima-utils依赖
-
-![ ](./assets/springboot06/image-20230114224107653.png)
-
-```java
-@Component
-public class TokenParser {
-    public void parse(){
-        System.out.println("TokenParser ... parse ...");
-    }
-}
-```
-
-2、在测试类中，添加测试方法
-
-```java
-@SpringBootTest
-public class AutoConfigurationTests {
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-
-    @Test
-    public void testTokenParse(){
-        System.out.println(applicationContext.getBean(TokenParser.class));
-    }
-
-    //省略其他代码...
-}
-```
-
-3、执行测试方法
-
-![ ](./assets/springboot06/image-20230114225018255.png)
-
-> 异常信息描述： 没有com.example.TokenParse类型的bean
->
-> 说明：在Spring容器中没有找到com.example.TokenParse类型的bean对象
-
-思考：引入进来的第三方依赖当中的bean以及配置类为什么没有生效？
-
-- 在类上添加@Component注解来声明bean对象时，还需要保证@Component注解能被Spring的组件扫描到。
-- SpringBoot项目中的@SpringBootApplication注解，具有包扫描的作用，但是它只会扫描启动类所在的当前包以及子包。
-- 当前包：com.itheima， 第三方依赖中提供的包：com.example（扫描不到）
-
-那么如何解决以上问题的呢？
-
-- 方案1：@ComponentScan 组件扫描
-- 方案2：@Import 导入（使用@Import导入的类会被Spring加载到IOC容器中）
-
-##### 3.2.2.2 方案一
-
-@ComponentScan组件扫描
-
-```java
-@SpringBootApplication
-@ComponentScan({"com.itheima","com.example"}) //指定要扫描的包
-public class SpringbootWebConfig2Application {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-}
-
-```
-
-重新执行测试方法，控制台日志输出：
-
-![ ](./assets/springboot06/image-20230114231121016.png)
-
-> 缺点：
->
-> 1. 使用繁琐
-> 2. 性能低
-
-**方案二**：
-
-@Import导入
-
-- 导入形式主要有以下几种：
-  1. 导入普通类
-  2. 导入配置类
-  3. 导入ImportSelector接口实现类
-
-1). 使用@Import导入普通类：
-
-```java
-@Import(TokenParser.class) //导入的类会被Spring加载到IOC容器中
-@SpringBootApplication
-public class SpringbootWebConfig2Application {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-}
-```
-
-> 重新执行测试方法，控制台日志输出：
->
-> ![ ](./assets/springboot06/image-20230114231709392.png)
-
-2). 使用@Import导入配置类：
-
-- 配置类
-
-```java
-@Configuration
-public class HeaderConfig {
-    @Bean
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-
-    @Bean
-    public HeaderGenerator headerGenerator(){
-        return new HeaderGenerator();
-    }
-}
-```
-
-- 启动类
-
-```java
-@Import(HeaderConfig.class) //导入配置类
-@SpringBootApplication
-public class SpringbootWebConfig2Application {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-}
-```
-
-- 测试类
-
-```java
-@SpringBootTest
-public class AutoConfigurationTests {
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Test
-    public void testHeaderParser(){
-        System.out.println(applicationContext.getBean(HeaderParser.class));
-    }
-
-    @Test
-    public void testHeaderGenerator(){
-        System.out.println(applicationContext.getBean(HeaderGenerator.class));
-    }
-    
-    //省略其他代码...
-}
-```
-
-> 执行测试方法：
->
-> ![ ](./assets/springboot06/image-20230114233252259.png)
-
-3). 使用@Import导入ImportSelector接口实现类：
-
-- ImportSelector接口实现类
-
-```java
-public class MyImportSelector implements ImportSelector {
-    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-        //返回值字符串数组（数组中封装了全限定名称的类）
-        return new String[]{"com.example.HeaderConfig"};
-    }
-}
-```
-
-- 启动类
-
-```java
-@Import(MyImportSelector.class) //导入ImportSelector接口实现类
-@SpringBootApplication
-public class SpringbootWebConfig2Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-}
-
-```
-
-> 执行测试方法：
->
-> ![ ](./assets/springboot06/image-20230114234222946.png)
-
-使用@Import注解通过这三种方式都可以导入第三方依赖中所提供的bean或者是配置类。
-
-思考：如果基于以上方式完成自动配置，当要引入一个第三方依赖时，是不是还要知道第三方依赖中有哪些配置类和哪些Bean对象？
-
-- 答案：是的。 （对程序员来讲，很不友好，而且比较繁琐）
-
-思考：当我们要使用第三方依赖，依赖中到底有哪些bean和配置类，谁最清楚？
-
-- 答案：第三方依赖自身最清楚。
-
-> **结论：我们不用自己指定要导入哪些bean对象和配置类了，让第三方依赖它自己来指定。**
-
-怎么让第三方依赖自己指定bean对象和配置类？
-
-- 比较常见的方案就是第三方依赖给我们提供一个注解，这个注解一般都以@EnableXxxx开头的注解，注解中封装的就是@Import注解
-
-4). 使用第三方依赖提供的 @EnableXxxxx注解
-
-- 第三方依赖中提供的注解
-
-```java
+/**
+ * 自定义Log注解
+ */
+@Target({ElementType.METHOD})
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Import(MyImportSelector.class)//指定要导入哪些bean对象或配置类
-public @interface EnableHeaderConfig { 
+public @interface Log {
 }
 ```
 
-- 在使用时只需在启动类上加上@EnableXxxxx注解即可
+- 修改业务实现类，在增删改业务方法上添加@Log注解
 
 ```java
-@EnableHeaderConfig  //使用第三方依赖提供的Enable开头的注解
-@SpringBootApplication
-public class SpringbootWebConfig2Application {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootWebConfig2Application.class, args);
-    }
-}
-
-```
-
-> 执行测试方法：
->
-> ![ ](./assets/springboot06/image-20230114233252259.png)
-
-以上四种方式都可以完成导入操作，但是第4种方式会更方便更优雅，而这种方式也是SpringBoot当中所采用的方式。
-
-#### 3.2.3 原理分析
-
-##### 3.2.3.1 源码跟踪
-
-前面我们讲解了在项目当中引入第三方依赖之后，如何加载第三方依赖中定义好的bean对象以及配置类，从而完成自动配置操作。那下面我们通过源码跟踪的形式来剖析下SpringBoot底层到底是如何完成自动配置的。
-
-> 源码跟踪技巧：
->
-> 在跟踪框架源码的时候，一定要抓住关键点，找到核心流程。一定不要从头到尾一行代码去看，一个方法的去研究，一定要找到关键流程，抓住关键点，先在宏观上对整个流程或者整个原理有一个认识，有精力再去研究其中的细节。
-
-要搞清楚SpringBoot的自动配置原理，要从SpringBoot启动类上使用的核心注解@SpringBootApplication开始分析：
-
-![ ](./assets/springboot06/image-20230115001439110.png)
-
-在@SpringBootApplication注解中包含了：
-
-- 元注解（不再解释）
-- @SpringBootConfiguration
-- @EnableAutoConfiguration
-- @ComponentScan
-
-我们先来看第一个注解：@SpringBootConfiguration
-
-![ ](./assets/springboot06/image-20230115001950076.png)
-
-> @SpringBootConfiguration注解上使用了@Configuration，表明SpringBoot启动类就是一个配置类。
->
-> @Indexed注解，是用来加速应用启动的（不用关心）。
-
-接下来再先看@ComponentScan注解：
-
-![ ](./assets/springboot06/image-20230115002450993.png)
-
-> @ComponentScan注解是用来进行组件扫描的，扫描启动类所在的包及其子包下所有被@Component及其衍生注解声明的类。
->
-> SpringBoot启动类，之所以具备扫描包功能，就是因为包含了@ComponentScan注解。
-
-最后我们来看看@EnableAutoConfiguration注解（自动配置核心注解）：
-
-![ ](./assets/springboot06/image-20230115002743115.png)
-
-> 使用@Import注解，导入了实现ImportSelector接口的实现类。
->
-> AutoConfigurationImportSelector类是ImportSelector接口的实现类。
->
-> ![ ](./assets/springboot06/image-20230115003242549.png)
-
-AutoConfigurationImportSelector类中重写了ImportSelector接口的selectImports()方法：
-
-![ ](./assets/springboot06/image-20230115003348288.png)
-
-> selectImports()方法底层调用getAutoConfigurationEntry()方法，获取可自动配置的配置类信息集合
-
-![ ](./assets/springboot06/image-20230115003704385.png)
-
-> getAutoConfigurationEntry()方法通过调用getCandidateConfigurations(annotationMetadata, attributes)方法获取在配置文件中配置的所有自动配置类的集合
-
-![ ](./assets/springboot06/image-20230115003903302.png)
-
-> getCandidateConfigurations方法的功能：
->
-> 获取所有基于META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports文件、META-INF/spring.factories文件中配置类的集合
-
-META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports文件和META-INF/spring.factories文件这两个文件在哪里呢？
-
-- 通常在引入的起步依赖中，都有包含以上两个文件
-
-![ ](./assets/springboot06/image-20230129090835964.png)
-
-![ ](./assets/springboot06/image-20230115064329460.png)
-
-在前面在给大家演示自动配置的时候，我们直接在测试类当中注入了一个叫gson的bean对象，进行JSON格式转换。虽然我们没有配置bean对象，但是我们是可以直接注入使用的。原因就是因为在自动配置类当中做了自动配置。到底是在哪个自动配置类当中做的自动配置呢？我们通过搜索来查询一下。
-
-在META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports配置文件中指定了第三方依赖Gson的配置类：GsonAutoConfiguration
-
-![ ](./assets/springboot06/image-20230115005159530.png)
-
-第三方依赖中提供的GsonAutoConfiguration类：
-
-![ ](./assets/springboot06/image-20230115005418900.png)
-
-> 在GsonAutoConfiguration类上，添加了注解@AutoConfiguration，通过查看源码，可以明确：GsonAutoConfiguration类是一个配置。
->
-> ![ ](./assets/springboot06/image-20230115065247287.png)
-
-看到这里，大家就应该明白为什么可以完成自动配置了，原理就是在配置类中定义一个@Bean标识的方法，而Spring会自动调用配置类中使用@Bean标识的方法，并把方法的返回值注册到IOC容器中。
-
-**自动配置源码小结**:
-
-自动配置原理源码入口就是@SpringBootApplication注解，在这个注解中封装了3个注解，分别是：
-
-- @SpringBootConfiguration
-  - 声明当前类是一个配置类
-- @ComponentScan
-  - 进行组件扫描（SpringBoot中默认扫描的是启动类所在的当前包及其子包）
-- @EnableAutoConfiguration
-  - 封装了@Import注解（Import注解中指定了一个ImportSelector接口的实现类）
-    - 在实现类重写的selectImports()方法，读取当前项目下所有依赖jar包中META-INF/spring.factories、META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports两个文件里面定义的配置类（配置类中定义了@Bean注解标识的方法）。
-
-当SpringBoot程序启动时，就会加载配置文件当中所定义的配置类，并将这些配置类信息(类的全限定名)封装到String类型的数组中，最终通过@Import注解将这些配置类全部加载到Spring的IOC容器中，交给IOC容器管理。
-
-> 最后呢给大家抛出一个问题：在META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports文件中定义的配置类非常多，而且每个配置类中又可以定义很多的bean，那这些bean都会注册到Spring的IOC容器中吗？
->
-> 答案：并不是。 在声明bean对象时，上面有加一个以@Conditional开头的注解，这种注解的作用就是按照条件进行装配，只有满足条件之后，才会将bean注册到Spring的IOC容器中（下面会详细来讲解）
-
-##### 3.2.3.2 @Conditional
-
-我们在跟踪SpringBoot自动配置的源码的时候，在自动配置类声明bean的时候，除了在方法上加了一个@Bean注解以外，还会经常用到一个注解，就是以Conditional开头的这一类的注解。以Conditional开头的这些注解都是条件装配的注解。下面我们就来介绍下条件装配注解。
-
-@Conditional注解：
-
-- 作用：按照一定的条件进行判断，在满足给定条件后才会注册对应的bean对象到Spring的IOC容器中。
-- 位置：方法、类
-- @Conditional本身是一个父注解，派生出大量的子注解：
-  - @ConditionalOnClass：判断环境中有对应字节码文件，才注册bean到IOC容器。
-  - @ConditionalOnMissingBean：判断环境中没有对应的bean(类型或名称)，才注册bean到IOC容器。
-  - @ConditionalOnProperty：判断配置文件中有对应属性和值，才注册bean到IOC容器。
-
-下面我们通过代码来演示下Conditional注解的使用：
-
-- @ConditionalOnClass注解
-
-```java
-@Configuration
-public class HeaderConfig {
-
-    @Bean
-    @ConditionalOnClass(name="io.jsonwebtoken.Jwts")//环境中存在指定的这个类，才会将该bean加入IOC容器
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-    
-    //省略其他代码...
-}
-```
-
-- pom.xml
-
-```java
-<!--JWT令牌-->
-<dependency>
-     <groupId>io.jsonwebtoken</groupId>
-     <artifactId>jjwt</artifactId>
-     <version>0.9.1</version>
-</dependency>
-```
-
-- 测试类
-
-```java
-@SpringBootTest
-public class AutoConfigurationTests {
+@Slf4j
+@Service
+public class EmpServiceImpl implements EmpService {
     @Autowired
-    private ApplicationContext applicationContext;
+    private EmpMapper empMapper;
 
-    @Test
-    public void testHeaderParser(){
-        System.out.println(applicationContext.getBean(HeaderParser.class));
+    @Override
+    @Log
+    public void update(Emp emp) {
+        emp.setUpdateTime(LocalDateTime.now()); //更新修改时间为当前时间
+
+        empMapper.update(emp);
     }
-    
+
+    @Override
+    @Log
+    public void save(Emp emp) {
+        //补全数据
+        emp.setCreateTime(LocalDateTime.now());
+        emp.setUpdateTime(LocalDateTime.now());
+        //调用添加方法
+        empMapper.insert(emp);
+    }
+
+    @Override
+    @Log
+    public void delete(List<Integer> ids) {
+        empMapper.delete(ids);
+    }
+
     //省略其他代码...
 }
 ```
 
-> 执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115203748022.png)
->
-> 因为io.jsonwebtoken.Jwts字节码文件在启动SpringBoot程序时已存在，所以创建HeaderParser对象并注册到IOC容器中。
+以同样的方式，修改EmpServiceImpl业务类
 
-- @ConditionalOnMissingBean注解
+- 定义切面类，完成记录操作日志的逻辑
 
 ```java
-@Configuration
-public class HeaderConfig {
-
-    @Bean
-    @ConditionalOnMissingBean //不存在该类型的bean，才会将该bean加入IOC容器
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-    
-    //省略其他代码...
-}
-```
-
-> 执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115211029855.png)
->
-> SpringBoot在调用@Bean标识的headerParser()前，IOC容器中是没有HeaderParser类型的bean，所以HeaderParser对象正常创建，并注册到IOC容器中。
-
-再次修改@ConditionalOnMissingBean注解：
-
-```java
-@Configuration
-public class HeaderConfig {
-
-    @Bean
-    @ConditionalOnMissingBean(name="deptController2")//不存在指定名称的bean，才会将该bean加入IOC容器
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-    
-    //省略其他代码...
-}
-```
-
-> 执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115211351681.png)
->
-> 因为在SpringBoot环境中不存在名字叫deptController2的bean对象，所以创建HeaderParser对象并注册到IOC容器中。
-
-再次修改@ConditionalOnMissingBean注解：
-
-```java
-@Configuration
-public class HeaderConfig {
-
-    @Bean
-    @ConditionalOnMissingBean(HeaderConfig.class)//不存在指定类型的bean，才会将bean加入IOC容器
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-    
-    //省略其他代码...
-}
-```
-
-```java
-@SpringBootTest
-public class AutoConfigurationTests {
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Test
-    public void testHeaderParser(){
-        System.out.println(applicationContext.getBean(HeaderParser.class));
-    }
-    
-    //省略其他代码...
-}
-```
-
-> 执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115211957191.png)
->
-> 因为HeaderConfig类中添加@Configuration注解，而@Configuration注解中包含了@Component，所以SpringBoot启动时会创建HeaderConfig类对象，并注册到IOC容器中。
->
-> 当IOC容器中有HeaderConfig类型的bean存在时，不会把创建HeaderParser对象注册到IOC容器中。而IOC容器中没有HeaderParser类型的对象时，通过getBean(HeaderParser.class)方法获取bean对象时，引发异常：NoSuchBeanDefinitionException
-
-- @ConditionalOnProperty注解（这个注解和配置文件当中配置的属性有关系）
-
-先在application.yml配置文件中添加如下的键值对：
-
-```yaml
-name: itheima
-```
-
-在声明bean的时候就可以指定一个条件@ConditionalOnProperty
-
-```java
-@Configuration
-public class HeaderConfig {
-
-    @Bean
-    @ConditionalOnProperty(name ="name",havingValue = "itheima")//配置文件中存在指定属性名与值，才会将bean加入IOC容器
-    public HeaderParser headerParser(){
-        return new HeaderParser();
-    }
-
-    @Bean
-    public HeaderGenerator headerGenerator(){
-        return new HeaderGenerator();
-    }
-}
-```
-
-> 执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115220235511.png)
-
-修改@ConditionalOnProperty注解：  havingValue的值修改为"itheima2"
-
-```java
-@Bean
-@ConditionalOnProperty(name ="name",havingValue = "itheima2")//配置文件中存在指定属性名与值，才会将bean加入IOC容器
-public HeaderParser headerParser(){
-        return new HeaderParser();
-}
-```
-
-> 再次执行testHeaderParser()测试方法：
->
-> ![ ](./assets/springboot06/image-20230115211957191.png)
->
-> 因为application.yml配置文件中，不存在： name:  itheima2，所以HeaderParser对象在IOC容器中不存在
-
-我们再回头看看之前讲解SpringBoot源码时提到的一个配置类：GsonAutoConfiguration
-
-![ ](./assets/springboot06/image-20230115222128740.png)
-
-最后再给大家梳理一下自动配置原理：
-
-![ ](./assets/springboot06/image-20230115222302753.png)
-
-> 自动配置的核心就在@SpringBootApplication注解上，SpringBootApplication这个注解底层包含了3个注解，分别是：
->
-> - @SpringBootConfiguration
->
-> - @ComponentScan
->
-> - @EnableAutoConfiguration
->
-> @EnableAutoConfiguration这个注解才是自动配置的核心。
->
-> - 它封装了一个@Import注解，Import注解里面指定了一个ImportSelector接口的实现类。
-> - 在这个实现类中，重写了ImportSelector接口中的selectImports()方法。
-> - 而selectImports()方法中会去读取两份配置文件，并将配置文件中定义的配置类做为selectImports()方法的返回值返回，返回值代表的就是需要将哪些类交给Spring的IOC容器进行管理。
-> - 那么所有自动配置类的中声明的bean都会加载到Spring的IOC容器中吗? 其实并不会，因为这些配置类中在声明bean时，通常都会添加@Conditional开头的注解，这个注解就是进行条件装配。而Spring会根据Conditional注解有选择性的进行bean的创建。
-> - @Enable 开头的注解底层，它就封装了一个注解 import 注解，它里面指定了一个类，是 ImportSelector 接口的实现类。在实现类当中，我们需要去实现 ImportSelector  接口当中的一个方法 selectImports 这个方法。这个方法的返回值代表的就是我需要将哪些类交给 spring 的 IOC容器进行管理。
-> - 此时它会去读取两份配置文件，一份儿是 spring.factories，另外一份儿是 autoConfiguration.imports。而在  autoConfiguration.imports 这份儿文件当中，它就会去配置大量的自动配置的类。
-> - 而前面我们也提到过这些所有的自动配置类当中，所有的 bean都会加载到 spring 的 IOC 容器当中吗？其实并不会，因为这些配置类当中，在声明 bean 的时候，通常会加上这么一类@Conditional 开头的注解。这个注解就是进行条件装配。所以SpringBoot非常的智能，它会根据 @Conditional 注解来进行条件装配。只有条件成立，它才会声明这个bean，才会将这个 bean 交给 IOC 容器管理。
-
-#### 3.2.4 案例
-
-##### 3.2.4.1 自定义starter分析
-
-前面我们解析了SpringBoot中自动配置的原理，下面我们就通过一个自定义starter案例来加深大家对于自动配置原理的理解。首先介绍一下自定义starter的业务场景，再来分析一下具体的操作步骤。
-
-所谓starter指的就是SpringBoot当中的起步依赖。在SpringBoot当中已经给我们提供了很多的起步依赖了，我们为什么还需要自定义 starter 起步依赖？这是因为在实际的项目开发当中，我们可能会用到很多第三方的技术，并不是所有的第三方的技术官方都给我们提供了与SpringBoot整合的starter起步依赖，但是这些技术又非常的通用，在很多项目组当中都在使用。
-
-业务场景：
-
-- 我们前面案例当中所使用的阿里云OSS对象存储服务，现在阿里云的官方是没有给我们提供对应的起步依赖的，这个时候使用起来就会比较繁琐，我们需要引入对应的依赖。我们还需要在配置文件当中进行配置，还需要基于官方SDK示例来改造对应的工具类，我们在项目当中才可以进行使用。
-- 大家想在我们当前项目当中使用了阿里云OSS，我们需要进行这么多步的操作。在别的项目组当中要想使用阿里云OSS，是不是也需要进行这么多步的操作，所以这个时候我们就可以自定义一些公共组件，在这些公共组件当中，我就可以提前把需要配置的bean都提前配置好。将来在项目当中，我要想使用这个技术，我直接将组件对应的坐标直接引入进来，就已经自动配置好了，就可以直接使用了。我们也可以把公共组件提供给别的项目组进行使用，这样就可以大大的简化我们的开发。
-
-在SpringBoot项目中，一般都会将这些公共组件封装为SpringBoot当中的starter，也就是我们所说的起步依赖。
-
-![ ](./assets/springboot06/image-20230115224939131.png)
-
-> SpringBoot官方starter命名： spring-boot-starter-xxxx
->
-> 第三组织提供的starter命名：  xxxx-spring-boot-starter
-
-![ ](./assets/springboot06/image-20230115225703863.png)
-
-> Mybatis提供了配置类，并且也提供了springboot会自动读取的配置文件。当SpringBoot项目启动时，会读取到spring.factories配置文件中的配置类并加载配置类，生成相关bean对象注册到IOC容器中。
->
-> 结果：我们可以直接在SpringBoot程序中使用Mybatis自动配置的bean对象。
-
-在自定义一个起步依赖starter的时候，按照规范需要定义两个模块：
-
-1. starter模块（进行依赖管理[把程序开发所需要的依赖都定义在starter起步依赖中]）
-2. autoconfigure模块（自动配置）
-
-> 将来在项目当中进行相关功能开发时，只需要引入一个起步依赖就可以了，因为它会将autoconfigure自动配置的依赖给传递下来。
-
-上面我们简单介绍了自定义starter的场景，以及自定义starter时涉及到的模块之后，接下来我们就来完成一个自定义starter的案例。
-
-需求：自定义aliyun-oss-spring-boot-starter，完成阿里云OSS操作工具类AliyunOSSUtils的自动配置。
-
-目标：引入起步依赖引入之后，要想使用阿里云OSS，注入AliyunOSSUtils直接使用即可。
-
-之前阿里云OSS的使用：
-
-- 配置文件
-
-```yaml
-#配置阿里云OSS参数
-aliyun:
-  oss:
-    endpoint: https://oss-cn-shanghai.aliyuncs.com
-    accessKeyId: LTAI5t9MZK8iq5T2Av5GLDxX
-    accessKeySecret: C0IrHzKZGKqU8S7YQcevcotD3Zd5Tc
-    bucketName: web-framework01
-```
-
-- AliOSSProperties类
-
-```java
-@Data
+@Slf4j
 @Component
-@ConfigurationProperties(prefix = "aliyun.oss")
-public class AliOSSProperties {
-    //区域
-    private String endpoint;
-    //身份ID
-    private String accessKeyId ;
-    //身份密钥
-    private String accessKeySecret ;
-    //存储空间
-    private String bucketName;
-}
+@Aspect //切面类
+public class LogAspect {
 
-```
-
-- AliOSSUtils工具类
-
-```java
-@Component //当前类对象由Spring创建和管理
-public class AliOSSUtils {
     @Autowired
-    private AliOSSProperties aliOSSProperties;
+    private HttpServletRequest request;
 
-    /**
-     * 实现上传图片到OSS
-     */
-    public String upload(MultipartFile multipartFile) throws IOException {
-        // 获取上传的文件的输入流
-        InputStream inputStream = multipartFile.getInputStream();
+    @Autowired
+    private OperateLogMapper operateLogMapper;
 
-        // 避免文件覆盖
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+    @Around("@annotation(com.itheima.anno.Log)")
+    public Object recordLog(ProceedingJoinPoint joinPoint) throws Throwable {
+        //操作人ID - 当前登录员工ID
+        //获取请求头中的jwt令牌, 解析令牌
+        String jwt = request.getHeader("token");
+        Claims claims = JwtUtils.parseJWT(jwt);
+        Integer operateUser = (Integer) claims.get("id");
 
-        //上传文件到 OSS
-        OSS ossClient = new OSSClientBuilder().build(aliOSSProperties.getEndpoint(),
-                aliOSSProperties.getAccessKeyId(), aliOSSProperties.getAccessKeySecret());
-        ossClient.putObject(aliOSSProperties.getBucketName(), fileName, inputStream);
+        //操作时间
+        LocalDateTime operateTime = LocalDateTime.now();
 
-        //文件访问路径
-        String url =aliOSSProperties.getEndpoint().split("//")[0] + "//" + aliOSSProperties.getBucketName() + "." + aliOSSProperties.getEndpoint().split("//")[1] + "/" + fileName;
+        //操作类名
+        String className = joinPoint.getTarget().getClass().getName();
 
-        // 关闭ossClient
-        ossClient.shutdown();
-        return url;// 把上传到oss的路径返回
+        //操作方法名
+        String methodName = joinPoint.getSignature().getName();
+
+        //操作方法参数
+        Object[] args = joinPoint.getArgs();
+        String methodParams = Arrays.toString(args);
+
+        long begin = System.currentTimeMillis();
+        //调用原始目标方法运行
+        Object result = joinPoint.proceed();
+        long end = System.currentTimeMillis();
+
+        //方法返回值
+        String returnValue = JSONObject.toJSONString(result);
+
+        //操作耗时
+        Long costTime = end - begin;
+
+
+        //记录操作日志
+        OperateLog operateLog = new OperateLog(null,operateUser,operateTime,className,methodName,methodParams,returnValue,costTime);
+        operateLogMapper.insert(operateLog);
+
+        log.info("AOP记录操作日志: {}" , operateLog);
+
+        return result;
     }
+
 }
 ```
 
-当我们在项目当中要使用阿里云OSS，就可以注入AliOSSUtils工具类来进行文件上传。但这种方式其实是比较繁琐的。
+> 代码实现细节： 获取request对象，从请求头中获取到jwt令牌，解析令牌获取出当前用户的id。
 
-大家再思考，现在我们使用阿里云OSS，需要做这么几步，将来大家在开发其他的项目的时候，你使用阿里云OSS，这几步你要不要做？当团队中其他小伙伴也在使用阿里云OSS的时候，步骤 不也是一样的。
+重启SpringBoot服务，测试操作日志记录功能：
 
-所以这个时候我们就可以制作一个公共组件(自定义starter)。starter定义好之后，将来要使用阿里云OSS进行文件上传，只需要将起步依赖引入进来之后，就可以直接注入AliOSSUtils使用了。
+- 添加一个新的部门
 
-需求明确了，接下来我们再来分析一下具体的实现步骤：
+![ ](./assets/springboot06/image-20230111001114301.png)
 
-- 第1步：创建自定义starter模块（进行依赖管理）
-  - 把阿里云OSS所有的依赖统一管理起来
-- 第2步：创建autoconfigure模块
-  - 在starter中引入autoconfigure （我们使用时只需要引入starter起步依赖即可）
-- 第3步：在autoconfigure中完成自动配置
-  1. 定义一个自动配置类，在自动配置类中将所要配置的bean都提前配置好
-  2. 定义配置文件，把自动配置类的全类名定义在配置文件中
+- 数据表
 
-我们分析完自定义阿里云OSS自动配置的操作步骤了，下面我们就按照分析的步骤来实现自定义starter。
-
-##### 3.2.4.2 自定义starter实现
-
-自定义starter的步骤我们刚才已经分析了，接下来我们就按照分析的步骤来完成自定义starter的开发。
-
-首先我们先来创建两个Maven模块：
-
-1). aliyun-oss-spring-boot-starter模块
-
-![ ](./assets/springboot06/image-20230115234739988.png)
-
-![ ](./assets/springboot06/image-20230115234823134.png)
-
-创建完starter模块后，删除多余的文件，最终保留内容如下：
-
-![ ](./assets/springboot06/image-20230115235429353.png)
-
-删除pom.xml文件中多余的内容后：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.    apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
-    <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-oss-spring-boot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-        
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-    </dependencies>
-
-</project>
-```
-
-2). aliyun-oss-spring-boot-autoconfigure模块
-
-![ ](./assets/springboot06/image-20230116000302319.png)
-
-![ ](./assets/springboot06/image-20230115235921014.png)
-
-创建完starter模块后，删除多余的文件，最终保留内容如下：
-
-![ ](./assets/springboot06/image-20230116000542905.png)
-
-删除pom.xml文件中多余的内容后：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.    apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-        
-    <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-oss-spring-boot-autoconfigure</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-    </dependencies>
-
-</project>
-```
-
-按照我们之前的分析，是需要在starter模块中来引入autoconfigure这个模块的。打开starter模块中的pom文件：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.    apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
-    <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-oss-spring-boot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-        
-    <dependencies>
-        <!--引入autoconfigure模块-->
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-oss-spring-boot-autoconfigure</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-    </dependencies>
-
-</project>
-```
-
-前两步已经完成了，接下来是最关键的就是第三步：
-
-在autoconfigure模块当中来完成自动配置操作。
-
-> 我们将之前案例中所使用的阿里云OSS部分的代码直接拷贝到autoconfigure模块下，然后进行改造就行了。
-
-![ ](./assets/springboot06/image-20230116001622679.png)
-
-拷贝过来后，还缺失一些相关的依赖，需要把相关依赖也拷贝过来：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.    apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-        
-    <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-oss-spring-boot-autoconfigure</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <!--引入web起步依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!--Lombok-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <!--阿里云OSS-->
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.15.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <!-- no more than 2.3.3-->
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.3</version>
-        </dependency>
-    </dependencies>
-</project>
-```
-
-现在大家思考下，在类上添加的@Component注解还有用吗？
-
-![ ](./assets/springboot06/image-20230116002417105.png)
-
-![ ](./assets/springboot06/image-20230116002442736.png)
-
-答案：没用了。  在SpringBoot项目中，并不会去扫描com.aliyun.oss这个包，不扫描这个包那类上的注解也就失去了作用。
-
-> @Component注解不需要使用了，可以从类上删除了。
->
-> 删除后报红色错误，暂时不理会，后面再来处理。
->
-> ![ ](./assets/springboot06/image-20230116002747681.png)
->
-> 删除AliOSSUtils类中的@Component注解、@Autowired注解
->
-> ![ ](./assets/springboot06/image-20230116003046768.png)
-
-下面我们就要定义一个自动配置类了，在自动配置类当中来声明AliOSSUtils的bean对象。
-
-![ ](./assets/springboot06/image-20230116003513900.png)
-
- AliOSSAutoConfiguration类：
-
-```java
-@Configuration//当前类为Spring配置类
-@EnableConfigurationProperties(AliOSSProperties.class)//导入AliOSSProperties类，并交给SpringIOC管理
-public class AliOSSAutoConfiguration {
-
-
-    //创建AliOSSUtils对象，并交给SpringIOC容器
-    @Bean
-    public AliOSSUtils aliOSSUtils(AliOSSProperties aliOSSProperties){
-        AliOSSUtils aliOSSUtils = new AliOSSUtils();
-        aliOSSUtils.setAliOSSProperties(aliOSSProperties);
-        return aliOSSUtils;
-    }
-}
-```
-
-AliOSSProperties类：
-
-```java
-/*阿里云OSS相关配置*/
-@Data
-@ConfigurationProperties(prefix = "aliyun.oss")
-public class AliOSSProperties {
-    //区域
-    private String endpoint;
-    //身份ID
-    private String accessKeyId ;
-    //身份密钥
-    private String accessKeySecret ;
-    //存储空间
-    private String bucketName;
-}
-```
-
-AliOSSUtils类：
-
-```java
-@Data 
-public class AliOSSUtils {
-    private AliOSSProperties aliOSSProperties;
-
-    /**
-     * 实现上传图片到OSS
-     */
-    public String upload(MultipartFile multipartFile) throws IOException {
-        // 获取上传的文件的输入流
-        InputStream inputStream = multipartFile.getInputStream();
-
-        // 避免文件覆盖
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
-
-        //上传文件到 OSS
-        OSS ossClient = new OSSClientBuilder().build(aliOSSProperties.getEndpoint(),
-                aliOSSProperties.getAccessKeyId(), aliOSSProperties.getAccessKeySecret());
-        ossClient.putObject(aliOSSProperties.getBucketName(), fileName, inputStream);
-
-        //文件访问路径
-        String url =aliOSSProperties.getEndpoint().split("//")[0] + "//" + aliOSSProperties.getBucketName() + "." + aliOSSProperties.getEndpoint().split("//")[1] + "/" + fileName;
-
-        // 关闭ossClient
-        ossClient.shutdown();
-        return url;// 把上传到oss的路径返回
-    }
-}
-```
-
-在aliyun-oss-spring-boot-autoconfigure模块中的resources下，新建自动配置文件：
-
-- META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
-
-  ```java
-  com.aliyun.oss.AliOSSAutoConfiguration
-  ```
-
-![ ](./assets/springboot06/image-20230116004957697.png)
-
-##### 3.2.4.3 自定义starter测试
-
-阿里云OSS的starter我们刚才已经定义好了，接下来我们就来做一个测试。
-
-> 今天的课程资料当中，提供了一个自定义starter的测试工程。我们直接打开文件夹，里面有一个测试工程。测试工程就是springboot-autoconfiguration-test，我们只需要将测试工程直接导入到Idea当中即可。
-
-![ ](./assets/springboot06/image-20230116005530815.png)
-
-测试前准备：
-
-1. 在test工程中引入阿里云starter依赖
-
-   - 通过依赖传递，会把autoconfigure依赖也引入了
-
-   ```xml
-   <!--引入阿里云OSS起步依赖-->
-   <dependency>
-       <groupId>com.aliyun.oss</groupId>
-       <artifactId>aliyun-oss-spring-boot-starter</artifactId>
-       <version>0.0.1-SNAPSHOT</version>
-   </dependency>
-   ```
-
-2. 在test工程中的application.yml文件中，配置阿里云OSS配置参数信息（从以前的工程中拷贝即可）
-
-   ```yaml
-   #配置阿里云OSS参数
-   aliyun:
-     oss:
-       endpoint: https://oss-cn-shanghai.aliyuncs.com
-       accessKeyId: LTAI5t9MZK8iq5T2Av5GLDxX
-       accessKeySecret: C0IrHzKZGKqU8S7YQcevcotD3Zd5Tc
-       bucketName: web-framework01
-   ```
-
-3. 在test工程中的UploadController类编写代码
-
-   ```java
-   @RestController
-   public class UploadController {
-   
-       @Autowired
-       private AliOSSUtils aliOSSUtils;
-   
-       @PostMapping("/upload")
-       public String upload(MultipartFile image) throws Exception {
-           //上传文件到阿里云 OSS
-           String url = aliOSSUtils.upload(image);
-           return url;
-       }
-   
-   }
-   ```
-
-编写完代码后，我们启动当前的SpringBoot测试工程：
-
-- 随着SpringBoot项目启动，自动配置会把AliOSSUtils的bean对象装配到IOC容器中
-
-![ ](./assets/springboot06/image-20230116011039611.png)
-
-用postman工具进行文件上传：
-
-![ ](./assets/springboot06/image-20230116010731914.png)
-
-通过断点可以看到自动注入AliOSSUtils的bean对象：
-
-![ ](./assets/springboot06/image-20230116011501201.png)
-
-## 4. Web后端开发总结
-
-web后端开发现在基本上都是基于标准的三层架构进行开发的  
-
-::: tip 三层架构
-
-Controller控制器层 负责接收请求响应数据  
-
-Service业务层 负责具体的业务逻辑处理  
-
-Dao数据访问层 也叫持久层，就是用来处理数据访问操作的，来完成数据库当中数据的增删改查操作。
-
-:::
-
-![ ](./assets/springboot06/image-20230114180044897.png)
-
-> 在三层架构当中，前端发起请求首先会到达Controller(不进行逻辑处理)，然后Controller会直接调用Service 进行逻辑处理， Service再调用Dao完成数据访问操作。
-
-在执行具体的业务处理之前，需要去做一些通用的业务处理  
-比如：进行统一的登录校验，进行统一的字符编码等这些操作时，就可以借助于Javaweb当中三大组件之一的过滤器Filter或者是Spring当中提供的拦截器Interceptor来实现。
-
-![ ](./assets/springboot06/image-20230114191737227.png)
-
-为了实现三层架构层与层之间的解耦，Spring框架当中的第一大核心：IOC控制反转与DI依赖注入。
-
-> 控制反转，指的是将对象创建的控制权由应用程序自身交给外部容器，这个容器就是常说的IOC容器或Spring容器。
->
-> DI依赖注入指的是容器为程序提供运行时所需要的资源。
-
-AOP面向切面编程，还有Spring中的事务管理、全局异常处理器，以及传递会话技术Cookie、Session以及新的会话跟踪解决方案JWT令牌，阿里云OSS对象存储服务，以及通过Mybatis持久层架构操作数据库等技术。
-
-![ ](./assets/springboot06/image-20230114192921673.png)
-
-![ ](./assets/springboot06/image-20230114193609782.png)
-
-> Filter过滤器、Cookie、 Session这些都是传统的JavaWeb提供的技术。
->
-> JWT令牌、阿里云OSS对象存储服务，是现在企业项目中常见的一些解决方案。
->
-> IOC控制反转、DI依赖注入、AOP面向切面编程、事务管理、全局异常处理、拦截器等，这些技术都是 Spring Framework框架当中提供的核心功能。
->
-> Mybatis就是一个持久层的框架，是用来操作数据库的。
-
-在Spring框架的生态中，对web程序开发提供了很好的支持，如：全局异常处理器、拦截器这些都是Spring框架中web开发模块所提供的功能，而Spring框架的web开发模块，我们也称为：SpringMVC
-
-![ ](./assets/springboot06/image-20230114195143418.png)
-
-> SpringMVC不是一个单独的框架，它是Spring框架的一部分，是Spring框架中的web开发模块，是用来简化原始的Servlet程序开发的。
-
-外界俗称的SSM，就是由：SpringMVC、Spring Framework、Mybatis三块组成。
-
-基于传统的SSM框架进行整合开发项目会比较繁琐，而且效率也比较低，所以在现在的企业项目开发当中，基本上都是直接基于SpringBoot整合SSM进行项目开发的。
+![ ](./assets/springboot06/image-20230111001230731.png)

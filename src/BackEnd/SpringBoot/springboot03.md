@@ -3,67 +3,388 @@ order: 3
 date: 2023-04-08
 category: 
   - SpringBoot案例
-  - 文件存储
-  - 阿里云OSS
-  - 配置文件
 ---
 
-# SpringBoot案例 ⅟
+# SpringBoot案例 ⅔
 
-关于员工管理的功能，还有两个需求:
+## 1. 部门管理
 
-- 新增员工
-- 修改员工
+开发的部门管理功能包含：
 
-![ ](./assets/springboot03/image-20221216160009145.png)
+1. 查询部门
+2. 删除部门
+3. 新增部门
+4. 更新部门
 
-在"新增员工"中，需要添加头像，而头像需要用到"文件上传"技术。
+### 1.1 查询部门
 
-## 1. 新增员工
+#### 1.1.1 原型和需求
 
-### 1.1 需求
+![ ](./assets/springboot03/image-20221213234154699.png)
 
-![ ](./assets/springboot03/image-20221216162622582.png)
+#### 1.1.2 接口文档
 
-### 1.2 接口文档
+**部门列表查询**:
 
 - 基本信息
 
-  ```md
-  请求路径：/emps
+  ```markdown
+  请求路径：/depts
   
-  请求方式：POST
+  请求方式：GET
   
-  接口描述：该接口用于添加员工的信息
+  接口描述：该接口用于部门列表数据查询
   ```
 
 - 请求参数
+
+  无
+
+- 响应数据
 
   参数格式：application/json
 
   参数说明：
 
-  | 名称      | 类型   | 是否必须 | 备注                                                         |
-  | --------- | ------ | -------- | ------------------------------------------------------------ |
-  | username  | string | 必须     | 用户名                                                       |
-  | name      | string | 必须     | 姓名                                                         |
-  | gender    | number | 必须     | 性别, 说明: 1 男, 2 女                                       |
-  | image     | string | 非必须   | 图像                                                         |
-  | deptId    | number | 非必须   | 部门id                                                       |
-  | entrydate | string | 非必须   | 入职日期                                                     |
-  | job       | number | 非必须   | 职位, 说明: 1 班主任,2 讲师, 3 学工主管, 4 教研主管, 5 咨询师 |
+  | 参数名         | 类型      | 是否必须 | 备注                           |
+  | -------------- | --------- | -------- | ------------------------------ |
+  | code           | number    | 必须     | 响应码，1 代表成功，0 代表失败 |
+  | msg            | string    | 非必须   | 提示信息                       |
+  | data           | object[ ] | 非必须   | 返回的数据                     |
+  | \|- id         | number    | 非必须   | id                             |
+  | \|- name       | string    | 非必须   | 部门名称                       |
+  | \|- createTime | string    | 非必须   | 创建时间                       |
+  | \|- updateTime | string    | 非必须   | 修改时间                       |
 
-  请求数据样例：
+  响应数据样例：
 
   ```json
   {
-    "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-03-07-37-38222.jpg",
-    "username": "linpingzhi",
-    "name": "林平之",
-    "gender": 1,
-    "job": 1,
-    "entrydate": "2022-09-18",
-    "deptId": 1
+    "code": 1,
+    "msg": "success",
+    "data": [
+      {
+        "id": 1,
+        "name": "学工部",
+        "createTime": "2022-09-01T23:06:29",
+        "updateTime": "2022-09-01T23:06:29"
+      },
+      {
+        "id": 2,
+        "name": "教研部",
+        "createTime": "2022-09-01T23:06:29",
+        "updateTime": "2022-09-01T23:06:29"
+      }
+    ]
+  }
+  ```
+
+#### 1.1.3 思路分析
+
+![ ](./assets/springboot03/image-20221213235157345.png)
+
+#### 1.1.4 功能开发
+
+> 请求路径：/depts
+>
+> 请求方式：GET
+>
+> 请求参数：无
+>
+> 响应数据：json格式
+
+**DeptController**:
+
+```java
+@Slf4j
+@RestController
+public class DeptController {
+    @Autowired
+    private DeptService deptService;
+
+    //@RequestMapping(value = "/depts" , method = RequestMethod.GET)
+    @GetMapping("/depts")
+    public Result list(){
+        log.info("查询所有部门数据");
+        List<Dept> deptList = deptService.list();
+        return Result.success(deptList);
+    }
+}
+```
+
+> @Slf4j注解源码：
+>
+> ![ ](./assets/springboot03/image-20221214000909044.png)
+
+**DeptService**（业务接口）
+
+```java
+public interface DeptService {
+    /**
+     * 查询所有的部门数据
+     * @return   存储Dept对象的集合
+     */
+    List<Dept> list();
+}
+```
+
+ **DeptServiceImpl**（业务实现类）
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+    
+    @Override
+    public List<Dept> list() {
+        List<Dept> deptList = deptMapper.list();
+        return deptList;
+    }
+}    
+```
+
+**DeptMapper**:
+
+```java
+@Mapper
+public interface DeptMapper {
+    //查询所有部门数据
+    @Select("select id, name, create_time, update_time from dept")
+    List<Dept> list();
+}
+```
+
+#### 1.1.5 功能测试
+
+启动项目，打开postman，发起GET请求，访问 ：[http://localhost:8080/depts](http://localhost:8080/depts)
+
+![ ](./assets/springboot03/image-20220904130315247.png)
+
+### 1.2 前后端联调
+
+1、启动[nginx](../../FrontEnd/Vue/vue07.md)
+
+![ ](./assets/springboot03/image-20221214100703404.png)
+
+![ ](./assets/springboot03/image-20221214101711107.png)
+
+2、打开浏览器，访问：[http://localhost:90]
+
+![ ](./assets/springboot03/image-20221214100918557.png)
+
+3、测试：部门管理 - 查询部门列表
+
+![ ](./assets/springboot03/image-20221214101436198.png)
+
+### 1.3 删除部门
+
+#### 1.3.1 需求
+
+![ ](./assets/springboot03/image-20220904132440220.png)
+
+#### 1.3.2 接口文档
+
+**删除部门**:
+
+- 基本信息
+
+  ```md
+  请求路径：/depts/{id}
+  
+  请求方式：DELETE
+  
+  接口描述：该接口用于根据ID删除部门数据
+  ```
+
+- 请求参数
+  参数格式：路径参数
+
+  参数说明：
+
+  | 参数名 | 类型   | 是否必须 | 备注   |
+  | ------ | ------ | -------- | ------ |
+  | id     | number | 必须     | 部门ID |
+
+  请求参数样例：
+
+  ```md
+  /depts/1
+  ```
+
+- 响应数据
+  参数格式：application/json
+
+  参数说明：
+
+  | 参数名 | 类型   | 是否必须 | 备注                           |
+  | ------ | ------ | -------- | ------------------------------ |
+  | code   | number | 必须     | 响应码，1 代表成功，0 代表失败 |
+  | msg    | string | 非必须   | 提示信息                       |
+  | data   | object | 非必须   | 返回的数据                     |
+
+  响应数据样例：
+
+  ```json
+  {
+      "code":1,
+      "msg":"success",
+      "data":null
+  }
+  ```
+
+#### 1.3.3 思路分析
+
+![ ](./assets/springboot03/image-20221214102705490.png)
+
+> 接口文档规定：
+>
+> - 前端请求路径：/depts/{id}
+> - 前端请求方式：DELETE
+>
+> 问题1：怎么在controller中接收请求路径中的路径参数？
+>
+> ```md
+> @PathVariable
+> ```
+>
+> 问题2：如何限定请求方式是delete？
+>
+> ```md
+> @DeleteMapping
+> ```
+
+#### 1.3.4 功能开发
+
+> 请求路径：/depts/{id}
+>
+> 请求方式：DELETE
+>
+> 请求参数：路径参数 {id}
+>
+> 响应数据：json格式
+
+**DeptController**:
+
+```java
+@Slf4j
+@RestController
+public class DeptController {
+    @Autowired
+    private DeptService deptService;
+
+    @DeleteMapping("/depts/{id}")
+    public Result delete(@PathVariable Integer id) {
+        //日志记录
+        log.info("根据id删除部门");
+        //调用service层功能
+        deptService.delete(id);
+        //响应
+        return Result.success();
+    }
+    
+    //省略...
+}
+```
+
+**DeptService**:
+
+```java
+public interface DeptService {
+
+    /**
+     * 根据id删除部门
+     * @param id    部门id
+     */
+    void delete(Integer id);
+
+    //省略...
+}
+```
+
+**DeptServiceImpl**:
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Override
+    public void delete(Integer id) {
+        //调用持久层删除功能
+        deptMapper.deleteById(id);
+    }
+    
+    //省略...
+}
+```
+
+**DeptMapper**:
+
+```java
+@Mapper
+public interface DeptMapper {
+    /**
+     * 根据id删除部门信息
+     * @param id   部门id
+     */
+    @Delete("delete from dept where id = #{id}")
+    void deleteById(Integer id);
+   
+    //省略...
+}
+```
+
+#### 1.3.5 功能测试
+
+重新启动项目，使用postman，发起DELETE请求：
+
+![ ](./assets/springboot03/image-20221214112451600.png)
+
+#### 1.3.6 前后端联调
+
+![ ](./assets/springboot03/image-20221214113708369.png)
+
+![ ](./assets/springboot03/image-20221214113941657.png)
+
+### 1.4 新增部门
+
+#### 1.4.1 需求
+
+![ ](./assets/springboot03/image-20220904150427982.png)
+
+#### 1.4.2 接口文档
+
+**添加部门**:
+
+- 基本信息
+
+  ```md
+  请求路径：/depts
+  
+  请求方式：POST
+  
+  接口描述：该接口用于添加部门数据
+  ```
+
+- 请求参数
+
+  格式：application/json
+
+  参数说明：
+
+  | 参数名 | 类型   | 是否必须 | 备注     |
+  | ------ | ------ | -------- | -------- |
+  | name   | string | 必须     | 部门名称 |
+
+  请求参数样例：
+
+  ```json
+  {
+    "name": "教研部"
   }
   ```
 
@@ -89,18 +410,15 @@ category:
   }
   ```
 
-### 1.3 思路分析
+#### 1.4.3 思路分析
 
-新增员工的具体的流程：
-
-![ ](./assets/springboot03/image-20221216170946166.png)
+![ ](./assets/springboot03/image-20221214115519648.png)
 
 > 接口文档规定：
 >
-> - 请求路径：/emps
-> - 请求方式：POST
-> - 请求参数：Json格式数据
-> - 响应数据：Json格式数据
+> - 前端请求路径：/depts
+> - 前端请求方式：POST
+> - 前端请求参数：Json格式：\{ "name": "教研部" \}
 >
 > 问题1：如何限定请求方式是POST？
 >
@@ -114,7 +432,553 @@ category:
 > @RequestBody  //把前端传递的json数据填充到实体类中
 > ```
 
-### 1.4 功能开发
+#### 1.4.4 功能开发
+
+通过查看接口文档：新增部门
+
+> 请求路径：/depts
+>
+> 请求方式：POST
+>
+> 请求参数：json格式
+>
+> 响应数据：json格式
+
+**DeptController**:
+
+```java
+@Slf4j
+@RestController
+public class DeptController {
+    @Autowired
+    private DeptService deptService;
+
+    @PostMapping("/depts")
+    public Result add(@RequestBody Dept dept){
+        //记录日志
+        log.info("新增部门：{}",dept);
+        //调用service层添加功能
+        deptService.add(dept);
+        //响应
+        return Result.success();
+    }
+
+    //省略...
+}
+```
+
+**DeptService**:
+
+```java
+public interface DeptService {
+
+    /**
+     * 新增部门
+     * @param dept  部门对象
+     */
+    void add(Dept dept);
+
+    //省略...
+}
+
+```
+
+**DeptServiceImpl**:
+
+```java
+@Slf4j
+@Service
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Override
+    public void add(Dept dept) {
+        //补全部门数据
+        dept.setCreateTime(LocalDateTime.now());
+        dept.setUpdateTime(LocalDateTime.now());
+        //调用持久层增加功能
+        deptMapper.inser(dept);
+    }
+
+    //省略...
+}
+
+```
+
+**DeptMapper**:
+
+```java
+@Mapper
+public interface DeptMapper {
+
+    @Insert("insert into dept (name, create_time, update_time) values (#{name},#{createTime},#{updateTime})")
+    void inser(Dept dept);
+
+    //省略...
+}
+```
+
+#### 1.4.5 功能测试
+
+重新启动项目，使用postman，发起POST请求：
+
+![ ](./assets/springboot03/image-20221214153758708.png)
+
+#### 1.4.6 前后端联调
+
+![ ](./assets/springboot03/image-20221215105446189.png)
+
+![ ](./assets/springboot03/image-20221214154645746.png)
+
+#### 1.4.7 请求路径
+
+部门管理的`查询`、`删除`、`新增`功能全部完成了，接下来对controller层的代码进行优化。
+
+![ ](./assets/springboot03/image-20221215110553435.png)
+
+> 以上三个方法上的请求路径，存在一个共同点：都是以`/depts`作为开头。
+
+在Spring当中为了简化请求路径的定义，可以把公共的请求路径，直接抽取到类上，在类上加一个注解@RequestMapping，并指定请求路径"/depts"
+
+![ ](./assets/springboot03/image-20221215111110219.png)
+
+> 优化前后的对比：
+>
+> ![ ](./assets/springboot03/image-20221215111309042.png)
+> 注意事项：一个完整的请求路径，应该是类上@RequestMapping的value属性 + 方法上的@RequestMapping的value属性
+
+## 2. 员工管理
+
+![ ](./assets/springboot03/image-20221215142107329.png)
+
+基于以上原型，可以把员工管理功能分为：
+
+1. 分页查询
+2. 带条件的分页查询
+3. 删除员工
+4. 新增员工
+5. 修改员工
+
+### 2.1 分页查询
+
+#### 2.1.1 基础分页
+
+**需求分析**：
+
+![ ](./assets/springboot03/image-20221215141233541.png)
+
+要想从数据库中进行分页查询，要使用`LIMIT`关键字  
+
+格式为：limit  开始索引  每页显示的条数
+
+> 查询第1页数据的SQL语句是：
+>
+> ```sql
+> select * from emp limit 0,10;
+> ```
+>
+> 查询第2页数据的SQL语句是：
+>
+> ```sql
+> select * from emp limit 10,10;
+> ```
+>
+> 开始索引的计算公式：开始索引 = (当前页码 - 1)  *  每页显示条数
+
+结论：
+
+1. 前端在请求服务端时，传递的参数
+   - 当前页码  page
+   - 每页显示条数  pageSize
+2. 后端需要响应什么数据给前端
+   - 所查询到的数据列表（存储到List 集合中）
+   - 总记录数
+
+![ ](./assets/springboot03/image-20221215152021068.png)
+
+> 后台给前端返回的数据包含：List集合(数据列表)、total(总记录数)
+>
+> 而这两部分通常封装到PageBean对象中，并将该对象转换为json格式的数据响应回给浏览器。
+>
+> ```java
+> @Data
+> @NoArgsConstructor
+> @AllArgsConstructor
+> public class PageBean {
+>   private Long total; //总记录数
+>   private List rows; //当前页数据列表
+> }
+> ```
+
+**接口文档**：
+
+员工列表查询
+
+- 基本信息
+
+  ```md
+  请求路径：/emps
+  
+  请求方式：GET
+  
+  接口描述：该接口用于员工列表数据的条件分页查询
+  ```
+
+- 请求参数
+
+  参数格式：queryString
+
+  参数说明：
+
+  | 参数名称 | 是否必须 | 示例       | 备注                                       |
+  | -------- | -------- | ---------- | ------------------------------------------ |
+  | name     | 否       | 张         | 姓名                                       |
+  | gender   | 否       | 1          | 性别 , 1 男 , 2 女                         |
+  | begin    | 否       | 2010-01-01 | 范围匹配的开始时间(入职日期)               |
+  | end      | 否       | 2020-01-01 | 范围匹配的结束时间(入职日期)               |
+  | page     | 是       | 1          | 分页查询的页码，如果未指定，默认为1        |
+  | pageSize | 是       | 10         | 分页查询的每页记录数，如果未指定，默认为10 |
+
+  请求数据样例：
+
+  ```shell
+  /emps?name=张&gender=1&begin=2007-09-01&end=2022-09-01&page=1&pageSize=10
+  ```
+
+- 响应数据
+
+  参数格式：application/json
+
+  参数说明：
+
+  | 名称           | 类型      | 是否必须 | 默认值 | 备注                                                         | 其他信息          |
+  | -------------- | --------- | -------- | ------ | ------------------------------------------------------------ | ----------------- |
+  | code           | number    | 必须     |        | 响应码, 1 成功 , 0 失败                                      |                   |
+  | msg            | string    | 非必须   |        | 提示信息                                                     |                   |
+  | data           | object    | 必须     |        | 返回的数据                                                   |                   |
+  | \|- total      | number    | 必须     |        | 总记录数                                                     |                   |
+  | \|- rows       | object [] | 必须     |        | 数据列表                                                     | item 类型: object |
+  | \|- id         | number    | 非必须   |        | id                                                           |                   |
+  | \|- username   | string    | 非必须   |        | 用户名                                                       |                   |
+  | \|- name       | string    | 非必须   |        | 姓名                                                         |                   |
+  | \|- password   | string    | 非必须   |        | 密码                                                         |                   |
+  | \|- entrydate  | string    | 非必须   |        | 入职日期                                                     |                   |
+  | \|- gender     | number    | 非必须   |        | 性别 , 1 男 ; 2 女                                           |                   |
+  | \|- image      | string    | 非必须   |        | 图像                                                         |                   |
+  | \|- job        | number    | 非必须   |        | 职位, 说明: 1 班主任,2 讲师, 3 学工主管, 4 教研主管, 5 咨询师 |                   |
+  | \|- deptId     | number    | 非必须   |        | 部门id                                                       |                   |
+  | \|- createTime | string    | 非必须   |        | 创建时间                                                     |                   |
+  | \|- updateTime | string    | 非必须   |        | 更新时间                                                     |                   |
+
+  响应数据样例：
+
+  ```json
+  {
+    "code": 1,
+    "msg": "success",
+    "data": {
+      "total": 2,
+      "rows": [
+         {
+          "id": 1,
+          "username": "jinyong",
+          "password": "123456",
+          "name": "金庸",
+          "gender": 1,
+          "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-02-00-27-53B.jpg",
+          "job": 2,
+          "entrydate": "2015-01-01",
+          "deptId": 2,
+          "createTime": "2022-09-01T23:06:30",
+          "updateTime": "2022-09-02T00:29:04"
+        },
+        {
+          "id": 2,
+          "username": "zhangwuji",
+          "password": "123456",
+          "name": "张无忌",
+          "gender": 1,
+          "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-02-00-27-53B.jpg",
+          "job": 2,
+          "entrydate": "2015-01-01",
+          "deptId": 2,
+          "createTime": "2022-09-01T23:06:30",
+          "updateTime": "2022-09-02T00:29:04"
+        }
+      ]
+    }
+  }
+  ```
+
+**思路分析**:
+
+![ ](./assets/springboot03/image-20221215153413290.png)
+
+分页查询需要的数据，封装在PageBean对象中：
+
+![ ](./assets/springboot03/image-20221215154036047.png)
+
+**功能开发**:
+
+> 请求路径：/emps
+>
+> 请求方式：GET
+>
+> 请求参数：跟随在请求路径后的参数字符串。  例：/emps?page=1&pageSize=10
+>
+> 响应数据：json格式
+
+**EmpController**:
+
+```java
+import com.itheima.pojo.PageBean;
+import com.itheima.pojo.Result;
+import com.itheima.service.EmpService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Slf4j
+@RestController
+@RequestMapping("/emps")
+public class EmpController {
+
+    @Autowired
+    private EmpService empService;
+
+    //条件分页查询
+    @GetMapping
+    public Result page(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize) {
+        //记录日志
+        log.info("分页查询，参数：{},{}", page, pageSize);
+        //调用业务层分页查询功能
+        PageBean pageBean = empService.page(page, pageSize);
+        //响应
+        return Result.success(pageBean);
+    }
+}
+```
+
+> @RequestParam(defaultValue="默认值")   //设置请求参数默认值
+
+**EmpService**:
+
+```java
+public interface EmpService {
+    /**
+     * 条件分页查询
+     * @param page 页码
+     * @param pageSize 每页展示记录数
+     * @return
+     */
+    PageBean page(Integer page, Integer pageSize);
+}
+```
+
+**EmpServiceImpl**:
+
+```java
+import com.itheima.mapper.EmpMapper;
+import com.itheima.pojo.Emp;
+import com.itheima.pojo.PageBean;
+import com.itheima.service.EmpService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.List;
+
+@Slf4j
+@Service
+public class EmpServiceImpl implements EmpService {
+    @Autowired
+    private EmpMapper empMapper;
+
+    @Override
+    public PageBean page(Integer page, Integer pageSize) {
+        //1、获取总记录数
+        Long count = empMapper.count();
+
+        //2、获取分页查询结果列表
+        Integer start = (page - 1) * pageSize; //计算起始索引 , 公式: (页码-1)*页大小
+        List<Emp> empList = empMapper.list(start, pageSize);
+
+        //3、封装PageBean对象
+        PageBean pageBean = new PageBean(count , empList);
+        return pageBean;
+    }
+}
+```
+
+**EmpMapper**:
+
+```java
+@Mapper
+public interface EmpMapper {
+    //获取总记录数
+    @Select("select count(*) from emp")
+    public Long count();
+
+    //获取当前页的结果列表
+    @Select("select * from emp limit #{start}, #{pageSize}")
+    public List<Emp> list(Integer start, Integer pageSize);
+}
+```
+
+**功能测试**:
+
+功能开发完成后，重新启动项目，使用postman，发起POST请求：
+
+![ ](./assets/springboot03/image-20221215162008339.png)
+
+**前后端联调**:
+
+打开浏览器，测试后端功能接口：
+
+![ ](./assets/springboot03/image-20221215183413504.png)
+
+#### 2.1.2 分页插件
+
+**介绍**:
+
+基础的分页查询功能编写起来比较繁琐
+
+![ ](./assets/springboot03/image-20221215164811566.png)
+
+结论：原始方式的分页查询，存在着"步骤固定"、"代码频繁"的问题
+
+解决方案：可以使用一些现成的分页插件完成。对于Mybatis来讲现在最主流的就是PageHelper。
+
+> PageHelper是Mybatis的一款功能强大、方便易用的分页插件，支持任何形式的单标、多表的分页查询。
+>
+> 官网：[https://pagehelper.github.io/]
+
+![ ](./assets/springboot03/image-20221215170038833.png)
+
+> 在执行empMapper.list()方法时，就是执行：select  *  from  emp   语句，怎么能够实现分页操作呢？
+>
+> 分页插件帮我们完成了以下操作：
+>
+> 1. 先获取到要执行的SQL语句：select  *  from  emp
+> 2. 把SQL语句中的字段列表，变为：count(*)
+> 3. 执行SQL语句：select  count(*)  from  emp          //获取到总记录数
+> 4. 再对要执行的SQL语句：select  *  from  emp 进行改造，在末尾添加 limit ? , ?
+> 5. 执行改造后的SQL语句：select  *  from  emp  limit  ? , ?
+
+**代码实现**:
+
+当使用了PageHelper分页插件进行分页，就无需再Mapper中进行手动分页了。
+
+::: note
+在Mapper中只需要进行正常的列表查询即可  
+
+在Service层中，调用Mapper的方法之前设置分页参数  
+
+在调用Mapper方法执行查询之后，解析分页结果，并将结果封装到PageBean对象中返回
+
+:::
+
+1、在pom.xml引入依赖
+
+```xml
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper-spring-boot-starter</artifactId>
+    <version>1.4.2</version>
+</dependency>
+```
+
+2、EmpMapper
+
+```java
+@Mapper
+public interface EmpMapper {
+    //获取当前页的结果列表
+    @Select("select * from emp")
+    public List<Emp> page(Integer start, Integer pageSize);
+}
+```
+
+3、EmpServiceImpl
+
+```java
+@Override
+public PageBean page(Integer page, Integer pageSize) {
+    // 设置分页参数
+    PageHelper.startPage(page, pageSize); 
+    // 执行分页查询
+    List<Emp> empList = empMapper.list(name,gender,begin,end); 
+    // 获取分页结果
+    Page<Emp> p = (Page<Emp>) empList;   
+    //封装PageBean
+    PageBean pageBean = new PageBean(p.getTotal(), p.getResult()); 
+    return pageBean;
+}
+```
+
+**测试**:
+
+功能开发完成后，我们重启项目工程，打开postman，发起GET请求，访问 ：[http://localhost:8080/emps?page=1&pageSize=5]
+
+![ ](./assets/springboot03/image-20221215162008339.png)
+
+> 后端程序SQL输出：
+>
+> ![ ](./assets/springboot03/image-20221215174820377.png)
+
+### 2.2 分页查询(带条件)
+
+#### 2.2.1 需求
+
+![ ](./assets/springboot03/image-20221215175639974.png)
+
+通过员工管理的页面原型可以看到，员工列表页面的查询，不仅仅需要考虑分页，还需要考虑查询条件。
+
+看到页面原型及需求中描述，搜索栏的搜索条件有三个，分别是：
+
+- 姓名：模糊匹配
+- 性别：精确匹配
+- 入职日期：范围匹配
+
+```sql
+select * 
+from emp
+where 
+  name like concat('%','张','%')   -- 条件1：根据姓名模糊匹配
+  and gender = 1                   -- 条件2：根据性别精确匹配
+  and entrydate = between '2000-01-01' and '2010-01-01'  -- 条件3：根据入职日期范围匹配
+order by update_time desc;
+```
+
+#### 2.2.2 思路分析
+
+![ ](./assets/springboot03/image-20221215180528415.png)
+
+#### 2.2.3 功能开发
+
+通过查看接口文档：员工列表查询
+
+> 请求路径：/emps
+>
+> 请求方式：GET
+>
+> 请求参数：
+>
+> | 参数名称 | 是否必须 | 示例       | 备注                                       |
+> | -------- | -------- | ---------- | ------------------------------------------ |
+> | name     | 否       | 张         | 姓名                                       |
+> | gender   | 否       | 1          | 性别 , 1 男 , 2 女                         |
+> | begin    | 否       | 2010-01-01 | 范围匹配的开始时间(入职日期)               |
+> | end      | 否       | 2020-01-01 | 范围匹配的结束时间(入职日期)               |
+> | page     | 是       | 1          | 分页查询的页码，如果未指定，默认为1        |
+> | pageSize | 是       | 10         | 分页查询的每页记录数，如果未指定，默认为10 |
+
+在原有分页查询的代码基础上进行改造：
 
 **EmpController**:
 
@@ -127,18 +991,20 @@ public class EmpController {
     @Autowired
     private EmpService empService;
 
-    //新增
-    @PostMapping
-    public Result save(@RequestBody Emp emp){
+    //条件分页查询
+    @GetMapping
+    public Result page(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String name, Short gender,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         //记录日志
-        log.info("新增员工, emp:{}",emp);
-        //调用业务层新增功能
-        empService.save(emp);
+        log.info("分页查询，参数：{},{},{},{},{},{}", page, pageSize,name, gender, begin, end);
+        //调用业务层分页查询功能
+        PageBean pageBean = empService.page(page, pageSize, name, gender, begin, end);
         //响应
-        return Result.success();
+        return Result.success(pageBean);
     }
-
-    //省略...
 }
 ```
 
@@ -146,16 +1012,18 @@ public class EmpController {
 
 ```java
 public interface EmpService {
-
     /**
-     * 保存员工信息
-     * @param emp
+     * 条件分页查询
+     * @param page     页码
+     * @param pageSize 每页展示记录数
+     * @param name     姓名
+     * @param gender   性别
+     * @param begin   开始时间
+     * @param end     结束时间
+     * @return
      */
-    void save(Emp emp);
-    
-    //省略...
+    PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin, LocalDate end);
 }
-
 ```
 
 **EmpServiceImpl**:
@@ -168,15 +1036,17 @@ public class EmpServiceImpl implements EmpService {
     private EmpMapper empMapper;
 
     @Override
-    public void save(Emp emp) {
-        //补全数据
-        emp.setCreateTime(LocalDateTime.now());
-        emp.setUpdateTime(LocalDateTime.now());
-        //调用添加方法
-        empMapper.insert(emp);
+    public PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin, LocalDate end) {
+        //设置分页参数
+        PageHelper.startPage(page, pageSize);
+        //执行条件分页查询
+        List<Emp> empList = empMapper.list(name, gender, begin, end);
+        //获取查询结果
+        Page<Emp> p = (Page<Emp>) empList;
+        //封装PageBean
+        PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+        return pageBean;
     }
-
-    //省略...
 }
 ```
 
@@ -185,613 +1055,79 @@ public class EmpServiceImpl implements EmpService {
 ```java
 @Mapper
 public interface EmpMapper {
-    //新增员工
-    @Insert("insert into emp (username, name, gender, image, job, entrydate, dept_id, create_time, update_time) " +
-            "values (#{username}, #{name}, #{gender}, #{image}, #{job}, #{entrydate}, #{deptId}, #{createTime}, #{updateTime});")
-    void insert(Emp emp);
-
-    //省略...
-}
-
-```
-
-### 1.5 功能测试
-
-代码开发完成后，重启服务器，打开Postman发送 POST 请求，请求路径：  
-[http://localhost:8080/emps](http://localhost:8080/emps)
-
-![ ](./assets/springboot03/image-20221216181017910.png)
-
-### 1.6 前后端联调
-
-功能测试通过后，我们再进行通过打开浏览器，测试后端功能接口：
-
-![ ](./assets/springboot03/image-20221216181511401.png)
-
-![ ](./assets/springboot03/image-20221216181628331.png)
-
-## 2. 文件上传
-
-![ ](./assets/springboot03/image-20221216200653717.png)
-
-上述问题，需要我们通过文件上传技术来解决。
-
-### 2.1 简介
-
-文件上传: 指将本地图片、视频、音频等文件上传到服务器，供其他用户浏览或下载的过程。
-
-文件上传在项目中应用非常广泛，我们经常发微博、发微信朋友圈都用到了文件上传功能。
-
-![ ](./assets/springboot03/image-20221216203904713.png)
-
-文件上传功能需要涉及到两个部分：
-
-1. 前端程序
-2. 服务端程序
-
-前端代码：
-
-```html
-<form action="/upload" method="post" enctype="multipart/form-data">
-    姓名: <input type="text" name="username"><br>
-    年龄: <input type="text" name="age"><br>
-    头像: <input type="file" name="image"><br>
-    <input type="submit" value="提交">
-</form>
-```
-
-上传文件的原始form表单，要求表单必须具备以下三点（上传文件页面三要素）：
-
-- 表单必须有file域，用于选择要上传的文件
-
-  > ```html
-  > <input type="file" name="image"/>
-  > ```
-
-- 表单提交方式必须为POST
-
-  > 通常上传的文件会比较大，所以需要使用 POST 提交方式
-
-- 表单的编码类型 enctype 必须要设置为：multipart/form-data
-
-  > 普通默认的编码格式是不适合传输大型的二进制数据的，所以在文件上传时，表单的编码格式必须设置为 multipart/form-data
-
-文件上传3要素
-
-![ ](./assets/springboot03/image-20221216210054136.png)
-
-验证：删除form表单中enctype属性值，会是什么情况？
-
-1. 在IDEA中直接使用浏览器打开upload.html页面
-
-    ![ ](./assets/springboot03/image-20221216210643628.png)
-
-2. 选择要上传的本地文件
-
-    ![ ](./assets/springboot03/image-20221216210938612.png)
-
-3. 点击"提交"按钮，进入到开发者模式观察
-
-    ![ ](./assets/springboot03/image-20221216211629307.png)
-
-    ![ ](./assets/springboot03/image-20221216212152607.png)
-
-设置form表单中enctype属性值为multipart/form-data，会是什么情况？
-
-```html
- <form action="/upload" method="post" enctype="multipart/form-data">
-        姓名: <input type="text" name="username"><br>
-        年龄: <input type="text" name="age"><br>
-        头像: <input type="file" name="image"><br>
-        <input type="submit" value="提交">
-    </form>
-```
-
-![ ](./assets/springboot03/image-20221216215320623.png)
-
-![ ](./assets/springboot03/image-20221216215041710.png)
-
-知道了前端程序中需要设置上传文件页面三要素，那后端程序又是如何实现的呢？
-
-- 首先在服务端定义一个controller，用来进行文件上传，然后在controller当中定义一个方法来处理`/upload` 请求
-
-- 在定义的方法中接收提交过来的数据 （方法中的形参名和请求参数的名字保持一致）
-
-  - 用户名：String  name
-  - 年龄： Integer  age
-  - 文件： MultipartFile  image
-
-  > Spring中提供了一个API：MultipartFile，使用这个API就可以来接收到上传的文件
-
-![ ](./assets/springboot03/image-20221216215930807.png)
-
-> 问题：如果表单项的名字和方法中形参名不一致，该怎么办？
->
-> - ```javascript
->   public Result upload(String username,
->                        Integer age, 
->                        MultipartFile file) //file形参名和请求参数名image不一致
->   ```
->
-> 解决：使用@RequestParam注解进行参数绑定
->
-> - ```java
->   public Result upload(String username,
->                        Integer age, 
->                        @RequestParam("image") MultipartFile file)
->   ```
-
-**UploadController代码：**
-
-```java
-@Slf4j
-@RestController
-public class UploadController {
-
-    @PostMapping("/upload")
-    public Result upload(String username, Integer age, MultipartFile image)  {
-        log.info("文件上传：{},{},{}",username,age,image);
-        return Result.success();
-    }
-
+    //获取当前页的结果列表
+    public List<Emp> list(String name, Short gender, LocalDate begin, LocalDate end);
 }
 ```
 
-> 后端程序编写完成之后，打个断点，以debug方式启动SpringBoot项目
+**EmpMapper.xml**:
 
-![ ](./assets/springboot03/image-20221216222533720.png)
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
 
-> 打开浏览器输入：[http://localhost:8080/upload.html](http://localhost:8080/upload.html) ， 录入数据并提交
-
-![ ](./assets/springboot03/image-20221216222412510.png)
-
-通过后端程序控制台可以看到，上传的文件是存放在一个临时目录
-
-![ ](./assets/springboot03/image-20221216222802617.png)
-
-> 打开临时目录可以看到以下内容：
-
-![ ](./assets/springboot03/image-20221216223328710.png)
-
-> 表单提交的三项数据(姓名、年龄、文件)，分别存储在不同的临时文件中：
-
-![ ](./assets/springboot03/image-20221216223300846.png)
-
-> 当我们程序运行完毕之后，这个临时文件会自动删除。
->
-> 所以，我们如果想要实现文件上传，需要将这个临时文件，要转存到我们的磁盘目录中。
-
-### 2.2 本地存储
-
-文件上传时在服务端会产生一个临时文件，请求响应完成之后，这个临时文件被自动删除，并没有进行保存。需要将上传的文件保存在服务器的本地磁盘上。
-
-代码实现：
-
-1. 在服务器本地磁盘上创建images目录，用来存储上传的文件（例：E盘创建images目录）
-2. 使用MultipartFile类提供的API方法，把临时文件转存到本地磁盘目录下
-
-> MultipartFile 常见方法：
->
-> - String  getOriginalFilename();  //获取原始文件名
-> - void  transferTo(File dest);     //将接收的文件转存到磁盘文件中
-> - long  getSize();     //获取文件的大小，单位：字节
-> - byte[]  getBytes();    //获取文件内容的字节数组
-> - InputStream  getInputStream();    //获取接收到的文件内容的输入流
-
-```java
-@Slf4j
-@RestController
-public class UploadController {
-
-    @PostMapping("/upload")
-    public Result upload(String username, Integer age, MultipartFile image) throws IOException {
-        log.info("文件上传：{},{},{}",username,age,image);
-
-        //获取原始文件名
-        String originalFilename = image.getOriginalFilename();
-
-        //将文件存储在服务器的磁盘目录
-        image.transferTo(new File("E:/images/"+originalFilename));
-
-        return Result.success();
-    }
-
-}
+    <!-- 条件分页查询 -->
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        select * from emp
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+</mapper>
 ```
 
-利用postman测试：
+#### 2.2.4 功能测试
 
-> 注意：请求参数名和controller方法形参名保持一致
+功能开发完成后，重启项目工程，打开postman，发起GET请求：
 
-![ ](./assets/springboot03/image-20221227211742547.png)
+![ ](./assets/springboot03/image-20221215182344380.png)
 
-![ ](./assets/springboot03/image-20221227214219279.png)
-
-![ ](./assets/springboot03/image-20221227214753358.png)
-
-通过postman测试，文件上传是没有问题的。但是当我们再次上传一个名为1.jpg文件时，发现会把之前已经上传成功的文件会被覆盖掉。
-
-解决方案：保证每次上传文件时文件名都唯一的（使用UUID获取随机文件名）
-
-```java
-@Slf4j
-@RestController
-public class UploadController {
-
-    @PostMapping("/upload")
-    public Result upload(String username, Integer age, MultipartFile image) throws IOException {
-        log.info("文件上传：{},{},{}",username,age,image);
-
-        //获取原始文件名
-        String originalFilename = image.getOriginalFilename();
-
-        //构建新的文件名
-        String extname = originalFilename.substring(originalFilename.lastIndexOf("."));//文件扩展名
-        String newFileName = UUID.randomUUID().toString()+extname;//随机名+文件扩展名
-
-        //将文件存储在服务器的磁盘目录
-        image.transferTo(new File("E:/images/"+newFileName));
-
-        return Result.success();
-    }
-
-}
-```
-
-在解决了文件名唯一性的问题后，再次上传一个较大的文件(超出1M)时发现，后端程序报错：
-
-![ ](./assets/springboot03/image-20221227223851924.png)
-
-报错原因：在SpringBoot中，文件上传时默认单个文件最大的大小为1M
-
-如果需要上传大文件，可以在application.properties进行如下配置：
-
-```properties
-#配置单个文件最大上传大小
-spring.servlet.multipart.max-file-size=10MB
-
-#配置单个请求最大上传大小(一次请求可以上传多个文件)
-spring.servlet.multipart.max-request-size=100MB
-```
-
-本地存储方式存在问题：
-
-![ ](./assets/springboot03/image-20220904200320964.png)
-
-::: danger
-直接存储在服务器的磁盘目录中，存在以下缺点：
-
-- 不安全：磁盘如果损坏，所有的文件就会丢失
-
-- 容量有限：如果存储大量的图片，磁盘空间有限(磁盘不可能无限制扩容)
-
-- 无法直接访问
-
-:::
-
-::: tip 解决方案
-
-- 自己搭建存储服务器，如：fastDFS 、MinIO
-
-- 使用现成的云服务，如：阿里云，腾讯云，华为云
-
-:::
-
-### 2.3 阿里云OSS
-
-#### 2.3.1 准备
-
-阿里云是阿里巴巴集团旗下全球领先的云计算公司，也是国内最大的云服务提供商 。
-
-![ ](./assets/springboot03/image-20221229093412464.png)
-
-> 云服务指的就是通过互联网对外提供的各种各样的服务，比如像：语音服务、短信服务、邮件服务、视频直播服务、文字识别服务、对象存储服务等等。  
+> 控制台SQL语句：
 >
-> 当我们在项目开发时需要用到某个或某些服务，就不需要自己来开发了，可以直接使用阿里云提供好的这些现成服务就可以了。  
->  
-> 比如：在项目开发当中，我们要实现一个短信发送的功能，如果我们项目组自己实现，将会非常繁琐，因为你需要和各个运营商进行对接。而此时阿里云完成了和三大运营商对接，并对外提供了一个短信服务。我们项目组只需要调用阿里云提供的短信服务，就可以很方便的来发送短信了。这样就降低了我们项目的开发难度，同时也提高了项目的开发效率。（大白话：别人帮我们实现好了功能，我们只要调用即可）
+> ![ ](./assets/springboot03/image-20221215182952789.png)
 
-阿里云对象存储OSS（Object Storage Service），是一款海量、安全、低成本、高可靠的云存储服务。使用OSS，您可以通过网络随时存储和调用包括文本、图片、音频和视频等在内的各种文件。
+#### 2.2.5 前后端联调
 
-![ ](./assets/springboot03/image-20220904200642064.png)
+打开浏览器，测试后端功能接口：
 
-使用了阿里云OSS对象存储服务之后，在项目当中如果涉及到文件上传这样的业务，在前端进行文件上传并请求到服务端时，在服务器本地磁盘当中就不需要再来存储文件了。我们直接将接收到的文件上传到oss，由 oss帮我们存储和管理，同时阿里云的oss存储服务还保障了我们所存储内容的安全可靠。
+![ ](./assets/springboot03/image-20221215183510458.png)
 
-![ ](./assets/springboot03/image-20221229095709505.png)
+### 2.3 删除员工
 
-![ ](./assets/springboot03/image-20221229093911113.png)
+#### 2.3.1 需求
 
-> SDK：Software Development Kit 的缩写，软件开发工具包，包括辅助软件开发的依赖（jar包）、代码示例等，都可以叫做SDK。
->
-> 简单说，sdk中包含了我们使用第三方云服务时所需要的依赖，以及一些示例代码。我们可以参照sdk所提供的示例代码就可以完成入门程序。
+![ ](./assets/springboot03/image-20221215183657413.png)
 
-![ ](./assets/springboot03/image-20221229112451120.png)
+当勾选列表前面的复选框，然后点击 "批量删除" 按钮，就可以将这一批次的员工信息删除掉了。也可以只勾选一个复选框，仅删除一个员工信息。
 
-> Bucket：存储空间是用户用于存储对象（Object，就是文件）的容器，所有的对象都必须隶属于某个存储空间。
+问题：我们需要开发两个功能接口吗？一个删除单个员工，一个删除多个员工
 
-准备工作：
+答案：不需要。 只需要开发一个功能接口即可（删除多个员工包含只删除一个员工）
 
-1. 注册阿里云账户（注册完成后需要实名认证）
-2. 注册完账号之后，登录阿里云
+#### 2.3.2 接口文档
 
-    ![ ](./assets/springboot03/image-20220904201839857.png)
-
-3. 通过控制台找到对象存储OSS服务
-
-    ![ ](./assets/springboot03/image-20220904201932884.png)
-
-    > 如果是第一次访问，还需要开通对象存储服务OSS
-
-    ![ ](./assets/springboot03/image-20220904202537579.png)
-
-    ![ ](./assets/springboot03/image-20220904202618423.png)
-
-4. 开通OSS服务之后，就可以进入到阿里云对象存储的控制台
-
-    ![ ](./assets/springboot03/image-20220904201810832.png)
-
-5. 点击左侧的 "Bucket列表"，创建一个Bucket
-
-![ ](./assets/springboot03/image-20220904202235180.png)
-
-![ ](./assets/springboot03/image-20220904202824901.png)
-
-#### 2.3.2 入门
-
-参照官方所提供的sdk示例来编写入门程序。
-
-首先需要打开阿里云OSS的官方文档，在官方文档中找到 SDK 的示例代码：
-
-![ ](./assets/springboot03/image-20221229121848524.png)
-
-![ ](./assets/springboot03/image-20221229122046597.png)
-
-> 如果是在实际开发当中，是需要从前往后仔细的去阅读这一份文档的
-
-![ ](./assets/springboot03/image-20221229144342148.png)
-
-![ ](./assets/springboot03/image-20221229160827124.png)
-
-参照官方提供的SDK，改造一下，即可实现文件上传功能：
-
-```java
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-public class AliOssTest {
-    public static void main(String[] args) throws Exception {
-        // Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
-        String endpoint = "oss-cn-shanghai.aliyuncs.com";
-        
-        // 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。
-        String accessKeyId = "LTAI5t9MZK8iq5T2Av5GLDxX";
-        String accessKeySecret = "C0IrHzKZGKqU8S7YQcevcotD3Zd5Tc";
-        
-        // 填写Bucket名称，例如examplebucket。
-        String bucketName = "web-framework01";
-        // 填写Object完整路径，完整路径中不能包含Bucket名称，例如exampledir/exampleobject.txt。
-        String objectName = "1.jpg";
-        // 填写本地文件的完整路径，例如D:\\localpath\\examplefile.txt。
-        // 如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件流。
-        String filePath= "C:\\Users\\Administrator\\Pictures\\1.jpg";
-
-        // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
-        try {
-            InputStream inputStream = new FileInputStream(filePath);
-            // 创建PutObjectRequest对象。
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream);
-            // 设置该属性可以返回response。如果不设置，则返回的response为空。
-            putObjectRequest.setProcess("true");
-            // 创建PutObject请求。
-            PutObjectResult result = ossClient.putObject(putObjectRequest);
-            // 如果上传成功，则返回200。
-            System.out.println(result.getResponse().getStatusCode());
-        } catch (OSSException oe) {
-            System.out.println("Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            System.out.println("Error Message:" + oe.getErrorMessage());
-            System.out.println("Error Code:" + oe.getErrorCode());
-            System.out.println("Request ID:" + oe.getRequestId());
-            System.out.println("Host ID:" + oe.getHostId());
-        } catch (ClientException ce) {
-            System.out.println("Caught an ClientException, which means the client encountered "
-                    + "a serious internal problem while trying to communicate with OSS, "
-                    + "such as not being able to access the network.");
-            System.out.println("Error Message:" + ce.getMessage());
-        } finally {
-            if (ossClient != null) {
-                ossClient.shutdown();
-            }
-        }
-    }
-}
-
-```
-
-> 在以上代码中，需要替换的内容为：
->
-> - accessKeyId：阿里云账号AccessKey
-> - accessKeySecret：阿里云账号AccessKey对应的秘钥
-> - bucketName：Bucket名称
-> - objectName：对象名称，在Bucket中存储的对象的名称
-> - filePath：文件路径
->
-> AccessKey ：
->
-> ![ ](./assets/springboot03/image-20221128020105943.png)
-
-运行以上程序后，会把本地的文件上传到阿里云OSS服务器上：
-
-![ ](./assets/springboot03/image-20221229161326919.png)
-
-#### 2.3.3 集成
-
-![ ](./assets/springboot03/image-20221229170235632.png)
-
-> 在新增员工的时候，上传员工的图像，而之所以需要上传员工的图像，是因为将来我们需要在系统页面当中访问并展示员工的图像。而要想完成这个操作，需要做两件事：
->
-> 1. 需要上传员工的图像，并把图像保存起来（存储到阿里云OSS）
-> 2. 访问员工图像（通过图像在阿里云OSS的存储地址访问图像）
->    - OSS中的每一个文件都会分配一个访问的url，通过这个url就可以访问到存储在阿里云上的图片。所以需要把url返回给前端，这样前端就可以通过url获取到图像。
-
-参照接口文档来开发文件上传功能：
+**删除员工**:
 
 - 基本信息
 
   ```md
-  请求路径：/upload
+  请求路径：/emps/{ids}
   
-  请求方式：POST
+  请求方式：DELETE
   
-  接口描述：上传图片接口
-  ```
-
-- 请求参数
-
-  参数格式：multipart/form-data
-
-  参数说明：
-
-  | 参数名称 | 参数类型 | 是否必须 | 示例 | 备注 |
-  | -------- | -------- | -------- | ---- | ---- |
-  | image    | file     | 是       |      |      |
-
-- 响应数据
-
-  参数格式：application/json
-
-  参数说明：
-
-  | 参数名 | 类型   | 是否必须 | 备注                           |
-  | ------ | ------ | -------- | ------------------------------ |
-  | code   | number | 必须     | 响应码，1 代表成功，0 代表失败 |
-  | msg    | string | 非必须   | 提示信息                       |
-  | data   | object | 非必须   | 返回的数据，上传图片的访问路径 |
-
-  响应数据样例：
-
-  ```json
-  {
-      "code": 1,
-      "msg": "success",
-      "data": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-02-00-27-0400.jpg"
-  }
-  ```
-
-引入阿里云OSS上传文件工具类（由官方的示例代码改造而来）
-
-```java
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
-
-@Component
-public class AliOSSUtils {
-    private String endpoint = "https://oss-cn-shanghai.aliyuncs.com";
-    private String accessKeyId = "LTAI5t9MZK8iq5T2Av5GLDxX";
-    private String accessKeySecret = "C0IrHzKZGKqU8S7YQcevcotD3Zd5Tc";
-    private String bucketName = "web-framework01";
-
-    /**
-     * 实现上传图片到OSS
-     */
-    public String upload(MultipartFile multipartFile) throws IOException {
-        // 获取上传的文件的输入流
-        InputStream inputStream = multipartFile.getInputStream();
-
-        // 避免文件覆盖
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
-
-        //上传文件到 OSS
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        ossClient.putObject(bucketName, fileName, inputStream);
-
-        //文件访问路径
-        String url = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1] + "/" + fileName;
-
-        // 关闭ossClient
-        ossClient.shutdown();
-        return url;// 把上传到oss的路径返回
-    }
-}
-```
-
-修改UploadController代码：
-
-```java
-import com.itheima.pojo.Result;
-import com.itheima.utils.AliOSSUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-
-@Slf4j
-@RestController
-public class UploadController {
-
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
-
-    @PostMapping("/upload")
-    public Result upload(MultipartFile image) throws IOException {
-        //调用阿里云OSS工具类，将上传上来的文件存入阿里云
-        String url = aliOSSUtils.upload(image);
-        //将图片上传完成后的url返回，用于浏览器回显展示
-        return Result.success(url);
-    }
-    
-}
-```
-
-使用postman测试：
-
-![ ](./assets/springboot03/image-20230102175353270.png)
-
-## 3. 修改员工
-
-![ ](./assets/springboot03/image-20220904220001994.png)
-
-![ ](./assets/springboot03/image-20220904220006578.png =400x)
-
-在进行修改员工信息的时候，首先要根据员工的ID查询员工的信息用于页面回显展示，然后用户修改员工数据之后，点击保存按钮，就可以将修改的数据提交到服务端，保存到数据库。 
-
-具体操作为：
-
-1. 根据ID查询员工信息
-2. 保存修改的员工信息
-
-### 3.1 查询回显
-
-#### 3.1.1 接口文档
-
-根据ID查询员工数据
-
-- 基本信息
-
-  ```md
-  请求路径：/emps/{id}
-  
-  请求方式：GET
-  
-  接口描述：该接口用于根据主键ID查询员工的信息
+  接口描述：该接口用于批量删除员工的数据信息
   ```
 
 - 请求参数
@@ -800,192 +1136,14 @@ public class UploadController {
 
   参数说明：
 
-  | 参数名 | 类型   | 是否必须 | 备注   |
-  | ------ | ------ | -------- | ------ |
-  | id     | number | 必须     | 员工ID |
+  | 参数名 | 类型       | 示例  | 是否必须 | 备注         |
+  | ------ | ---------- | ----- | -------- | ------------ |
+  | ids    | 数组 array | 1,2,3 | 必须     | 员工的id数组 |
 
   请求参数样例：
 
   ```md
-  /emps/1
-  ```
-
-- 响应数据
-
-  参数格式：application/json
-
-  参数说明：
-
-  | 名称           | 类型   | 是否必须 | 默认值 | 备注                                                         |
-  | -------------- | ------ | -------- | ------ | ------------------------------------------------------------ |
-  | code           | number | 必须     |        | 响应码, 1 成功 , 0 失败                                      |
-  | msg            | string | 非必须   |        | 提示信息                                                     |
-  | data           | object | 必须     |        | 返回的数据                                                   |
-  | \|- id         | number | 非必须   |        | id                                                           |
-  | \|- username   | string | 非必须   |        | 用户名                                                       |
-  | \|- name       | string | 非必须   |        | 姓名                                                         |
-  | \|- password   | string | 非必须   |        | 密码                                                         |
-  | \|- entrydate  | string | 非必须   |        | 入职日期                                                     |
-  | \|- gender     | number | 非必须   |        | 性别 , 1 男 ; 2 女                                           |
-  | \|- image      | string | 非必须   |        | 图像                                                         |
-  | \|- job        | number | 非必须   |        | 职位, 说明: 1 班主任,2 讲师, 3 学工主管, 4 教研主管, 5 咨询师 |
-  | \|- deptId     | number | 非必须   |        | 部门id                                                       |
-  | \|- createTime | string | 非必须   |        | 创建时间                                                     |
-  | \|- updateTime | string | 非必须   |        | 更新时间                                                     |
-
-  响应数据样例：
-
-  ```json
-  {
-    "code": 1,
-    "msg": "success",
-    "data": {
-      "id": 2,
-      "username": "zhangwuji",
-      "password": "123456",
-      "name": "张无忌",
-      "gender": 1,
-      "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-02-00-27-53B.jpg",
-      "job": 2,
-      "entrydate": "2015-01-01",
-      "deptId": 2,
-      "createTime": "2022-09-01T23:06:30",
-      "updateTime": "2022-09-02T00:29:04"
-    }
-  }
-  ```
-
-#### 3.1.2 实现思路
-
-![ ](./assets/springboot03/image-20221230161841795.png)
-
-#### 3.1.3 代码实现
-
-- EmpMapper
-
-```java
-@Mapper
-public interface EmpMapper {
-
-    //根据ID查询员工信息
-    @Select("select id, username, password, name, gender, image, job, entrydate, dept_id, create_time, update_time " +
-            "from emp " +
-            "where id = #{id}")
-    public Emp findById(Integer id);
-
-    
-    //省略...
-}
-```
-
-- EmpService
-
-```java
-public interface EmpService {
-
-    /**
-     * 根据ID查询员工
-     * @param id
-     * @return
-     */
-    public Emp getById(Integer id);
-    
-    //省略...
-}
-```
-
-- EmpServiceImpl
-
-```java
-@Slf4j
-@Service
-public class EmpServiceImpl implements EmpService {
-    @Autowired
-    private EmpMapper empMapper;
-
-    @Override
-    public Emp getById(Integer id) {
-        return empMapper.findById(id);
-    }
-    
-    //省略...
-}
-```
-
-- EmpController
-
-```java
-@Slf4j
-@RestController
-@RequestMapping("/emps")
-public class EmpController {
-
-    @Autowired
-    private EmpService empService;
-
-    //根据id查询
-    @GetMapping("/{id}")
-    public Result getById(@PathVariable Integer id){
-        Emp emp = empService.getById(id);
-        return Result.success(emp);
-    }
-    
-    //省略...
-}
-```
-
-#### 3.1.4 postman测试
-
-![ ](./assets/springboot03/image-20221230170926513.png)
-
-### 3.2 修改员工
-
-![ ](./assets/springboot03/image-20220904220006578.png =400x)
-
-> 当用户修改完数据之后，点击保存按钮，就需要将数据提交到服务端，然后服务端需要将修改后的数据更新到数据库中。
-
-#### 3.2.1 接口文档
-
-- 基本信息
-
-  ```md
-  请求路径：/emps
-  
-  请求方式：PUT
-  
-  接口描述：该接口用于修改员工的数据信息
-  ```
-
-- 请求参数
-
-  参数格式：application/json
-
-  参数说明：
-
-  | 名称      | 类型   | 是否必须 | 备注                                                         |
-  | --------- | ------ | -------- | ------------------------------------------------------------ |
-  | id        | number | 必须     | id                                                           |
-  | username  | string | 必须     | 用户名                                                       |
-  | name      | string | 必须     | 姓名                                                         |
-  | gender    | number | 必须     | 性别, 说明: 1 男, 2 女                                       |
-  | image     | string | 非必须   | 图像                                                         |
-  | deptId    | number | 非必须   | 部门id                                                       |
-  | entrydate | string | 非必须   | 入职日期                                                     |
-  | job       | number | 非必须   | 职位, 说明: 1 班主任,2 讲师, 3 学工主管, 4 教研主管, 5 咨询师 |
-
-  请求数据样例：
-
-  ```json
-  {
-    "id": 1,
-    "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-03-07-37-38222.jpg",
-    "username": "linpingzhi",
-    "name": "林平之",
-    "gender": 1,
-    "job": 1,
-    "entrydate": "2022-09-18",
-    "deptId": 1
-  }
+  /emps/1,2,3
   ```
 
 - 响应数据
@@ -1010,108 +1168,46 @@ public class EmpController {
   }
   ```
 
-#### 3.2.2 实现思路
+#### 2.3.3 思路分析
 
-![ ](./assets/springboot03/image-20221230171342318.png)
+![ ](./assets/springboot03/image-20221215184714815.png)
 
-#### 3.2.3 代码实现
+> 接口文档规定：
+>
+> - 前端请求路径：/emps/{ids}
+> - 前端请求方式：DELETE
+>
+> 问题1：怎么在controller中接收请求路径中的路径参数？
+>
+> ```java
+> @PathVariable
+> ```
+>
+> 问题2：如何限定请求方式是delete？
+>
+> ```java
+> @DeleteMapping
+> ```
+>
+> 问题3：在Mapper接口中，执行delete操作的SQL语句时，条件中的id值是不确定的是动态的，怎么实现呢？
+>
+> ```java
+> Mybatis中的动态SQL：foreach
+> ```
 
-- EmpMapper
+#### 2.3.4 功能开发
 
-```java
-@Mapper
-public interface EmpMapper {
-    //修改员工信息
-    public void update(Emp emp);
-    
-    //省略...
-}
-```
+通过查看接口文档：删除员工
 
-- EmpMapper.xml
+> 请求路径：/emps/{ids}
+>
+> 请求方式：DELETE
+>
+> 请求参数：路径参数 {ids}
+>
+> 响应数据：json格式
 
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.itheima.mapper.EmpMapper">
-
-    <!--更新员工信息-->
-    <update id="update">
-        update emp
-        <set>
-            <if test="username != null and username != ''">
-                username = #{username},
-            </if>
-            <if test="password != null and password != ''">
-                password = #{password},
-            </if>
-            <if test="name != null and name != ''">
-                name = #{name},
-            </if>
-            <if test="gender != null">
-                gender = #{gender},
-            </if>
-            <if test="image != null and image != ''">
-                image = #{image},
-            </if>
-            <if test="job != null">
-                job = #{job},
-            </if>
-            <if test="entrydate != null">
-                entrydate = #{entrydate},
-            </if>
-            <if test="deptId != null">
-                dept_id = #{deptId},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
-
-    <!-- 省略... -->
-   
-</mapper>
-```
-
-- EmpService
-
-```java
-public interface EmpService {
-    /**
-     * 更新员工
-     * @param emp
-     */
-    public void update(Emp emp);
-   
-    //省略...
-}
-```
-
-- EmpServiceImpl
-
-```java
-@Slf4j
-@Service
-public class EmpServiceImpl implements EmpService {
-    @Autowired
-    private EmpMapper empMapper;
-
-    @Override
-    public void update(Emp emp) {
-        emp.setUpdateTime(LocalDateTime.now()); //更新修改时间为当前时间
-        
-        empMapper.update(emp);
-    }
-    
-    //省略...
-}
-```
-
-- EmpController
+**EmpController**:
 
 ```java
 @Slf4j
@@ -1122,334 +1218,113 @@ public class EmpController {
     @Autowired
     private EmpService empService;
 
-    //修改员工
-    @PutMapping
-    public Result update(@RequestBody Emp emp){
-        empService.update(emp);
+    //批量删除
+    @DeleteMapping("/{ids}")
+    public Result delete(@PathVariable List<Integer> ids){
+        empService.delete(ids);
         return Result.success();
     }
-    
+
+    //条件分页查询
+    @GetMapping
+    public Result page(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String name, Short gender,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        //记录日志
+        log.info("分页查询，参数：{},{},{},{},{},{}", page, pageSize,name, gender, begin, end);
+        //调用业务层分页查询功能
+        PageBean pageBean = empService.page(page, pageSize, name, gender, begin, end);
+        //响应
+        return Result.success(pageBean);
+    }
+}
+```
+
+**EmpService**:
+
+```java
+public interface EmpService {
+
+    /**
+     * 批量删除操作
+     * @param ids id集合
+     */
+    void delete(List<Integer> ids);
+
     //省略...
 }
 ```
 
-#### 3.2.4 postman测试
-
-![ ](./assets/springboot03/image-20220904221941144.png)
-
-#### 3.2.5 前后端联调测试
-
-![ ](./assets/springboot03/image-20220904222028501.png)
-
-## 4. 配置文件
-
-当前案例中存在的问题以及如何优化解决
-
-### 4.1 参数配置化
-
-![ ](./assets/springboot03/image-20221231085558457.png)
-
-之前编写的程序中进行文件上传时，需要调用 AliOSSUtils 工具类，将文件上传到阿里云OSS对象存储服务当中。而在调用工具类进行文件上传时，需要一些参数：
-
-- endpoint       //阿里云OSS域名
-- accessKeyID    //用户身份ID
-- accessKeySecret   //用户密钥
-- bucketName      //存储空间的名字
-
-关于以上的这些阿里云相关配置信息，我们是直接写死在java代码中了(硬编码)，如果我们在做项目时每涉及到一个第三方技术服务，就将其参数硬编码，那么在Java程序中会存在两个问题：
-
-1. 如果这些参数发生变化了，就必须在源程序代码中改动这些参数，然后需要重新进行代码的编译，将Java代码编译成class字节码文件再重新运行程序。（比较繁琐）
-2. 如果开发的是一个真实的企业级项目， Java类可能会有很多，如果将这些参数分散的定义在各个Java类当中，如果要修改一个参数值，就需要在众多的Java代码当中来定位到对应的位置，再来修改参数，修改完毕之后再重新编译再运行。（参数配置过于分散， 不方便集中的管理和维护）
-
-为了解决以上分析的问题，可以将参数配置在配置文件中。
-
-```properties
-#自定义的阿里云OSS配置信息
-aliyun.oss.endpoint=https://oss-cn-hangzhou.aliyuncs.com
-aliyun.oss.accessKeyId=LTAI4GCH1vX6DKqJWxd6nEuW
-aliyun.oss.accessKeySecret=yBshYweHOpqDuhCArrVHwIiBKpyqSL
-aliyun.oss.bucketName=web-tlias
-```
-
-在将阿里云OSS配置参数交给properties配置文件来管理之后，AliOSSUtils工具类
+**EmpServiceImpl**:
 
 ```java
-@Component
-public class AliOSSUtils {
-    /*以下4个参数没有指定值（默认值：null）*/
-    private String endpoint;
-    private String accessKeyId;
-    private String accessKeySecret;
-    private String bucketName;
-
-    //省略其他代码...
-}
-```
-
-> 而此时如果直接调用AliOSSUtils类当中的upload方法进行文件上传时，这4项参数全部为null，原因是因为并没有给它赋值。
->
-> 此时我们是不是需要将配置文件当中所配置的属性值读取出来，并分别赋值给AliOSSUtils工具类当中的各个属性呢？那应该怎么做呢？
-
-因为application.properties是springboot项目默认的配置文件，所以springboot程序在启动时会默认读取application.properties配置文件，而我们可以使用一个现成的注解：@Value，获取配置文件中的数据。
-
-@Value 注解通常用于外部配置的属性注入，具体用法为： @Value("${配置文件中的key}")
-
-```java
-@Component
-public class AliOSSUtils {
-
-    @Value("${aliyun.oss.endpoint}")
-    private String endpoint;
-    
-    @Value("${aliyun.oss.accessKeyId}")
-    private String accessKeyId;
-    
-    @Value("${aliyun.oss.accessKeySecret}")
-    private String accessKeySecret;
-    
-    @Value("${aliyun.oss.bucketName}")
-    private String bucketName;
-
-    //省略其他代码...
- }   
-```
-
-![ ](./assets/springboot03/image-20230102173905913.png)
-
-使用postman测试：
-
-![ ](./assets/springboot03/image-20230102175353270.png)
-
-### 4.2 yml配置文件
-
-在springboot项目中是支持多种配置方式的，除了支持properties配置文件以外，还支持另外一种类型的配置文件
-
-- application.properties
-
-  ```properties
-  server.port=8080
-  server.address=127.0.0.1
-  ```
-
-- application.yml
-
-  ```yml
-  server:
-    port: 8080
-    address: 127.0.0.1
-  ```
-
-- application.yaml
-
-  ```yml
-  server:
-    port: 8080
-    address: 127.0.0.1
-  ```
-
-> yml 格式的配置文件，后缀名有两种：
->
-> - yml （推荐）
-> - yaml
-
-常见配置文件格式对比：
-
-![ ](./assets/springboot03/image-20230102181215809.png)
-
-::: tip yml 格式的数据特点
-
-- 容易阅读
-- 容易与脚本语言交互
-- 以数据为核心，重数据轻格式
-
-:::
-
-yml配置文件的基本语法：
-
-- 大小写敏感
-- 数值前边必须有空格，作为分隔符
-- 使用缩进表示层级关系，缩进时，不允许使用Tab键，只能用空格（idea中会自动将Tab转换为空格）
-- 缩进的空格数目不重要，只要相同层级的元素左侧对齐即可
-- `#`表示注释，从这个字符一直到行尾，都会被解析器忽略
-
-![ ](./assets/springboot03/image-20230103084645450.png)
-
-::: note yml文件中常见的两类数据格式
-
-1. 定义对象或Map集合
-2. 定义数组、list或set集合
-
-:::
-
-对象/ Map集合
-
-```yml
-user:
-  name: zhangsan
-  age: 18
-  password: 123456
-```
-
-数组 / List / Set集合
-
-```yml
-hobby: 
-  - java
-  - game
-  - sport
-```
-
-将使用的配置文件，变更为application.yml配置方式：
-
-1. 修改application.properties名字为：`_application.properties`（名字随便更换，只要加载不到即可）
-2. 创建新的配置文件： `application.yml`
-
-原有application.properties文件：
-
-![ ](./assets/springboot03/image-20230103202630793.png)
-
-新建的application.yml文件：
-
-```yaml
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/tlias
-    username: root
-    password: 1234
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 100MB
-      
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    map-underscore-to-camel-case: true
-
-aliyun:
-  oss:
-    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    accessKeyId: LTAI4GCH1vX6DKqJWxd6nEuW
-    accessKeySecret: yBshYweHOpqDuhCArrVHwIiBKpyqSL
-    bucketName: web-397
-```
-
-### 4.3 @ConfigurationProperties
-
-![ ](./assets/springboot03/image-20230103202919756.png)
-
-在application.properties或者application.yml中配置了阿里云OSS的四项参数之后，如果java程序中需要这四项参数数据，直接通过@Value注解来进行注入。如果需要注入的属性较多(例：需要20多个参数数据)，写起来就会比较繁琐。
-
-在Spring中给我们提供了一种简化方式，可以直接将配置文件中配置项的值自动的注入到对象的属性中。
-
-Spring提供的简化方式：
-
-1. 创建一个实现类，且实体类中的属性名和配置文件当中key的名字必须要一致
-
-   > 比如：配置文件当中叫endpoints，实体类当中的属性也得叫endpoints，另外实体类当中的属性还需要提供 getter / setter方法
-
-2. 将实体类交给Spring的IOC容器管理，成为IOC容器当中的bean对象
-
-3. 在实体类上添加`@ConfigurationProperties`注解，并通过prefix属性来指定配置参数项的前缀
-
-![ ](./assets/springboot03/image-20230103210827003.png)
-
-实体类：AliOSSProperties
-
-```java
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-/*阿里云OSS相关配置*/
-@Data
-@Component
-@ConfigurationProperties(prefix = "aliyun.oss")
-public class AliOSSProperties {
-    //区域
-    private String endpoint;
-    //身份ID
-    private String accessKeyId ;
-    //身份密钥
-    private String accessKeySecret ;
-    //存储空间
-    private String bucketName;
-}
-```
-
-AliOSSUtils工具类：
-
-```java
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
-
-@Component //当前类对象由Spring创建和管理
-public class AliOSSUtils {
-
-    //注入配置参数实体类对象
+@Slf4j
+@Service
+public class EmpServiceImpl implements EmpService {
     @Autowired
-    private AliOSSProperties aliOSSProperties;
-   
-    
-    /**
-     * 实现上传图片到OSS
-     */
-    public String upload(MultipartFile multipartFile) throws IOException {
-        // 获取上传的文件的输入流
-        InputStream inputStream = multipartFile.getInputStream();
+    private EmpMapper empMapper;
 
-        // 避免文件覆盖
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
-
-        //上传文件到 OSS
-        OSS ossClient = new OSSClientBuilder().build(aliOSSProperties.getEndpoint(),
-                aliOSSProperties.getAccessKeyId(), aliOSSProperties.getAccessKeySecret());
-        ossClient.putObject(aliOSSProperties.getBucketName(), fileName, inputStream);
-
-        //文件访问路径
-        String url =aliOSSProperties.getEndpoint().split("//")[0] + "//" + aliOSSProperties.getBucketName() + "." + aliOSSProperties.getEndpoint().split("//")[1] + "/" + fileName;
-
-        // 关闭ossClient
-        ossClient.shutdown();
-        return url;// 把上传到oss的路径返回
+    @Override
+    public void delete(List<Integer> ids) {
+        empMapper.delete(ids);
     }
+
+    //省略...
 }
-
 ```
 
-添加注解后，会发现idea窗口上面出现一个红色警告：
+**EmpMapper**:
 
-![ ](./assets/springboot03/image-20230103212042823.png)
+```java
+@Mapper
+public interface EmpMapper {
+    //批量删除
+    void delete(List<Integer> ids);
 
-这个警告提示是提示还需要引入一个依赖：
-
-```maven
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-configuration-processor</artifactId>
-</dependency>
+    //省略...
+}
 ```
 
-在pom.xml文件当中配置了这项依赖之后，重新启动服务，就会看到在properties或者是yml配置文件当中，就会提示阿里云 OSS 相关的配置项。所以这项依赖它的作用就是会自动的识别被`@ConfigurationProperties`注解标识的bean对象。
+**EmpMapper.xml**:
 
-> 刚才的红色警告，已经变成了一个灰色的提示，提示我们需要重新运行springboot服务
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
 
-::: note 区分@ConfigurationProperties注解 @Value注解
+    <!--批量删除员工-->
+    <select id="delete">
+        delete from emp where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 
-相同点：都是用来注入外部配置的属性的。
+    <!-- 省略... -->
 
-不同点：
+</mapper>
+```
 
-- @Value注解只能一个一个的进行外部属性的注入。
+#### 2.3.5 功能测试
 
-- @ConfigurationProperties可以批量的将外部的属性配置注入到bean对象的属性中。
+功能开发完成后，重启项目工程，打开postman，发起DELETE请求：
 
-:::
+![ ](./assets/springboot03/image-20221215190229696.png)
+
+> 控制台SQL语句：
+>
+> ![ ](./assets/springboot03/image-20221215190948723.png)
+
+#### 2.3.6 前后端联调
+
+打开浏览器，测试后端功能接口：
+
+![ ](./assets/springboot03/image-20221215190606676.png)
+
+![ ](./assets/springboot03/image-20221215190640539.png)
+
+![ ](./assets/springboot03/image-20221215190753313.png)

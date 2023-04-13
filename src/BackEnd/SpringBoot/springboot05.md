@@ -2,1567 +2,123 @@
 order: 5
 date: 2023-04-08
 category: 
-  - SpringBoot
-  - AOP
+  - SpringBoot案例
+  - Cookie
+  - Session
+  - 令牌技术
 ---
 
-# SpringBoot事务、AOP
+# SpringBoot案例-登录认证
 
-## 1. 事务管理
+## 1. 登录功能
 
-### 1.1 事务回顾
+### 1.1 需求
 
-**事务**是一组操作的集合，它是一个不可分割的工作单位。事务会把所有的操作作为一个整体，一起向数据库提交或者是撤销操作请求。所以这组操作要么同时成功，要么同时失败。
+![ ](./assets/springboot05/image-20230105085404855.png)
 
-::: info 事务的操作
+输入用户名及密码，点击 "登录" 按钮就要请求服务器，服务端判断用户输入的用户名或者密码是否正确。如果正确，则返回成功结果，前端跳转至系统首页面。
 
-1. 开启事务（一组操作开始前，开启事务）：start transaction / begin ;
-2. 提交事务（这组操作全部成功后，提交事务）：commit ;
-3. 回滚事务（中间任何一个操作出现异常，回滚事务）：rollback ;
+### 1.2 接口文档
 
-:::
+参照接口文档来开发登录功能
 
-### 1.2 Spring事务管理
+- 基本信息
 
-#### 1.2.1 案例
-
-需求：当部门解散了不仅需要把部门信息删除了，还需要把该部门下的员工数据也删除了。
-
-步骤：
-
-- 根据ID删除部门数据
-- 根据部门ID删除该部门下的员工
-
-代码实现：
-
-1. DeptServiceImpl
-
-    ```java
-    @Slf4j
-    @Service
-    public class DeptServiceImpl implements DeptService {
-        @Autowired
-        private DeptMapper deptMapper;
-
-        @Autowired
-        private EmpMapper empMapper;
-
-
-        //根据部门id，删除部门信息及部门下的所有员工
-        @Override
-        public void delete(Integer id){
-            //根据部门id删除部门信息
-            deptMapper.deleteById(id);
-
-            //删除部门下的所有员工信息
-            empMapper.deleteByDeptId(id);   
-        }
-    }
-    ```
-
-2. DeptMapper
-
-    ```java
-    @Mapper
-    public interface DeptMapper {
-        /**
-         * 根据id删除部门信息
-         * @param id   部门id
-         */
-        @Delete("delete from dept where id = #{id}")
-        void deleteById(Integer id);
-    }
-    ```
-
-3. EmpMapper
-
-    ```java
-    @Mapper
-    public interface EmpMapper {
-
-        //根据部门id删除部门下所有员工
-        @Delete("delete from emp where dept_id=#{deptId}")
-        public int deleteByDeptId(Integer deptId);
-        
-    }
-    ```
-
-重启SpringBoot服务，使用postman测试部门删除：
-
-![ ](./assets/springboot05/image-20230107140057729.png)
-
-代码正常情况下，dept表和Em表中的数据已删除
-
-![ ](./assets/springboot05/image-20230107140130199.png)
-
-![ ](./assets/springboot05/image-20230107140221425.png)
-
-修改DeptServiceImpl类中代码，添加可能出现异常的代码：
-
-```java
-@Slf4j
-@Service
-public class DeptServiceImpl implements DeptService {
-    @Autowired
-    private DeptMapper deptMapper;
-
-    @Autowired
-    private EmpMapper empMapper;
-
-
-    //根据部门id，删除部门信息及部门下的所有员工
-    @Override
-    public void delete(Integer id){
-        //根据部门id删除部门信息
-        deptMapper.deleteById(id);
-        
-        //模拟：异常发生
-        int i = 1/0;
-
-        //删除部门下的所有员工信息
-        empMapper.deleteByDeptId(id);   
-    }
-}
-```
-
-重启SpringBoot服务，使用postman测试部门删除：
-
-![ ](./assets/springboot05/image-20230107140618199.png)
-
-![ ](./assets/springboot05/image-20230107140706301.png)
-
-查看数据库表：
-
-- 删除了2号部门
-
-![ ](./assets/springboot05/image-20230107140726701.png)
-
-- 2号部门下的员工数据没有删除
-
-![ ](./assets/springboot05/image-20230107140221425.png)
-
-**以上程序出现的问题：即使程序运行抛出了异常，部门依然删除了，但是部门下的员工却没有删除，造成了数据的不一致。**
-
-#### 1.2.2 原因分析
-
-- 先执行根据id删除部门的操作，这步执行完毕，数据库表 dept 中的数据就已经删除了。
-- 执行 1/0 操作，抛出异常
-- 抛出异常之前，下面所有的代码都不会执行了，根据部门ID删除该部门下的员工，这个操作也不会执行 。
-
-此时，在delete删除业务功能中添加事务
-
-![ ](./assets/springboot05/image-20230107141652636.png)
-
-在方法运行之前，开启事务，如果方法成功执行，就提交事务，如果方法执行的过程当中出现异常了，就回滚事务。
-
-#### 1.2.3 Transactional注解
-
-::: info @Transactional作用
-
-在方法执行开始之前开启事务，方法执行完毕之后提交事务。如果这个方法执行的过程当中出现了异常，就会进行事务的回滚操作。
-
-:::
-
-::: info @Transactional注解
-
-一般会在业务层当中来控制事务，因为在业务层当中，一个业务功能可能会包含多个数据访问的操作。  
-
-在业务层来控制事务，可以将多个数据访问操作控制在一个事务范围内。
-
-:::
-
-::: tip @Transactional注解书写位置
-
-方法: 当前方法交给spring进行事务管理
-
-类: 当前类中所有的方法都交由spring进行事务管理
-
-接口: 接口下所有的实现类当中所有的方法都交给spring 进行事务管理
-
-:::
-
-在业务方法delete上加上 @Transactional 来控制事务
-
-```java
-@Slf4j
-@Service
-public class DeptServiceImpl implements DeptService {
-    @Autowired
-    private DeptMapper deptMapper;
-
-    @Autowired
-    private EmpMapper empMapper;
-
-    
-    @Override
-    @Transactional  //当前方法添加了事务管理
-    public void delete(Integer id){
-        //根据部门id删除部门信息
-        deptMapper.deleteById(id);
-        
-        //模拟：异常发生
-        int i = 1/0;
-
-        //删除部门下的所有员工信息
-        empMapper.deleteByDeptId(id);   
-    }
-}
-```
-
-重启SpringBoot服务，使用postman测试：
-
-![ ](./assets/springboot05/image-20230107143339917.png)
-
-添加Spring事务管理后，由于服务端程序引发了异常，所以事务进行回滚。
-
-![ ](./assets/springboot05/image-20230107144312892.png)
-
-![ ](./assets/springboot05/image-20230107143720961.png)
-
-说明：在application.yml配置文件中开启事务管理日志，这样就可以在控制台看到和事务相关的日志信息了
-
-```yaml
-#spring事务管理日志
-logging:
-  level:
-    org.springframework.jdbc.support.JdbcTransactionManager: debug
-```
-
-### 1.3 事务进阶
-
-@Transactional注解当中的两个常见的属性：
-
-1. 异常回滚的属性：rollbackFor
-2. 事务传播行为：propagation
-
-#### 1.3.1 rollbackFor
-
-```java
-@Transactional
-public void delete(Integer id){
-        //根据部门id删除部门信息
-        deptMapper.deleteById(id);
-        
-        //模拟：异常发生
-        int i = 1/0;
-
-        //删除部门下的所有员工信息
-        empMapper.deleteByDeptId(id);   
-}
-```
-
-修改业务功能代码，在模拟异常的位置上直接抛出Exception异常（编译时异常）
-
-```java
-@Transactional
-public void delete(Integer id) throws Exception {
-        //根据部门id删除部门信息
-        deptMapper.deleteById(id);
-        
-        //模拟：异常发生
-        if(true){
-            throw new Exception("出现异常了```");
-        }
-
-        //删除部门下的所有员工信息
-        empMapper.deleteByDeptId(id);   
-}
-```
-
-> 说明：在service中向上抛出一个Exception编译时异常之后，由于是controller调用service，所以在controller中要有异常处理代码，此时选择在controller中继续把异常向上抛。
->
-> ```java
-> @DeleteMapping("/depts/{id}")
-> public Result delete(@PathVariable Integer id) throws Exception {
->      //日志记录
->      log.info("根据id删除部门");
->      //调用service层功能
->      deptService.delete(id);
->      //响应
->      return Result.success();
-> }
-> ```
-
-重新启动服务后测试：
-
-抛出异常之后事务会不会回滚
-
-> 现有表中数据：
->
-> ![ ](./assets/springboot05/image-20230107140726701.png)
-
-使用postman测试，删除5号部门
-
-![ ](./assets/springboot05/image-20230108142359592.png)
-
-发生了Exception异常，但事务依然提交了
-
-![ ](./assets/springboot05/image-20230108142555310.png)
-
-> dept表中数据：
->
-> ![ ](./assets/springboot05/image-20230108142707351.png)
-
-结论：默认情况下，只有出现RuntimeException(运行时异常)才会回滚事务。
-
-配置@Transactional注解当中的rollbackFor属性，通过rollbackFor这个属性可以指定出现何种异常类型回滚事务。
-
-```java
-@Slf4j
-@Service
-public class DeptServiceImpl implements DeptService {
-    @Autowired
-    private DeptMapper deptMapper;
-
-    @Autowired
-    private EmpMapper empMapper;
-
-    
-    @Override
-    @Transactional(rollbackFor=Exception.class)
-    public void delete(Integer id){
-        //根据部门id删除部门信息
-        deptMapper.deleteById(id);
-        
-        //模拟：异常发生
-        int num = id/0;
-
-        //删除部门下的所有员工信息
-        empMapper.deleteByDeptId(id);   
-    }
-}
-```
-
-重新启动服务，测试删除部门的操作：
-
-![ ](./assets/springboot05/image-20230108184912155.png)
-
-控制台日志：执行了删除3号部门的操作， 因为异常又进行了事务回滚
-
-![ ](./assets/springboot05/image-20230108185432083.png)
-
-数据表：3号部门没有删除
-
-![ ](./assets/springboot05/image-20230107143720961.png)
-
-> 结论：
->
-> - 在Spring的事务管理中，默认只有运行时异常 RuntimeException才会回滚。
-> - 如果还需要回滚指定类型的异常，可以通过rollbackFor属性来指定。
-
-#### 1.3.3 propagation
-
-这个属性是用来配置事务的传播行为的。
-
-![ ](./assets/springboot05/image-20230112152543953.png)
-
-所谓事务的传播行为，指的就是在A方法运行的时候，首先会开启一个事务，在A方法当中又调用了B方法， B方法自身也具有事务，那么B方法在运行的时候，到底是加入到A方法的事务当中来，还是B方法在运行的时候新建一个事务？这个就涉及到了事务的传播行为。
-
-常见的事务传播行为。
-
-| **属性值**    | **含义**                                                     |
-| ------------- | ------------------------------------------------------------ |
-| **REQUIRED**      | 【默认值】需要事务，有则加入，无则创建新事务                 |
-| **REQUIRES_NEW**  | 需要新事务，无论有无，总是创建新事务                         |
-| SUPPORTS      | 支持事务，有则加入，无则在无事务状态中运行                   |
-| NOT_SUPPORTED | 不支持事务，在无事务状态下运行,如果当前存在已有事务,则挂起当前事务 |
-| MANDATORY     | 必须有事务，否则抛异常                                       |
-| NEVER         | 必须没事务，否则抛异常                                       |
-| …             |                                                              |
-
-案例:
-
-**需求：** 解散部门时需要记录操作日志
-
-由于解散部门是一个非常重要而且非常危险的操作，所以在业务当中要求每一次执行解散部门的操作都需要留下痕迹，就是要记录操作日志。而且还要求无论是执行成功了还是执行失败了，都需要留下痕迹。
-
-**步骤：**
-
-1. 执行解散部门的业务：先删除部门，再删除部门下的员工（前面已实现）
-2. 记录解散部门的日志，到日志表（未实现）
-
-**准备工作：**
-
-1. 创建数据库表 dept_log 日志表：
-
-    ```sql
-    create table dept_log(
-        id int auto_increment comment '主键ID' primary key,
-        create_time datetime null comment '操作时间',
-        description varchar(300) null comment '操作描述'
-    )comment '部门操作日志表';
-    ```
-
-2. 引入资料中提供的实体类：DeptLog
-
-    ```java
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public class DeptLog {
-        private Integer id;
-        private LocalDateTime createTime;
-        private String description;
-    }
-    ```
-
-3. 引入资料中提供的Mapper接口：DeptLogMapper
-
-    ```java
-    @Mapper
-    public interface DeptLogMapper {
-
-        @Insert("insert into dept_log(create_time,description) values(#{createTime},#{description})")
-        void insert(DeptLog log);
-
-    }
-    ```
-
-4. 引入资料中提供的业务接口：DeptLogService
-
-    ```java
-    public interface DeptLogService {
-        void insert(DeptLog deptLog);
-    }
-    ```
-
-5. 引入资料中提供的业务实现类：DeptLogServiceImpl
-
-    ```java
-    @Service
-    public class DeptLogServiceImpl implements DeptLogService {
-
-        @Autowired
-        private DeptLogMapper deptLogMapper;
-
-        @Transactional //事务传播行为：有事务就加入、没有事务就新建事务
-        @Override
-        public void insert(DeptLog deptLog) {
-            deptLogMapper.insert(deptLog);
-        }
-    }
-
-    ```
-
-**代码实现:**
-
-业务实现类：DeptServiceImpl
-
-```java
-@Slf4j
-@Service
-//@Transactional //当前业务实现类中的所有的方法，都添加了spring事务管理机制
-public class DeptServiceImpl implements DeptService {
-    @Autowired
-    private DeptMapper deptMapper;
-    
-    @Autowired
-    private EmpMapper empMapper;
-
-    @Autowired
-    private DeptLogService deptLogService;
-
-
-    //根据部门id，删除部门信息及部门下的所有员工
-    @Override
-    @Log
-    @Transactional(rollbackFor = Exception.class) 
-    public void delete(Integer id) throws Exception {
-        try {
-            //根据部门id删除部门信息
-            deptMapper.deleteById(id);
-            //模拟：异常
-            if(true){
-                throw new Exception("出现异常了```");
-            }
-            //删除部门下的所有员工信息
-            empMapper.deleteByDeptId(id);
-        }finally {
-            //不论是否有异常，最终都要执行的代码：记录日志
-            DeptLog deptLog = new DeptLog();
-            deptLog.setCreateTime(LocalDateTime.now());
-            deptLog.setDescription("执行了解散部门的操作，此时解散的是"+id+"号部门");
-            //调用其他业务类中的方法
-            deptLogService.insert(deptLog);
-        }
-    }
-    
-    //省略其他代码...
-}
-```
-
-**测试:**
-
-重新启动SpringBoot服务，测试删除3号部门
-
-- 执行了删除3号部门操作
-- 执行了插入部门日志操作
-- 程序发生Exception异常
-- 执行事务回滚（删除、插入操作因为在一个事务范围内，两个操作都会被回滚）
-
-![ ](./assets/springboot05/image-20230109154025262.png)
-
-然后在dept_log表中没有记录日志数据
-
-![ ](./assets/springboot05/image-20230109154344393.png)
-
-**原因分析:**
-
-- 在执行delete操作时开启了一个事务
-
-- 当执行insert操作时，insert设置的事务传播行是默认值REQUIRED，表示有事务就加入，没有则新建事务
-
-- 此时：delete和insert操作使用了同一个事务，同一个事务中的多个操作，要么同时成功，要么同时失败，所以当异常发生时进行事务回滚，就会回滚delete和insert操作
-
-![ ](./assets/springboot05/image-20230109162420479.png)
-
-**解决方案：**
-
-在DeptLogServiceImpl类中insert方法上，添加  
-@Transactional(propagation = Propagation.REQUIRES_NEW)
-
-> Propagation.REQUIRES_NEW  ：不论是否有事务，都创建新事务  ，运行在一个独立的事务中。
-
-```java
-@Service
-public class DeptLogServiceImpl implements DeptLogService {
-
-    @Autowired
-    private DeptLogMapper deptLogMapper;
-
-    //事务传播行为：不论是否有事务，都新建事务
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void insert(DeptLog deptLog) {
-        deptLogMapper.insert(deptLog);
-    }
-}
-```
-
-重启SpringBoot服务，再次测试删除3号部门：
-
-![ ](./assets/springboot05/image-20230109170002879.png)
-
-> - REQUIRED ：大部分情况下都是用该传播行为即可。
->
-> - REQUIRES_NEW ：不希望事务之间相互影响时，可以使用该传播行为。  
->   比如：下订单前需要记录日志，不论订单保存成功与否，都需要保证日志记录能够记录成功。
-
-## 2. AOP基础
-
-### 2.1 AOP概述
-
-::: info 什么是AOP？
-
-- Aspect Oriented Programming（面向切面编程、面向方面编程）
-
-- 面向切面编程就是面向特定方法编程。
-
-:::
-
-比如，一个项目中开发了很多的业务功能。
-
-![ ](./assets/springboot05/image-20230112154547523.png)
-
-有一些业务功能执行效率比较低，执行耗时较长，需要针对于这些业务方法进行优化
-
-![ ](./assets/springboot05/image-20230112154605206.png)
-
-如果在每一个模块下的业务方法中，添加记录开始时间、结束时间、计算执行耗时的代码，就会让程序员的工作变得非常繁琐。
-
-![ ](./assets/springboot05/image-20230112154627546.png)
-
-> AOP的作用：在程序运行期间在不修改源代码的基础上对已有方法进行增强（无侵入性: 解耦）
-
-![ ](./assets/springboot05/image-20230112154530101.png)
-
-此时，调用部门管理的 list 业务方法时啊，并不会直接执行 list 方法的逻辑，而是会执行定义的 模板方法 ， 然后再模板方法中：
-
-- 记录方法运行开始时间
-- 运行原始的业务方法（那此时原始的业务方法，就是 list 方法）
-- 记录方法运行结束时间，计算方法执行耗时
-
-![ ](./assets/springboot05/image-20230112155813944.png)
-
-其实，AOP面向切面编程和OOP面向对象编程一样，它们都仅仅是一种编程思想，而动态代理技术是这种思想最主流的实现方式。  
-Spring的AOP是Spring框架的高级技术，旨在管理bean对象的过程中底层使用动态代理机制，对特定的方法进行编程(功能增强)。
-
-::: tip AOP的优势
-
-1. 减少重复代码
-2. 提高开发效率
-3. 维护方便
-
-:::
-
-### 2.2 AOP快速入门
-
-**需求：** 统计各个业务层方法执行耗时。
-
-**实现步骤：**
-
-1. 导入依赖：在pom.xml中导入AOP的依赖
-2. 编写AOP程序：针对于特定方法根据业务需要进行编程
-
-**pom.xml**:
-
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-aop</artifactId>
-</dependency>
-```
-
-**AOP程序：TimeAspect**:
-
-```java
-@Component
-@Aspect //当前类为切面类
-@Slf4j
-public class TimeAspect {
-
-    @Around("execution(* com.itheima.service.*.*(..))") 
-    public Object recordTime(ProceedingJoinPoint pjp) throws Throwable {
-        //记录方法执行开始时间
-        long begin = System.currentTimeMillis();
-
-        //执行原始方法
-        Object result = pjp.proceed();
-
-        //记录方法执行结束时间
-        long end = System.currentTimeMillis();
-
-        //计算方法执行耗时
-        log.info(pjp.getSignature()+"执行耗时: {}毫秒",end-begin);
-
-        return result;
-    }
-}
-```
-
-重新启动SpringBoot服务测试程序：
-
-- 查询3号部门信息
-
-![ ](./assets/springboot05/image-20230110143404792.png)
-
-![ ](./assets/springboot05/image-20230110143611669.png)
-
-> 查询所有部门信息（同样执行AOP程序）
->
-> ![ ](./assets/springboot05/image-20230110143815479.png)
-
-::: tip AOP的功能
-
-- 记录系统的操作日志
+  ```md
+  请求路径：/login
   
-- 权限控制
-- 事务管理：Spring事务管理，底层其实也是通过AOP来实现的，只要添加@Transactional注解之后，AOP程序自动会在原始方法运行前先来开启事务，在原始方法运行完毕之后提交或回滚事务
-
-:::
-
-::: tip AOP面向切面编程的一些优势
-
-- 代码无侵入：没有修改原始的业务方法，就已经对原始的业务方法进行了功能的增强或者是功能的改变
-
-- 减少了重复代码
-- 提高开发效率
-
-- 维护方便
+  请求方式：POST
   
-:::
-
-### 2.3 AOP核心概念
-
-**1. 连接点：JoinPoint**，可以被AOP控制的方法（暗含方法执行时的相关信息）
-
-例如：入门程序当中所有的业务方法都是可以被aop控制的方法。
-
-![ ](./assets/springboot05/image-20230112160708474.png)
-
-**2. 通知：Advice**，指哪些重复的逻辑，也就是共性功能（最终体现为一个方法）
-
-在入门程序中统计各个业务方法的执行耗时，在AOP面向切面编程当中，只需要将这部分重复的代码逻辑抽取出来单独定义。抽取出来的这一部分重复的逻辑，也就是共性的功能。
-
-![ ](./assets/springboot05/image-20230112160852883.png)
-
-**3. 切入点：PointCut**，匹配连接点的条件，通知仅会在切入点方法执行时被应用
-
-在通知当中，定义的共性功能到底要应用在哪些方法上？此时就涉及到了切入点pointcut概念。切入点指的是匹配连接点的条件。通知仅会在切入点方法运行时才会被应用。
-
-在aop的开发当中，通常会通过一个切入点表达式来描述切入点。
-
-![ ](./assets/springboot05/image-20230112161131937.png)
-
-假如：切入点表达式改为DeptServiceImpl.list()，此时就代表仅仅只有list这一个方法是切入点。只有list()方法在运行的时候才会应用通知。
-
-**4. 切面：Aspect**，描述通知与切入点的对应关系（通知+切入点）
-
-当通知和切入点结合在一起，就形成了一个切面。通过切面就能够描述当前aop程序需要针对于哪个原始方法，在什么时候执行什么样的操作。
-
-![ ](./assets/springboot05/image-20230112161335186.png)
-
-切面所在的类，一般称为**切面类**（被@Aspect注解标识的类）
-
-**5. 目标对象：Target**，通知所应用的对象
-
-目标对象指的就是通知所应用的对象，就称之为目标对象。
-
-![ ](./assets/springboot05/image-20230112161657667.png)
-
-  通知是如何与目标对象结合在一起，对目标对象当中的方法进行功能增强的。
-
-![ ](./assets/springboot05/image-20230112161821401.png)
-
-Spring的AOP底层是基于动态代理技术来实现的，也就是说在程序运行的时候，会自动的基于动态代理技术为目标对象生成一个对应的代理对象。在代理对象当中就会对目标对象当中的原始方法进行功能的增强。
-
-## 3. AOP进阶
-
-### 3.1 通知类型
-
-```java
-@Around("execution(* com.itheima.service.*.*(..))")
-public Object recordTime(ProceedingJoinPoint pjp) throws Throwable {
-    //记录方法执行开始时间
-    long begin = System.currentTimeMillis();
-    //执行原始方法
-    Object result = pjp.proceed();
-    //记录方法执行结束时间
-    long end = System.currentTimeMillis();
-    //计算方法执行耗时
-    log.info(pjp.getSignature()+"执行耗时: {}毫秒",end-begin);
-    return result;
-}
-```
-
-> 在通知方法上加上了@Around注解，就代表当前通知是一个环绕通知。
-
-::: tip Spring中AOP的通知类型：
-
-- @Around：环绕通知，此注解标注的通知方法在目标方法前、后都被执行
-- @Before：前置通知，此注解标注的通知方法在目标方法前被执行
-- @After ：后置通知，此注解标注的通知方法在目标方法后被执行，无论是否有异常都会执行
-- @AfterReturning ： 返回后通知，此注解标注的通知方法在目标方法后被执行，有异常不会执行
-- @AfterThrowing ： 异常后通知，此注解标注的通知方法发生异常后执行
-
-:::
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect1 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(JoinPoint joinPoint){
-        log.info("before ...");
-
-    }
-
-    //环绕通知
-    @Around("execution(* com.itheima.service.*.*(..))")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        log.info("around before ...");
-
-        //调用目标对象的原始方法执行
-        Object result = proceedingJoinPoint.proceed();
-        
-        //原始方法如果执行时有异常，环绕通知中的后置代码不会在执行了
-        
-        log.info("around after ...");
-        return result;
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(JoinPoint joinPoint){
-        log.info("after ...");
-    }
-
-    //返回后通知（程序在正常执行的情况下，会执行的后置通知）
-    @AfterReturning("execution(* com.itheima.service.*.*(..))")
-    public void afterReturning(JoinPoint joinPoint){
-        log.info("afterReturning ...");
-    }
-
-    //异常通知（程序在出现异常的情况下，执行的后置通知）
-    @AfterThrowing("execution(* com.itheima.service.*.*(..))")
-    public void afterThrowing(JoinPoint joinPoint){
-        log.info("afterThrowing ...");
-    }
-}
-
-```
-
-重新启动SpringBoot服务，进行测试：
-
-**1. 没有异常情况下：**
-
-- 使用postman测试查询所有部门数据
-
-![ ](./assets/springboot05/image-20230110165514461.png)
-
-- 查看idea中控制台日志输出
-
-![ ](./assets/springboot05/image-20230110165806934.png)
-
-> 程序没有发生异常的情况下，@AfterThrowing标识的通知方法不会执行。
-
-**2. 出现异常情况下：**
-
-修改DeptServiceImpl业务实现类中的代码： 添加异常
-
-```java
-@Slf4j
-@Service
-public class DeptServiceImpl implements DeptService {
-    @Autowired
-    private DeptMapper deptMapper;
-
-    @Override
-    public List<Dept> list() {
-
-        List<Dept> deptList = deptMapper.list();
-
-        //模拟异常
-        int num = 10/0;
-
-        return deptList;
-    }
-    
-    //省略其他代码...
-}
-```
-
-重新启动SpringBoot服务，测试发生异常情况下通知的执行：
-
-- 查看idea中控制台日志输出
-
-![ ](./assets/springboot05/image-20230110171006874.png)
-
-> 程序发生异常的情况下：
->
-> - @AfterReturning标识的通知方法不会执行，@AfterThrowing标识的通知方法执行
->
-> - @Around环绕通知中原始方法调用时有异常，通知中的环绕后的代码逻辑也不会在执行了 （因为原始方法调用已经出异常了）
-
-::: warning 使用通知时的注意事项
-
-- @Around环绕通知需要自己调用 ProceedingJoinPoint.proceed() 来让原始方法执行，其他通知不需要考虑目标方法执行
-- @Around环绕通知方法的返回值，必须指定为Object，来接收原始方法的返回值，否则原始方法执行完毕，是获取不到返回值的。
-
-:::
-
-```java
-//前置通知
-@Before("execution(* com.itheima.service.*.*(..))")
-
-//环绕通知
-@Around("execution(* com.itheima.service.*.*(..))")
-  
-//后置通知
-@After("execution(* com.itheima.service.*.*(..))")
-
-//返回后通知（程序在正常执行的情况下，会执行的后置通知）
-@AfterReturning("execution(* com.itheima.service.*.*(..))")
-
-//异常通知（程序在出现异常的情况下，执行的后置通知）
-@AfterThrowing("execution(* com.itheima.service.*.*(..))")
-```
-
-怎么来解决这个切入点表达式重复的问题？ 答案就是：**抽取**
-
-Spring提供了@PointCut注解，作用是将公共的切入点表达式抽取出来，需要用到时引用该切入点表达式即可。
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect1 {
-
-    //切入点方法（公共的切入点表达式）
-    @Pointcut("execution(* com.itheima.service.*.*(..))")
-    private void pt(){
-
-    }
-
-    //前置通知（引用切入点）
-    @Before("pt()")
-    public void before(JoinPoint joinPoint){
-        log.info("before ...");
-
-    }
-
-    //环绕通知
-    @Around("pt()")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        log.info("around before ...");
-
-        //调用目标对象的原始方法执行
-        Object result = proceedingJoinPoint.proceed();
-        //原始方法在执行时：发生异常
-        //后续代码不在执行
-
-        log.info("around after ...");
-        return result;
-    }
-
-    //后置通知
-    @After("pt()")
-    public void after(JoinPoint joinPoint){
-        log.info("after ...");
-    }
-
-    //返回后通知（程序在正常执行的情况下，会执行的后置通知）
-    @AfterReturning("pt()")
-    public void afterReturning(JoinPoint joinPoint){
-        log.info("afterReturning ...");
-    }
-
-    //异常通知（程序在出现异常的情况下，执行的后置通知）
-    @AfterThrowing("pt()")
-    public void afterThrowing(JoinPoint joinPoint){
-        log.info("afterThrowing ...");
-    }
-}
-```
-
-需要注意的是：当切入点方法使用private修饰时，仅能在当前切面类中引用该表达式， 当外部其他切面类中也要引用当前类中的切入点表达式，就需要把private改为public  
-在引用的时候，具体的语法为：全类名.方法名()
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect2 {
-    //引用MyAspect1切面类中的切入点表达式
-    @Before("com.itheima.aspect.MyAspect1.pt()")
-    public void before(){
-        log.info("MyAspect2 -> before ...");
-    }
-}
-```
-
-### 3.2 通知顺序
-
-定义多个切面类：
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect2 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect2 -> before ...");
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect2 -> after ...");
-    }
-}
-
-```
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect3 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect3 -> before ...");
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect3 ->  after ...");
-    }
-}
-```
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect4 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect4 -> before ...");
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect4 -> after ...");
-    }
-}
-
-```
-
-重新启动SpringBoot服务，测试通知的执行顺序：
-
-> 备注：
->
-> 1. 把DeptServiceImpl实现类中模拟异常的代码删除或注释掉。
->
-> 2. 注释掉其他切面类(把@Aspect注释即可)，仅保留MyAspect2、MyAspect3、MyAspect4 ，这样就可以清晰看到执行的结果，而不被其他切面类干扰。
-
-- 使用postman测试查询所有部门数据
-
-![ ](./assets/springboot05/image-20230110165514461.png)
-
-- 查看idea中控制台日志输出
-
-![ ](./assets/springboot05/image-20230110211208549.png)
-
-默认按照切面类的类名字母排序：
-
-- 目标方法前的通知方法：字母排名靠前的先执行
-- 目标方法后的通知方法：字母排名靠前的后执行
-
-控制通知的执行顺序有两种方式：
-
-1. 修改切面类的类名（繁琐、不便管理）
-2. 使用Spring提供的@Order注解
-
-使用@Order注解，控制通知的执行顺序：
-
-```java
-@Slf4j
-@Component
-@Aspect
-@Order(2)  //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
-public class MyAspect2 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect2 -> before ...");
-    }
-
-    //后置通知 
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect2 -> after ...");
-    }
-}
-```
-
-```java
-@Slf4j
-@Component
-@Aspect
-@Order(3)  //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
-public class MyAspect3 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect3 -> before ...");
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect3 ->  after ...");
-    }
-}
-```
-
-```java
-@Slf4j
-@Component
-@Aspect
-@Order(1) //切面类的执行顺序（前置通知：数字越小先执行; 后置通知：数字越小越后执行）
-public class MyAspect4 {
-    //前置通知
-    @Before("execution(* com.itheima.service.*.*(..))")
-    public void before(){
-        log.info("MyAspect4 -> before ...");
-    }
-
-    //后置通知
-    @After("execution(* com.itheima.service.*.*(..))")
-    public void after(){
-        log.info("MyAspect4 -> after ...");
-    }
-}
-```
-
-重新启动SpringBoot服务，测试通知执行顺序：
-
-![ ](./assets/springboot05/image-20230110212523787.png)
-
-### 3.3 切入点表达式
-
-描述切入点方法的一种表达式
-
-- 作用：主要用来决定项目中的哪些方法需要加入通知
-
-常见形式：
-
-   execution(……)：根据方法的签名来匹配
-
-  ![ ](./assets/springboot05/image-20230110214150215.png)
-
-   @annotation(……) ：根据注解匹配
-
-  ![ ](./assets/springboot05/image-20230110214242083.png)
-
-#### 3.3.1 execution
-
-execution主要根据方法的返回值、包名、类名、方法名、方法参数等信息来匹配，语法为：
-
-```java
-execution(访问修饰符?  返回值  包名.类名.?方法名(方法参数) throws 异常?)
-```
-
-其中带`?`的表示可以省略的部分
-
-- 访问修饰符：可省略（比如: public、protected）
-
-- 包名.类名： 可省略
-
-- throws 异常：可省略（注意是方法上声明抛出的异常，不是实际抛出的异常）
-
-示例：
-
-```java
-@Before("execution(void com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))")
-```
-
-可以使用通配符描述切入点
-
-- `*` ：单个独立的任意符号，可以通配任意返回值、包名、类名、方法名、任意类型的一个参数，也可以通配包、类、方法名的一部分
-
-- `..` ：多个连续的任意符号，可以通配任意层级的包，或任意类型、任意个数的参数
-
-::: tip 切入点表达式的语法规则
-
-1. 方法的访问修饰符可以省略
-2. 返回值可以使用`*`号代替（任意返回值类型）
-3. 包名可以使用`*`号代替，代表任意包（一层包使用一个`*`）
-4. 使用`..`配置包名，标识此包以及此包下的所有子包
-5. 类名可以使用`*`号代替，标识任意类
-6. 方法名可以使用`*`号代替，表示任意方法
-7. 可以使用 `*`  配置参数，一个任意类型的参数
-8. 可以使用`..` 配置参数，任意个任意类型的参数
-
-:::
-
-**切入点表达式示例**:
-
-- 省略方法的修饰符号
-
-  ```java
-  execution(void com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))
+  接口描述：该接口用于员工登录Tlias智能学习辅助系统，登录完毕后，系统下发JWT令牌。 
   ```
 
-- 使用`*`代替返回值类型
+- 请求参数
 
-  ```java
-  execution(* com.itheima.service.impl.DeptServiceImpl.delete(java.lang.Integer))
-  ```
+  参数格式：application/json
 
-- 使用`*`代替包名（一层包使用一个`*`）
+  参数说明：
 
-  ```java
-  execution(* com.itheima.*.*.DeptServiceImpl.delete(java.lang.Integer))
-  ```
+  | 名称     | 类型   | 是否必须 | 备注   |
+  | -------- | ------ | -------- | ------ |
+  | username | string | 必须     | 用户名 |
+  | password | string | 必须     | 密码   |
 
-- 使用`..`省略包名
+  请求数据样例：
 
-  ```java
-  execution(* com..DeptServiceImpl.delete(java.lang.Integer))    
-  ```
-
-- 使用`*`代替类名
-
-  ```java
-  execution(* com..*.delete(java.lang.Integer))   
-  ```
-
-- 使用`*`代替方法名
-
-  ```java
-  execution(* com..*.*(java.lang.Integer))   
-  ```
-
-- 使用 `*` 代替参数
-
-  ```java
-  execution(* com.itheima.service.impl.DeptServiceImpl.delete(*))
-  ```
-  
-- 使用`..`省略参数
-
-  ```java
-  execution(* com..*.*(..))
-  ```
-
-注意事项：
-
-- 根据业务需要，可以使用 且（&&）、或（||）、非（!） 来组合比较复杂的切入点表达式。
-
-  ```java
-  execution(* com.itheima.service.DeptService.list(..)) || execution(* com.itheima.service.DeptService.delete(..))
-  ```
-
-切入点表达式的书写建议：
-
-- 所有业务方法名在命名时尽量规范，方便切入点表达式快速匹配。如：查询类方法都是 find 开头，更新类方法都是update开头
-
-  ```java
-  //业务类
-  @Service
-  public class DeptServiceImpl implements DeptService {
-      
-      public List<Dept> findAllDept() {
-         //省略代码...
-      }
-      
-      public Dept findDeptById(Integer id) {
-         //省略代码...
-      }
-      
-      public void updateDeptById(Integer id) {
-         //省略代码...
-      }
-      
-      public void updateDeptByMoreCondition(Dept dept) {
-         //省略代码...
-      }
-      //其他代码...
+  ```json
+  {
+      "username": "jinyong",
+      "password": "123456"
   }
   ```
 
-  ```java
-  //匹配DeptServiceImpl类中以find开头的方法
-  execution(* com.itheima.service.impl.DeptServiceImpl.find*(..))
+- 响应数据
+
+  参数格式：application/json
+
+  参数说明：
+
+  | 名称 | 类型   | 是否必须 | 默认值 | 备注                     | 其他信息 |
+  | ---- | ------ | -------- | ------ | ------------------------ | -------- |
+  | code | number | 必须     |        | 响应码, 1 成功 ; 0  失败 |          |
+  | msg  | string | 非必须   |        | 提示信息                 |          |
+  | data | string | 必须     |        | 返回的数据 , jwt令牌     |          |
+
+  响应数据样例：
+
+  ```json
+  {
+    "code": 1,
+    "msg": "success",
+    "data": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6YeR5bq4IiwiaWQiOjEsInVzZXJuYW1lIjoiamlueW9uZyIsImV4cCI6MTY2MjIwNzA0OH0.KkUc_CXJZJ8Dd063eImx4H9Ojfrr6XMJ-yVzaWCVZCo"
+  }
   ```
 
-- 描述切入点方法通常基于接口描述，而不是直接描述实现类，增强拓展性
+### 1.3 思路分析
 
-  ```java
-  execution(* com.itheima.service.DeptService.*(..))
-  ```
+![ ](./assets/springboot05/image-20230105175310401.png)
 
-- 在满足业务需要的前提下，尽量缩小切入点的匹配范围。如：包名匹配尽量不使用 ..，使用 * 匹配单个包
+登录服务端的核心逻辑就是：  
+接收前端请求传递的用户名和密码，然后再根据用户名和密码查询用户信息  
+如果用户信息存在，则说明用户输入的用户名和密码正确。  
+如果查询到的用户不存在，则说明用户输入的用户名和密码错误。
 
-  ```java
-  execution(* com.itheima.*.*.DeptServiceImpl.find*(..))
-  ```
+### 1.4 功能开发
 
-#### 3.3.2 @annotation
-
-实现步骤：
-
-1. 编写自定义注解
-
-2. 在业务类要做为连接点的方法上添加自定义注解
-
-**自定义注解**：MyLog
+**LoginController**:
 
 ```java
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MyLog {
-}
-```
+@RestController
+public class LoginController {
 
-**业务类**：DeptServiceImpl
-
-```java
-@Slf4j
-@Service
-public class DeptServiceImpl implements DeptService {
     @Autowired
-    private DeptMapper deptMapper;
+    private EmpService empService;
 
-    @Override
-    @MyLog //自定义注解（表示：当前方法属于目标方法）
-    public List<Dept> list() {
-        List<Dept> deptList = deptMapper.list();
-        //模拟异常
-        //int num = 10/0;
-        return deptList;
-    }
-
-    @Override
-    @MyLog  //自定义注解（表示：当前方法属于目标方法）
-    public void delete(Integer id) {
-        //1. 删除部门
-        deptMapper.delete(id);
-    }
-
-
-    @Override
-    public void save(Dept dept) {
-        dept.setCreateTime(LocalDateTime.now());
-        dept.setUpdateTime(LocalDateTime.now());
-        deptMapper.save(dept);
-    }
-
-    @Override
-    public Dept getById(Integer id) {
-        return deptMapper.getById(id);
-    }
-
-    @Override
-    public void update(Dept dept) {
-        dept.setUpdateTime(LocalDateTime.now());
-        deptMapper.update(dept);
+    @PostMapping("/login")
+    public Result login(@RequestBody Emp emp){
+        Emp e = empService.login(emp);
+        return  e != null ? Result.success():Result.error("用户名或密码错误");
     }
 }
 ```
 
-**切面类**:
+**EmpService**:
 
 ```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect6 {
-    //针对list方法、delete方法进行前置通知和后置通知
+public interface EmpService {
 
-    //前置通知
-    @Before("@annotation(com.itheima.anno.MyLog)")
-    public void before(){
-        log.info("MyAspect6 -> before ...");
-    }
+    /**
+     * 用户登录
+     * @param emp
+     * @return
+     */
+    public Emp login(Emp emp);
 
-    //后置通知
-    @After("@annotation(com.itheima.anno.MyLog)")
-    public void after(){
-        log.info("MyAspect6 -> after ...");
-    }
+    //省略其他代码...
 }
 ```
 
-重启SpringBoot服务，测试查询所有部门数据，查看控制台日志：
-
-![ ](./assets/springboot05/image-20230110224447047.png)
-
-::: tip
-
-execution切入点表达式
-
-- 根据所指定的方法的描述信息来匹配切入点方法，这种方式也是最为常用的一种方式
-- 如果要匹配的切入点方法的方法名不规则，或者有一些比较特殊的需求，通过execution切入点表达式描述比较繁琐
-
-annotation 切入点表达式
-
-- 基于注解的方式来匹配切入点方法。这种方式虽然多一步操作，需要自定义一个注解，但是相对来比较灵活。需要匹配哪个方法，就在方法上加上对应的注解就可以了
-:::
-
-### 3.4 连接点
-
-连接点可以简单理解为可以被AOP控制的方法。
-
-在SpringAOP当中，连接点又特指方法的执行。
-
-在Spring中用JoinPoint抽象了连接点，用它可以获得方法执行时的相关信息，如目标类名、方法名、方法参数等。
-
-- 对于@Around通知，获取连接点信息只能使用ProceedingJoinPoint类型
-
-- 对于其他四种通知，获取连接点信息只能使用JoinPoint，它是ProceedingJoinPoint的父类型
-
-示例代码：
-
-```java
-@Slf4j
-@Component
-@Aspect
-public class MyAspect7 {
-
-    @Pointcut("@annotation(com.itheima.anno.MyLog)")
-    private void pt(){}
-   
-    //前置通知
-    @Before("pt()")
-    public void before(JoinPoint joinPoint){
-        log.info(joinPoint.getSignature().getName() + " MyAspect7 -> before ...");
-    }
-    
-    //后置通知
-    @Before("pt()")
-    public void after(JoinPoint joinPoint){
-        log.info(joinPoint.getSignature().getName() + " MyAspect7 -> after ...");
-    }
-
-    //环绕通知
-    @Around("pt()")
-    public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        //获取目标类名
-        String name = pjp.getTarget().getClass().getName();
-        log.info("目标类名：{}",name);
-
-        //目标方法名
-        String methodName = pjp.getSignature().getName();
-        log.info("目标方法名：{}",methodName);
-
-        //获取方法执行时需要的参数
-        Object[] args = pjp.getArgs();
-        log.info("目标方法参数：{}", Arrays.toString(args));
-
-        //执行原始方法
-        Object returnValue = pjp.proceed();
-
-        return returnValue;
-    }
-}
-
-```
-
-重新启动SpringBoot服务，执行查询部门数据的功能：
-
-![ ](./assets/springboot05/image-20230110231629140.png)
-
-## 4. AOP案例
-
-### 4.1 需求
-
-需求：将案例中增、删、改相关接口的操作日志记录到数据库表中
-
-- 就是当访问部门管理和员工管理当中的增、删、改相关功能接口时，需要详细的操作日志，并保存在数据表中，便于后期数据追踪。
-
-操作日志信息包含：
-
-- 操作人、操作时间、执行方法的全类名、执行方法名、方法运行时参数、返回值、方法执行时长
-
-> 所记录的日志信息包括当前接口的操作人是谁操作的，什么时间点操作的，以及访问的是哪个类当中的哪个方法，在访问这个方法的时候传入进来的参数是什么，访问这个方法最终拿到的返回值是什么，以及整个接口方法的运行时长是多长时间。
-
-### 4.2 分析
-
-问题1：项目当中增删改相关的方法是不是有很多？
-
-- 很多
-
-问题2：需要针对每一个功能接口方法进行修改，在每一个功能接口当中都来记录这些操作日志吗？
-
-- 这种做法比较繁琐
-
-以上两个问题的解决方案：可以使用AOP解决(每一个增删改功能接口中要实现的记录操作日志的逻辑代码是相同)。
-
-> 可以把这部分记录操作日志的通用的、重复性的逻辑代码抽取出来定义在一个通知方法当中，通过AOP面向切面编程的方式，在不改动原始功能的基础上来对原始的功能进行增强。目前所增强的功能就是来记录操作日志，所以也可以使用AOP的技术来实现。使用AOP的技术来实现也是最为简单，最为方便的。
-
-问题3：既然要基于AOP面向切面编程的方式来完成的功能，那么要使用 AOP五种通知类型当中的哪种通知类型？
-
-- 答案：环绕通知
-
-> 所记录的操作日志当中包括：操作人、操作时间，访问的是哪个类、哪个方法、方法运行时参数、方法的返回值、方法的运行时长。
->
-> 方法返回值，是在原始方法执行后才能获取到的。
->
-> 方法的运行时长，需要原始方法运行之前记录开始时间，原始方法运行之后记录结束时间。通过计算获得方法的执行耗时。
->
->
->
-> 基于以上的分析确定要使用Around环绕通知。
-
-问题4：最后一个问题，切入点表达式该怎么写？
-
-- 答案：使用annotation来描述表达式
-
-> 要匹配业务接口当中所有的增删改的方法，而增删改方法在命名上没有共同的前缀或后缀。此时如果使用execution切入点表达式也可以，但是会比较繁琐。 当遇到增删改的方法名没有规律时，就可以使用 annotation切入点表达式
-
-### 4.3 步骤
-
-案例的实现步骤其实就两步：
-
-- 准备工作
-  1. 引入AOP的起步依赖
-  2. 导入数据库表结构，并引入对应的实体类
-- 编码实现
-  1. 自定义注解@Log
-  2. 定义切面类，完成记录操作日志的逻辑
-
-### 4.4 实现
-
-#### 4.4.1 准备工作
-
-1. AOP起步依赖
-
-    ```xml
-    <!--AOP起步依赖-->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-aop</artifactId>
-    </dependency>
-    ```
-
-2. 导入数据库表结构，并引入对应的实体类
-
-数据表
-
-```sql
--- 操作日志表
-create table operate_log(
-    id int unsigned primary key auto_increment comment 'ID',
-    operate_user int unsigned comment '操作人',
-    operate_time datetime comment '操作时间',
-    class_name varchar(100) comment '操作的类名',
-    method_name varchar(100) comment '操作的方法名',
-    method_params varchar(1000) comment '方法参数',
-    return_value varchar(2000) comment '返回值',
-    cost_time bigint comment '方法执行耗时, 单位:ms'
-) comment '操作日志表';
-```
-
-实体类
-
-```java
-//操作日志实体类
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class OperateLog {
-    private Integer id; //主键ID
-    private Integer operateUser; //操作人ID
-    private LocalDateTime operateTime; //操作时间
-    private String className; //操作类名
-    private String methodName; //操作方法名
-    private String methodParams; //操作方法参数
-    private String returnValue; //操作方法返回值
-    private Long costTime; //操作耗时
-}
-```
-
-Mapper接口
-
-```java
-@Mapper
-public interface OperateLogMapper {
-
-    //插入日志数据
-    @Insert("insert into operate_log (operate_user, operate_time, class_name, method_name, method_params, return_value, cost_time) " +
-            "values (#{operateUser}, #{operateTime}, #{className}, #{methodName}, #{methodParams}, #{returnValue}, #{costTime});")
-    public void insert(OperateLog log);
-
-}
-```
-
-#### 4.4.2 编码实现
-
-- 自定义注解@Log
-
-```java
-/**
- * 自定义Log注解
- */
-@Target({ElementType.METHOD})
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Log {
-}
-```
-
-- 修改业务实现类，在增删改业务方法上添加@Log注解
+**EmpServiceImpl**:
 
 ```java
 @Slf4j
@@ -1572,102 +128,1612 @@ public class EmpServiceImpl implements EmpService {
     private EmpMapper empMapper;
 
     @Override
-    @Log
-    public void update(Emp emp) {
-        emp.setUpdateTime(LocalDateTime.now()); //更新修改时间为当前时间
+    public Emp login(Emp emp) {
+        //调用dao层功能：登录
+        Emp loginEmp = empMapper.getByUsernameAndPassword(emp);
 
-        empMapper.update(emp);
-    }
-
-    @Override
-    @Log
-    public void save(Emp emp) {
-        //补全数据
-        emp.setCreateTime(LocalDateTime.now());
-        emp.setUpdateTime(LocalDateTime.now());
-        //调用添加方法
-        empMapper.insert(emp);
-    }
-
-    @Override
-    @Log
-    public void delete(List<Integer> ids) {
-        empMapper.delete(ids);
-    }
-
+        //返回查询结果给Controller
+        return loginEmp;
+    }   
+    
     //省略其他代码...
 }
 ```
 
-以同样的方式，修改EmpServiceImpl业务类
+**EmpMapper**:
 
-- 定义切面类，完成记录操作日志的逻辑
+```java
+@Mapper
+public interface EmpMapper {
+
+    @Select("select id, username, password, name, gender, image, job, entrydate, dept_id, create_time, update_time " +
+            "from emp " +
+            "where username=#{username} and password =#{password}")
+    public Emp getByUsernameAndPassword(Emp emp);
+    
+    //省略其他代码...
+}
+```
+
+### 1.5 测试
+
+发起POST请求，访问：[http://localhost:8080/login](http://localhost:8080/login)
+
+![ ](./assets/springboot05/image-20220907132229245.png)
+
+先退出系统，进入到登录页面：
+
+![ ](./assets/springboot05/image-20230105193104848.png)
+
+在登录页面输入账户密码：
+
+![ ](./assets/springboot05/image-20230105085212629.png)
+
+登录成功之后进入到后台管理系统页面：
+
+![ ](./assets/springboot05/image-20230105192918098.png)
+
+## 2. 登录校验
+
+### 2.1 问题分析
+
+在浏览器中新的页面上输入地址：`http://localhost:9528/#/system/dept`，没有登录仍然可以进入到后端管理系统页面。
+
+![ ](./assets/springboot05/image-20220907133329021.png)
+
+![ ](./assets/springboot05/image-20230105180811717.png)
+
+::: note 什么是登录校验？
+
+指的是服务器端接收到浏览器发送过来的请求之后，首先对请求进行校验  
+
+先要校验用户登录了没有，如果用户已经登录，直接执行对应的业务操作就可以了  
+
+如果用户没有登录，此时就不允许他执行相关的业务操作，直接给前端响应一个错误的结果，最终跳转到登录页面，要求他登录成功之后，再来访问对应的数据。
+
+:::
+
+HTTP协议是无状态协议
+
+::: note 什么是无状态的协议？
+
+指的是每一次请求都是独立的，下一次请求并不会携带上一次请求的数据。  
+
+而浏览器与服务器之间进行交互，基于HTTP协议也就意味着现在通过浏览器来访问了登陆这个接口，实现了登陆的操作，接下来在执行其他业务操作时，服务器也并不知道这个员工到底登陆了没有。  
+
+HTTP协议是无状态的，两次请求之间是独立的，所以无法判断这个员工到底登陆了没有。
+
+:::
+
+![ ](./assets/springboot05/image-20230105194710533.png)
+
+实现登录校验操作，分为两部分：
+
+1. 在员工登录成功后，需要将用户登录成功的信息存起来，记录用户已经登录成功的标记。
+2. 在浏览器发起请求时，需要在服务端进行统一拦截，拦截后进行登录校验。
+
+::: tip 涉及到的web开发中的                                     两个技术
+
+1. 会话技术
+2. 统一拦截技术
+
+:::
+
+而统一拦截技术现实方案也有两种：
+
+1. Servlet 规范中的 Filter 过滤器
+2. Spring 提供的 interceptor 拦截器
+
+### 2.2 会话技术
+
+什么是会话？
+
+- 在web开发当中，会话指的就是浏览器与服务器之间的一次连接，就称为一次会话。
+
+  > 在用户打开浏览器第一次访问服务器的时候，这个会话就建立了，直到有任何一方断开连接，会话就结束了。在一次会话当中，是可以包含多次请求和响应的。
+  >
+  > 比如：打开了浏览器来访问web服务器上的资源（浏览器不能关闭、服务器不能断开）
+  >
+  > - 第1次：访问的是登录的接口，完成登录操作
+  > - 第2次：访问的是部门管理接口，查询所有部门数据
+  > - 第3次：访问的是员工管理接口，查询员工数据
+  >
+  > 只要浏览器和服务器都没有关闭，以上3次请求都属于一次会话当中完成的。
+
+![ ](./assets/springboot05/image-20230105203827355.png)
+
+**会话跟踪**：一种维护浏览器状态的方法，服务器需要识别多次请求是否来自于同一浏览器，以便在同一次会话的多次请求间共享数据。
+
+> 服务器会接收很多的请求，但是服务器是需要识别出这些请求是不是同一个浏览器发出来的。比如：1和2这两个请求是不是同一个浏览器发出来的，3和5这两个请求不是同一个浏览器发出来的。如果是同一个浏览器发出来的，就说明是同一个会话。如果是不同的浏览器发出来的，就说明是不同的会话。而识别多次请求是否来自于同一浏览器的过程，我们就称为会话跟踪。
+
+:::info 会话跟踪技术有两种：
+
+1. Cookie（客户端会话跟踪技术）
+   - 数据存储在客户端浏览器当中
+
+2. Session（服务端会话跟踪技术）
+   - 数据存储在储在服务端
+
+3. 令牌技术
+
+:::
+
+#### 2.2.1 会话跟踪方案
+
+**Cookie**:
+
+cookie 是客户端会话跟踪技术，它是存储在客户端浏览器的
+
+比如第一次请求了登录接口，登录接口执行完成之后，就可以设置一个cookie，在 cookie 当中可以存储用户相关的一些数据信息。比如在 cookie 当中存储当前登录用户的用户名，用户的ID。
+
+服务器端在给客户端在响应数据的时候，会**自动**的将 cookie 响应给浏览器，浏览器接收到响应回来的 cookie 之后，会**自动**的将 cookie 的值存储在浏览器本地。接下来在后续的每一次请求当中，都会将浏览器本地所存储的 cookie **自动**地携带到服务端。
+
+![ ](./assets/springboot05/image-20230112101901417.png)
+
+接下来在服务端我们就可以获取到 cookie 的值。可以去判断一下这个 cookie 的值是否存在，如果不存在这个cookie，就说明客户端之前是没有访问登录接口的；如果存在 cookie 的值，就说明客户端之前已经登录完成了。这样就可以基于 cookie 在同一次会话的不同请求之间来共享数据。
+
+::: tip 3 个自动：
+
+- 服务器会 **自动** 的将 cookie 响应给浏览器。
+
+- 浏览器接收到响应回来的数据之后，会 **自动** 的将 cookie 存储在浏览器本地。
+
+- 在后续的请求当中，浏览器会 **自动** 的将 cookie 携带到服务器端。
+
+:::
+
+**为什么这一切都是自动化进行的？**
+
+因为 cookie 它是 HTP 协议当中所支持的技术，而各大浏览器厂商都支持了这一标准。
+
+HTTP 协议官方提供了一个响应头和请求头：
+
+- 响应头 Set-Cookie ：设置Cookie数据的
+
+- 请求头 Cookie：携带Cookie数据的
+
+![ ](./assets/springboot05/image-20230112101804878.png)
+
+**代码测试**:
 
 ```java
 @Slf4j
-@Component
-@Aspect //切面类
-public class LogAspect {
+@RestController
+public class SessionController {
 
+    //设置Cookie
+    @GetMapping("/c1")
+    public Result cookie1(HttpServletResponse response){
+        response.addCookie(new Cookie("login_username","itheima")); //设置Cookie/响应Cookie
+        return Result.success();
+    }
+        
+    //获取Cookie
+    @GetMapping("/c2")
+    public Result cookie2(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if(cookie.getName().equals("login_username")){
+                System.out.println("login_username: "+cookie.getValue()); //输出name为login_username的cookie
+            }
+        }
+        return Result.success();
+    }
+}    
+```
+
+访问c1接口，设置Cookie，[http://localhost:8080/c1](http://localhost:8080/c1)
+
+![ ](./assets/springboot05/image-20230112105410076.png)
+
+设置的cookie，通过**响应头Set-Cookie**响应给浏览器，并且浏览器会将Cookie，存储在浏览器端。
+
+![ ](./assets/springboot05/image-20230112105538131.png)
+
+访问c2接口 [http://localhost:8080/c2](http://localhost:8080/c2)，此时浏览器会自动的将Cookie携带到服务端，是通过**请求头Cookie**，携带的。
+
+![ ](./assets/springboot05/image-20230112105658486.png)
+
+**优缺点**:
+
+- 优点：HTTP协议中支持的技术（像Set-Cookie 响应头的解析以及 Cookie 请求头数据的携带，都是浏览器自动进行的）
+- 缺点：
+  - 移动端APP(Android、IOS)中无法使用Cookie
+  - 不安全，用户可以自己禁用Cookie
+  - Cookie不能跨域
+
+> 跨域介绍：
+> ![ ](./assets/springboot05/image-20230112103840467.png)
+>
+> - 现在的项目，大部分都是前后端分离的，前后端最终也会分开部署，前端部署在服务器 192.168.150.200 上，端口 80，后端部署在 192.168.150.100上，端口 8080
+> - 打开浏览器直接访问前端工程，访问url：[http://192.168.150.200/login.html](http://192.168.150.200/login.html)
+> - 在该页面发起请求到服务端，而服务端所在地址不再是localhost，而是服务器的IP地址192.168.150.100，假设访问接口地址为：[http://192.168.150.100:8080/login](http://192.168.150.100:8080/login)
+> - 那此时就存在跨域操作了，因为我们是在 [http://192.168.150.200/login.html](http://192.168.150.200/login.html) 这个页面上访问了[http://192.168.150.100:8080/login](http://192.168.150.100:8080/login) 接口
+> - 此时如果服务器设置了一个Cookie，这个Cookie是不能使用的，因为Cookie无法跨域
+>
+> 区分跨域的维度：
+>
+> - 协议
+> - IP/协议
+> - 端口
+>
+> 只要上述的三个维度有任何一个维度不同，那就是跨域操作
+>
+>  
+>
+> 举例：
+>
+> ​[http://192.168.150.200/login.html] ----------> [https://192.168.150.200/login]   [协议不同，跨域]
+>
+> [http://192.168.150.200/login.html] ----------> [http://192.168.150.100/login]    [IP不同，跨域]
+>
+> ​[http://192.168.150.200/login.html] ----------> [http://192.168.150.200:8080/login]   [端口不同，跨域]
+>
+> [http://192.168.150.200/login.html] ----------> [http://192.168.150.200/login]     [不跨域]
+
+**Session**:
+
+它是服务器端会话跟踪技术，所以它是存储在服务器端的。而 Session 的底层其实就是基 Cookie 来实现的。
+
+- 获取Session
+
+  ![ ](./assets/springboot05/image-20230112105938545.png)
+
+  基于 Session 来进行会话跟踪，浏览器在第一次请求服务器的时候，直接在服务器当中来获取到会话对象Session。如果是第一次请求Session ，会话对象是不存在的，这个时候服务器会自动的创建一个会话对象Session 。而每一个会话对象Session ，它都有一个ID（示意图中Session后面括号中的1，就表示ID），称之为 Session 的ID。
+
+- 响应Cookie (JSESSIONID)
+
+  ![ ](./assets/springboot05/image-20230112110441075.png)
+
+  接下来，服务器端在给浏览器响应数据的时候，它会将 Session 的 ID 通过 Cookie 响应给浏览器。其实在响应头当中增加了一个 Set-Cookie 响应头。这个  Set-Cookie  响应头对应的值是不是cookie？ cookie 的名字是固定的 JSESSIONID 代表的服务器端会话对象 Session 的 ID。浏览器会自动识别这个响应头，然后自动将Cookie存储在浏览器本地。
+
+- 查找Session
+
+  ![ ](./assets/springboot05/image-20230112101943835.png)
+
+  在后续的每一次请求当中，都会将 Cookie 的数据获取出来，并且携带到服务端。服务器拿到JSESSIONID这个 Cookie 的值，也就是 Session 的ID。拿到 ID 之后，就会从众多的 Session 当中来找到当前请求对应的会话对象Session。
+
+**代码测试**:
+
+```java
+@Slf4j
+@RestController
+public class SessionController {
+
+    @GetMapping("/s1")
+    public Result session1(HttpSession session){
+        log.info("HttpSession-s1: {}", session.hashCode());
+
+        session.setAttribute("loginUser", "tom"); //往session中存储数据
+        return Result.success();
+    }
+
+    @GetMapping("/s2")
+    public Result session2(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        log.info("HttpSession-s2: {}", session.hashCode());
+
+        Object loginUser = session.getAttribute("loginUser"); //从session中获取数据
+        log.info("loginUser: {}", loginUser);
+        return Result.success(loginUser);
+    }
+}
+```
+
+A. 访问 s1 接口，[http://localhost:8080/s1](http://localhost:8080/s1)
+
+![ ](./assets/springboot05/image-20230112111004447.png)
+
+请求完成之后，在响应头中，就会看到有一个Set-Cookie的响应头，里面响应回来了一个Cookie，就是JSESSIONID，这个就是服务端会话对象 Session 的ID。
+
+B. 访问 s2 接口，[http://localhost:8080/s2](http://localhost:8080/s2)
+
+![ ](./assets/springboot05/image-20230112111137207.png)
+
+在后续的每次请求时，都会将Cookie的值，携带到服务端，服务端接收到Cookie之后，会自动的根据JSESSIONID的值，找到对应的会话对象Session。
+
+那经过这两步测试，在控制台中输出如下日志：
+
+![ ](./assets/springboot05/image-20230112111328117.png)
+
+两次请求，获取到的Session会话对象的hashcode是一样的，就说明是同一个会话对象。  
+并且，第一次请求时，往Session会话对象中存储的值，第二次请求时，也获取到了。 这样就可以通过Session会话对象，在同一个会话的多次请求之间来进行数据共享了。
+
+**优缺点**:
+
+- 优点：Session是存储在服务端的，安全
+- 缺点：
+  - 服务器集群环境下无法直接使用Session
+  - 移动端APP(Android、IOS)中无法使用Cookie
+  - 用户可以自己禁用Cookie
+  - Cookie不能跨域
+
+> PS：Session 底层是基于Cookie实现的会话跟踪，如果Cookie不可用，则该方案，也就失效了。
+> 服务器集群环境为何无法使用Session？
+>![ ](./assets/springboot05/image-20230112112557480.png)
+>
+> - 首先，现在所开发的项目，一般都不会只部署在一台服务器上，因为一台服务器会存在一个很大的问题，就是单点故障。所谓单点故障，指的就是一旦这台服务器挂了，整个应用都没法访问了。
+>
+> ​    ![ ](./assets/springboot05/image-20230112112740131.png)
+>
+> - 所以在现在的企业项目开发当中，最终部署的时候都是以集群的形式来进行部署，也就是同一个项目它会部署多份。比如这个项目现在就部署了 3 份。
+>
+> - 而用户在访问的时候，到底访问这三台其中的哪一台？其实用户在访问的时候，他会访问一台前置的服务器，我们叫负载均衡服务器，它的作用就是将前端发起的请求均匀的分发给后面的这三台服务器。
+>
+>   ![ ](./assets/springboot05/image-20230112113558810.png)
+>
+> - 此时通过 session 来进行会话跟踪，可能就会存在这样一个问题。用户打开浏览器要进行登录操作，此时会发起登录请求。登录请求到达负载均衡服务器，将这个请求转给了第一台 Tomcat 服务器。
+>
+>   Tomcat 服务器接收到请求之后，要获取到会话对象session。获取到会话对象 session 之后，要给浏览器响应数据，最终在给浏览器响应数据的时候，就会携带这么一个 cookie 的名字，就是 JSESSIONID ，下一次再请求的时候，是不是又会将 Cookie 携带到服务端？
+>
+>   好。此时假如又执行了一次查询操作，要查询部门的数据。这次请求到达负载均衡服务器之后，负载均衡服务器将这次请求转给了第二台 Tomcat 服务器，此时他就要到第二台 Tomcat 服务器当中。根据JSESSIONID 也就是对应的 session 的 ID 值，要找对应的 session 会话对象。
+>
+>   请问在第二台服务器当中有没有这个ID的会话对象 Session， 是没有的。此时是不是就出现问题了？我同一个浏览器发起了 2 次请求，结果获取到的不是同一个会话对象，这就是Session这种会话跟踪方案它的缺点，在服务器集群环境下无法直接使用Session。
+
+**令牌技术**：
+
+其实它就是一个用户身份的标识，本质就是一个字符串。
+
+![ ](./assets/springboot05/image-20230112102022634.png)
+
+通过令牌技术来跟踪会话，在请求登录接口的时候，如果登录成功，会生成一个令牌，令牌就是用户的合法身份凭证。在响应数据的时候，服务器直接将令牌响应给前端。
+
+在前端程序当中接收到令牌之后，就需要将这个令牌存储起来。这个存储可以存储在 cookie 当中，也可以存储在其他的存储空间(比如：localStorage)当中。
+
+在后续的每一次请求当中，都需要将令牌携带到服务端。携带到服务端之后，接下来我们就需要来校验令牌的有效性。如果令牌是有效的，就说明用户已经执行了登录操作，如果令牌是无效的，就说明用户之前并未执行登录操作。
+
+此时，如果是在同一次会话的多次请求之间，如果想共享数据，将共享的数据存储在令牌当中就可以了。
+
+**优缺点**:
+
+- 优点：
+  - 支持PC端、移动端
+  - 解决集群环境下的认证问题
+  - 减轻服务器的存储压力（无需在服务器端存储）
+- 缺点：需要自己实现（包括令牌的生成、令牌的传递、令牌的校验）
+
+**针对于这三种方案，现在企业开发当中使用的最多的就是第三种令牌技术进行会话跟踪。**
+
+### 2.3 JWT令牌
+
+#### 2.3.1 介绍
+
+JWT全称：JSON Web Token  （官网：[https://jwt.io/]）
+
+- 定义了一种简洁的、自包含的格式，用于在通信双方以json数据格式安全的传输信息。由于数字签名的存在，这些信息是可靠的。
+
+  > 简洁：是指jwt就是一个简单的字符串。可以在请求参数或者是请求头当中直接传递。
+  >
+  > 自包含：指的是jwt令牌，看似是一个随机的字符串，但是可以根据自身的需求在jwt令牌中存储自定义的数据内容。如：可以直接在jwt令牌中存储用户的相关信息。
+  >
+  > 简单来讲，jwt就是将原始的json数据格式进行了安全的封装，这样就可以直接基于jwt在通信双方安全的进行信息传输了。
+
+::: info JWT的组成
+JWT令牌由三个部分组成，三个部分之间使用英文的点来分割
+
+- 第一部分：Header(头）， 记录令牌类型、签名算法等。  
+  例如：\{"alg":"HS256","type":"JWT"\}
+
+- 第二部分：Payload(有效载荷），携带一些自定义信息、默认信息等。  
+  例如：\{"id":"1","username":"Tom"\}
+
+- 第三部分：Signature(签名），防止Token被篡改、确保安全性。将header、payload，加入指定秘钥，通过指定签名算法计算而来。
+
+:::
+
+  >签名的目的就是为了防jwt令牌被篡改，而正是因为jwt令牌最后一个部分数字签名的存在，所以整个jwt 令牌是非常安全可靠的。一旦jwt令牌当中任何一个部分、任何一个字符被篡改了，整个令牌在校验的时候都会失败，所以它是非常安全可靠的。
+
+![ ](./assets/springboot05/image-20230106085442076.png)
+
+> JWT是如何将原始的JSON格式数据，转变为字符串的呢？
+>
+> 其实在生成JWT令牌时，会对JSON格式的数据进行一次编码：进行base64编码
+>
+> Base64：是一种基于64个可打印的字符来表示二进制数据的编码方式。既然能编码，那也就意味着也能解码。所使用的64个字符分别是A到Z、a到z、 0- 9，一个加号，一个斜杠，加起来就是64个字符。任何数据经过base64编码之后，最终就会通过这64个字符来表示。当然还有一个符号，那就是等号。等号它是一个补位的符号
+>
+> 需要注意的是Base64是编码方式，而不是加密方式。
+
+![ ](./assets/springboot05/image-20230112114319773.png)
+
+JWT令牌最典型的应用场景就是登录认证：
+
+1. 在浏览器发起请求来执行登录操作，此时会访问登录的接口，如果登录成功之后，需要生成一个jwt令牌，将生成的 jwt令牌返回给前端。
+2. 前端拿到jwt令牌之后，会将jwt令牌存储起来。在后续的每一次请求中都会将jwt令牌携带到服务端。
+3. 服务端统一拦截请求之后，先来判断一下这次请求有没有把令牌带过来，如果没有带过来，直接拒绝访问，如果带过来了，还要校验一下令牌是否是有效。如果有效，就直接放行进行请求的处理。
+
+整个流程当中涉及到两步操作：
+
+1. 在登录成功之后，要生成令牌。
+2. 每一次请求当中，要接收令牌并对令牌进行校验。
+
+#### 2.3.2 生成和校验
+
+要想使用JWT令牌，需要先引入JWT的依赖：
+
+```xml
+<!-- JWT依赖-->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+```
+
+> 在引入完JWT依赖后，就可以调用工具包中提供的API来完成JWT令牌的生成和校验
+>
+> 工具类：Jwts
+
+生成JWT代码实现：
+
+```java
+@Test
+public void genJwt(){
+    Map<String,Object> claims = new HashMap<>();
+    claims.put("id",1);
+    claims.put("username","Tom");
+    
+    String jwt = Jwts.builder()
+        .setClaims(claims) //自定义内容(载荷)          
+        .signWith(SignatureAlgorithm.HS256, "itheima") //签名算法        
+        .setExpiration(new Date(System.currentTimeMillis() + 24*3600*1000)) //有效期   
+        .compact();
+    
+    System.out.println(jwt);
+}
+```
+
+运行测试方法：
+
+```md
+eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjcyNzI5NzMwfQ.
+fHi0Ub8npbyt71UqLXDdLyipptLgxBUg_mSuGJtXtBk
+```
+
+输出的结果就是生成的JWT令牌,，通过英文的点分割对三个部分进行分割  
+将生成的令牌复制一下，打开JWT的官网
+
+![ ](./assets/springboot05/image-20230106190950305.png)
+
+> 第一部分解析出来，看到JSON格式的原始数据，所使用的签名算法为HS256。
+>
+> 第二个部分是自定义的数据，之前自定义的数据就是id，还有一个exp代表的是所设置的过期时间。
+>
+> 由于前两个部分是base64编码，所以是可以直接解码出来。但最后一个部分并不是base64编码，是经过签名算法计算出来的，所以最后一个部分是不会解析的。
+
+**校验JWT令牌**(解析生成的令牌)：
+
+```java
+@Test
+public void parseJwt(){
+    Claims claims = Jwts.parser()
+        .setSigningKey("itheima")//指定签名密钥（必须保证和生成令牌时使用相同的签名密钥）  
+        .parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjcyNzI5NzMwfQ.fHi0Ub8npbyt71UqLXDdLyipptLgxBUg_mSuGJtXtBk")
+        .getBody();
+
+    System.out.println(claims);
+}
+```
+
+运行测试方法：
+
+```java
+{id=1, exp=1672729730}
+```
+
+> 令牌解析后，可以看到id和过期时间，如果在解析的过程当中没有报错，就说明解析成功了。
+
+测试：把令牌header中的数字9变为8，运行测试方法后发现报错：
+
+> 原header： eyJhbGciOiJIUzI1NiJ9
+>
+> 修改为： eyJhbGciOiJIUzI1NiJ8
+
+![ ](./assets/springboot05/image-20230106205045658.png)
+
+**结论**：篡改令牌中的任何一个字符，在对令牌进行解析时都会报错，所以JWT令牌是非常安全可靠的。
+
+继续测试：修改生成令牌的时指定的过期时间，修改为1分钟
+
+```java
+@Test
+public void genJwt(){
+    Map<String,Object> claims = new HashMap<>();
+    claims.put(“id”,1);
+    claims.put(“username”,“Tom”);
+    String jwt = Jwts.builder()
+        .setClaims(claims) //自定义内容(载荷)          
+        .signWith(SignatureAlgorithm.HS256, “itheima”) //签名算法        
+        .setExpiration(new Date(System.currentTimeMillis() + 60*1000)) //有效期60秒   
+        .compact();
+    
+    System.out.println(jwt);
+    //输出结果：eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjczMDA5NzU0fQ.RcVIR65AkGiax-ID6FjW60eLFH3tPTKdoK7UtE4A1ro
+}
+
+@Test
+public void parseJwt(){
+    Claims claims = Jwts.parser()
+        .setSigningKey("itheima")//指定签名密钥
+.parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjczMDA5NzU0fQ.RcVIR65AkGiax-ID6FjW60eLFH3tPTKdoK7UtE4A1ro")
+        .getBody();
+
+    System.out.println(claims);
+}
+```
+
+等待1分钟之后运行测试方法发现也报错了，说明：JWT令牌过期后，令牌就失效了，解析的为非法令牌。
+
+::: warning
+
+- JWT校验时使用的签名秘钥，必须和生成JWT令牌时使用的秘钥是配套的。
+
+- 如果JWT令牌解析校验时报错，则说明 JWT令牌被篡改 或 失效了，令牌非法。
+
+:::
+
+#### 2.3.3 登录下发令牌
+
+::: note
+
+1. 生成令牌
+   - 在登录成功之后来生成一个JWT令牌，并且把这个令牌直接返回给前端
+2. 校验令牌
+   - 拦截前端请求，从请求中获取到令牌，对令牌进行解析校验
+
+:::
+
+JWT令牌怎么返回给前端呢？（主要看响应数据）：
+
+- 响应数据
+
+  参数格式：application/json
+
+  参数说明：
+
+  | 名称 | 类型   | 是否必须 | 默认值 | 备注                     | 其他信息 |
+  | ---- | ------ | -------- | ------ | ------------------------ | -------- |
+  | code | number | 必须     |        | 响应码, 1 成功 ; 0  失败 |          |
+  | msg  | string | 非必须   |        | 提示信息                 |          |
+  | data | string | 必须     |        | 返回的数据 , jwt令牌     |          |
+
+  响应数据样例：
+
+  ```json
+  {
+    "code": 1,
+    "msg": "success",
+    "data": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6YeR5bq4IiwiaWQiOjEsInVzZXJuYW1lIjoiamlueW9uZyIsImV4cCI6MTY2MjIwNzA0OH0.KkUc_CXJZJ8Dd063eImx4H9Ojfrr6XMJ-yVzaWCVZCo"
+  }
+  ```
+
+- 备注说明
+
+  用户登录成功后，系统会自动下发JWT令牌，然后在后续的每次请求中，都需要在请求头header中携带到服务端，请求头的名称为 token ，值为登录时下发的JWT令牌。
+
+  如果检测到用户未登录，则会返回如下固定错误信息：
+
+  ```json
+  {
+    "code": 0,
+    "msg": "NOT_LOGIN",
+    "data": null
+  }
+  ```
+
+**实现步骤：**
+
+1. 引入JWT工具类
+2. 登录完成后，调用工具类生成JWT令牌并返回
+
+**JWT工具类**:
+
+```java
+public class JwtUtils {
+
+    private static String signKey = "itheima";//签名密钥
+    private static Long expire = 43200000L; //有效时间
+
+    /**
+     * 生成JWT令牌
+     * @param claims JWT第二部分负载 payload 中存储的内容
+     * @return
+     */
+    public static String generateJwt(Map<String, Object> claims){
+        String jwt = Jwts.builder()
+                .addClaims(claims)//自定义信息（有效载荷）
+                .signWith(SignatureAlgorithm.HS256, signKey)//签名算法（头部）
+                .setExpiration(new Date(System.currentTimeMillis() + expire))//过期时间
+                .compact();
+        return jwt;
+    }
+
+    /**
+     * 解析JWT令牌
+     * @param jwt JWT令牌
+     * @return JWT第二部分负载 payload 中存储的内容
+     */
+    public static Claims parseJWT(String jwt){
+        Claims claims = Jwts.parser()
+                .setSigningKey(signKey)//指定签名密钥
+                .parseClaimsJws(jwt)//指定令牌Token
+                .getBody();
+        return claims;
+    }
+}
+
+```
+
+**登录成功，生成JWT令牌并返回**:
+
+```java
+@RestController
+@Slf4j
+public class LoginController {
+    //依赖业务层对象
     @Autowired
-    private HttpServletRequest request;
+    private EmpService empService;
 
-    @Autowired
-    private OperateLogMapper operateLogMapper;
+    @PostMapping("/login")
+    public Result login(@RequestBody Emp emp) {
+        //调用业务层：登录功能
+        Emp loginEmp = empService.login(emp);
 
-    @Around("@annotation(com.itheima.anno.Log)")
-    public Object recordLog(ProceedingJoinPoint joinPoint) throws Throwable {
-        //操作人ID - 当前登录员工ID
-        //获取请求头中的jwt令牌, 解析令牌
-        String jwt = request.getHeader("token");
-        Claims claims = JwtUtils.parseJWT(jwt);
-        Integer operateUser = (Integer) claims.get("id");
+        //判断：登录用户是否存在
+        if(loginEmp !=null ){
+            //自定义信息
+            Map<String , Object> claims = new HashMap<>();
+            claims.put("id", loginEmp.getId());
+            claims.put("username",loginEmp.getUsername());
+            claims.put("name",loginEmp.getName());
 
-        //操作时间
-        LocalDateTime operateTime = LocalDateTime.now();
+            //使用JWT工具类，生成身份令牌
+            String token = JwtUtils.generateJwt(claims);
+            return Result.success(token);
+        }
+        return Result.error("用户名或密码错误");
+    }
+}
+```
 
-        //操作类名
-        String className = joinPoint.getTarget().getClass().getName();
+重启服务，打开postman测试登录接口：
 
-        //操作方法名
-        String methodName = joinPoint.getSignature().getName();
+![ ](./assets/springboot05/image-20230106212805480.png)
 
-        //操作方法参数
-        Object[] args = joinPoint.getArgs();
-        String methodParams = Arrays.toString(args);
+打开浏览器完成前后端联调操作：利用开发者工具，抓取一下网络请求
 
-        long begin = System.currentTimeMillis();
-        //调用原始目标方法运行
-        Object result = joinPoint.proceed();
-        long end = System.currentTimeMillis();
+![ ](./assets/springboot05/image-20230106213419461.png)
 
-        //方法返回值
-        String returnValue = JSONObject.toJSONString(result);
+> 登录请求完成后，可以看到JWT令牌已经响应给了前端，此时前端就会将JWT令牌存储在浏览器本地。
 
-        //操作耗时
-        Long costTime = end - begin;
+服务器响应的JWT令牌存储在本地浏览器哪里了呢？
 
+- 在当前案例中，JWT令牌存储在浏览器的本地存储空间local storage中了。 local storage是浏览器的本地存储，在移动端也是支持的。
 
-        //记录操作日志
-        OperateLog operateLog = new OperateLog(null,operateUser,operateTime,className,methodName,methodParams,returnValue,costTime);
-        operateLogMapper.insert(operateLog);
+![ ](./assets/springboot05/image-20230106213910049.png)
 
-        log.info("AOP记录操作日志: {}" , operateLog);
+在发起一个查询部门数据的请求，此时可以看到在请求头中包含一个token(JWT令牌)，后续的每一次请求当中，都会将这个令牌携带到服务端。
 
-        return result;
+![ ](./assets/springboot05/image-20230106214331443.png)
+
+### 2.4 过滤器Filter
+
+服务端需要统一拦截所有的请求，从而判断是否携带的有合法的JWT令牌。
+那怎么样来统一拦截到所有的请求校验令牌的有效性呢？这里会学习两种解决方案：
+
+1. Filter过滤器
+2. Interceptor拦截器
+
+#### 2.4.1 快速入门
+
+::: tip 什么是Filter？
+
+- Filter表示过滤器，是 JavaWeb三大组件(Servlet、Filter、Listener)之一。
+- 过滤器可以把对资源的请求拦截下来，从而实现一些特殊的功能
+  - 使用了过滤器之后，要想访问web服务器上的资源，必须先经过滤器，过滤器处理完毕之后，才可以访问对应的资源。
+- 过滤器一般完成一些通用的操作，比如：登录校验、统一编码处理、敏感字符处理等。
+
+:::
+
+![ ](./assets/springboot05/image-20230112120955145.png)
+
+掌握过滤器的基本使用操作：
+
+- 第1步，定义过滤器 ：1.定义一个类，实现 Filter 接口，并重写其所有方法。
+- 第2步，配置过滤器：Filter类上加 @WebFilter 注解，配置拦截资源的路径。引导类上加 @ServletComponentScan 开启Servlet组件支持。
+
+**定义过滤器**：
+
+```java
+//定义一个类，实现一个标准的Filter过滤器的接口
+public class DemoFilter implements Filter {
+    @Override //初始化方法, 只调用一次
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init 初始化方法执行了");
+    }
+
+    @Override //拦截到请求之后调用, 调用多次
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Demo 拦截到了请求...放行前逻辑");
+        //放行
+        chain.doFilter(request,response);
+    }
+
+    @Override //销毁方法, 只调用一次
+    public void destroy() {
+        System.out.println("destroy 销毁方法执行了");
+    }
+}
+```
+
+> - init方法：过滤器的初始化方法。在web服务器启动的时候会自动的创建Filter过滤器对象，在创建过滤器对象的时候会自动调用init初始化方法，这个方法只会被调用一次。
+>
+> - doFilter方法：这个方法是在每一次拦截到请求之后都会被调用，所以这个方法是会被调用多次的，每拦截到一次请求就会调用一次doFilter()方法。
+>
+> - destroy方法： 是销毁的方法。当关闭服务器的时候，它会自动的调用销毁方法destroy，而这个销毁方法也只会被调用一次。
+
+Filter的配置非常简单，只需要在Filter类上添加一个注解：@WebFilter，并指定属性urlPatterns，通过这个属性指定过滤器要拦截哪些请求
+
+```java
+@WebFilter(urlPatterns = "/*") //配置过滤器要拦截的请求路径（ /* 表示拦截浏览器的所有请求 ）
+public class DemoFilter implements Filter {
+    @Override //初始化方法, 只调用一次
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init 初始化方法执行了");
+    }
+
+    @Override //拦截到请求之后调用, 调用多次
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Demo 拦截到了请求...放行前逻辑");
+        //放行
+        chain.doFilter(request,response);
+    }
+
+    @Override //销毁方法, 只调用一次
+    public void destroy() {
+        System.out.println("destroy 销毁方法执行了");
+    }
+}
+```
+
+在Filter类上面加了@WebFilter注解之后，还需要在启动类上面加上一个注解  
+@ServletComponentScan，通过这个@ServletComponentScan注解来开启SpringBoot项目对于Servlet组件的支持。
+
+```java
+@ServletComponentScan
+@SpringBootApplication
+public class TliasWebManagementApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TliasWebManagementApplication.class, args);
     }
 
 }
 ```
 
-> 代码实现细节： 获取request对象，从请求头中获取到jwt令牌，解析令牌获取出当前用户的id。
+重新启动服务，打开浏览器，执行部门管理的请求，可以看到控制台输出了过滤器中的内容：
 
-重启SpringBoot服务，测试操作日志记录功能：
+![ ](./assets/springboot05/image-20230112121205697.png)
 
-- 添加一个新的部门
+> 注意事项：
+>
+> ​在过滤器Filter中，如果不执行放行操作，将无法访问后面的资源。 放行操作：chain.doFilter(request, response);
 
-![ ](./assets/springboot05/image-20230111001114301.png)
+#### 2.4.2 Filter详解
 
-- 数据表
+1. 过滤器的执行流程
+2. 过滤器的拦截路径配置
+3. 过滤器链
 
-![ ](./assets/springboot05/image-20230111001230731.png)
+**执行流程**:
+
+![ ](./assets/springboot05/image-20230106222559935.png)
+
+拦截到了请求之后，如果希望继续访问后面的web资源，就要执行放行操作，放行就是调用 FilterChain对象当中的doFilter()方法，在调用doFilter()这个方法之前所编写的代码属于放行之前的逻辑。
+
+在放行后访问完 web 资源之后还会回到过滤器当中，回到过滤器之后如有需求还可以执行放行之后的逻辑，放行之后的逻辑写在doFilter()这行代码之后。
+
+```java
+@WebFilter(urlPatterns = "/*") 
+public class DemoFilter implements Filter {
+    
+    @Override //初始化方法, 只调用一次
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init 初始化方法执行了");
+    }
+    
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        
+        System.out.println("DemoFilter   放行前逻辑.....");
+
+        //放行请求
+        filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("DemoFilter   放行后逻辑.....");
+        
+    }
+
+    @Override //销毁方法, 只调用一次
+    public void destroy() {
+        System.out.println("destroy 销毁方法执行了");
+    }
+}
+```
+
+![ ](./assets/springboot05/image-20230106224322625.png)
+
+**拦截路径**:
+
+Filter可以根据需求，配置不同的拦截资源路径：
+
+| 拦截路径     | urlPatterns值 | 含义                               |
+| ------------ | ------------- | ---------------------------------- |
+| 拦截具体路径 | /login        | 只有访问 /login 路径时，才会被拦截 |
+| 目录拦截     | /emps/*       | 访问/emps下的所有资源，都会被拦截  |
+| 拦截所有     | /*            | 访问所有资源，都会被拦截           |
+
+```java
+@WebFilter(urlPatterns = "/login")  //拦截/login具体路径
+public class DemoFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("DemoFilter   放行前逻辑.....");
+
+        //放行请求
+        filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("DemoFilter   放行后逻辑.....");
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+}
+```
+
+测试1：访问部门管理请求，发现过滤器没有拦截请求
+
+![ ](./assets/springboot05/image-20230106225658525.png)
+
+![ ](./assets/springboot05/image-20230106230332510.png)
+
+测试2：访问登录请求/login，发现过滤器拦截请求
+
+![ ](./assets/springboot05/image-20230106230520229.png)
+
+测试"目录拦截"：
+
+```java
+@WebFilter(urlPatterns = "/depts/*") //拦截所有以/depts开头，后面是什么无所谓
+public class DemoFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("DemoFilter   放行前逻辑.....");
+
+        //放行请求
+        filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("DemoFilter   放行后逻辑.....");
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+}
+```
+
+测试1：访问部门管理请求，发现过滤器拦截了请求
+
+![ ](./assets/springboot05/image-20230106231144348.png)
+
+测试2：访问登录请求/login，发现过滤器没有拦截请求
+
+![ ](./assets/springboot05/image-20230106231220802.png)
+
+**过滤器链**:
+
+指的是在一个web应用程序当中，可以配置多个过滤器，多个过滤器就形成了一个过滤器链。
+
+![ ](./assets/springboot05/image-20230107084730393.png)
+
+验证步骤：
+
+1. 在filter包下再来新建一个Filter过滤器类：AbcFilter
+2. 在AbcFilter过滤器中编写放行前和放行后逻辑
+3. 配置AbcFilter过滤器拦截请求路径为：/*
+4. 重启SpringBoot服务，查看DemoFilter、AbcFilter的执行日志
+
+![ ](./assets/springboot05/image-20230107085552176.png)
+
+**AbcFilter过滤器**：
+
+```java
+@WebFilter(urlPatterns = "/*")
+public class AbcFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Abc 拦截到了请求... 放行前逻辑");
+
+        //放行
+        chain.doFilter(request,response);
+
+        System.out.println("Abc 拦截到了请求... 放行后逻辑");
+    }
+}
+```
+
+**DemoFilter过滤器**：
+
+```java
+@WebFilter(urlPatterns = "/*") 
+public class DemoFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("DemoFilter   放行前逻辑.....");
+
+        //放行请求
+        filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("DemoFilter   放行后逻辑.....");
+    }
+}
+```
+
+打开浏览器访问登录接口：
+
+![ ](./assets/springboot05/image-20230107090425999.png)
+
+注解方式配置的Filter过滤器，它的执行优先级是按时**过滤器类名**的自动排序确定的  
+类名排名越靠前，优先级越高。
+
+假如想让DemoFilter先执行，怎么办呢？答案就是修改类名。
+
+测试：修改AbcFilter类名为XbcFilter，运行程序查看控制台日志
+
+```java
+@WebFilter(urlPatterns = "/*")
+public class XbcFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Xbc 拦截到了请求...放行前逻辑");
+
+        //放行
+        chain.doFilter(request,response);
+
+        System.out.println("Xbc 拦截到了请求...放行后逻辑");
+    }
+}
+
+```
+
+![ ](./assets/springboot05/image-20230107093757050.png)
+
+#### 2.4.3 登录校验-Filter
+
+分析：
+
+![ ](./assets/springboot05/image-20230107095010089.png)
+
+ 登录校验的基本流程：
+
+- 要进入后台管理系统，必须先完成登录操作，此时就需要访问登录接口login。
+
+- 登录成功之后，会在服务端生成一个JWT令牌，并且把JWT令牌返回给前端，前端会将JWT令牌存储下来。
+- 在后续的每一次请求当中，都会将JWT令牌携带到服务端，请求到达服务端之后，要想去访问对应的业务功能，此时必须先要校验令牌的有效性。
+- 对于校验令牌的这一块操作，使用登录校验的过滤器，在过滤器当中来校验令牌的有效性。如果令牌是无效的，就响应一个错误的信息，也不会再去放行访问对应的资源了。如果令牌存在，并且它是有效的，此时就会放行去访问对应的web资源，执行相应的业务操作。
+
+::: tip 两个问题：
+
+1. 所有的请求，拦截到了之后，都需要校验令牌吗？
+   - 答案：**登录请求例外**
+
+2. 拦截到请求后，什么情况下才可以放行，执行业务操作？
+   - 答案：**有令牌，且令牌校验通过(合法)；否则都返回未登录错误结果**
+
+:::
+
+**具体流程**:
+
+![ ](./assets/springboot05/image-20230112122130564.png)
+
+基于上面的业务流程，分析出具体的操作步骤：
+
+1. 获取请求url
+2. 判断请求url中是否包含login，如果包含，说明是登录操作，放行
+3. 获取请求头中的令牌（token）
+4. 判断令牌是否存在，如果不存在，返回错误结果（未登录）
+5. 解析token，如果解析失败，返回错误结果（未登录）
+6. 放行
+
+**代码实现**:
+
+- 基本信息
+
+  ```md
+  请求路径：/login
+  
+  请求方式：POST
+  
+  接口描述：该接口用于员工登录Tlias智能学习辅助系统，登录完毕后，系统下发JWT令牌。 
+  ```
+
+- 请求参数
+
+  参数格式：application/json
+
+  参数说明：
+
+  | 名称     | 类型   | 是否必须 | 备注   |
+  | -------- | ------ | -------- | ------ |
+  | username | string | 必须     | 用户名 |
+  | password | string | 必须     | 密码   |
+
+  请求数据样例：
+
+  ```json
+  {
+      "username": "jinyong",
+      "password": "123456"
+  }
+  ```
+
+- 响应数据
+
+  参数格式：application/json
+
+  参数说明：
+
+  | 名称 | 类型   | 是否必须 | 默认值 | 备注                     | 其他信息 |
+  | ---- | ------ | -------- | ------ | ------------------------ | -------- |
+  | code | number | 必须     |        | 响应码, 1 成功 ; 0  失败 |          |
+  | msg  | string | 非必须   |        | 提示信息                 |          |
+  | data | string | 必须     |        | 返回的数据 , jwt令牌     |          |
+
+  响应数据样例：
+
+  ```json
+  {
+    "code": 1,
+    "msg": "success",
+    "data": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6YeR5bq4IiwiaWQiOjEsInVzZXJuYW1lIjoiamlueW9uZyIsImV4cCI6MTY2MjIwNzA0OH0.KkUc_CXJZJ8Dd063eImx4H9Ojfrr6XMJ-yVzaWCVZCo"
+  }
+  ```
+
+- 备注说明
+
+  用户登录成功后，系统会自动下发JWT令牌，然后在后续的每次请求中，都需要在请求头header中携带到服务端，请求头的名称为 token ，值为 登录时下发的JWT令牌。
+
+  如果检测到用户未登录，则会返回如下固定错误信息：
+
+  ```json
+  {
+    "code": 0,
+    "msg": "NOT_LOGIN",
+    "data": null
+  }
+  ```
+
+**登录校验过滤器：LoginCheckFilter**:
+
+```java
+@Slf4j
+@WebFilter(urlPatterns = "/*") //拦截所有请求
+public class LoginCheckFilter implements Filter {
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
+        //前置：强制转换为http协议的请求对象、响应对象 （转换原因：要使用子类中特有方法）
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        //1.获取请求url
+        String url = request.getRequestURL().toString();
+        log.info("请求路径：{}", url); //请求路径：http://localhost:8080/login
+
+
+        //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行
+        if(url.contains("/login")){
+            chain.doFilter(request, response);//放行请求
+            return;//结束当前方法的执行
+        }
+
+
+        //3.获取请求头中的令牌（token）
+        String token = request.getHeader("token");
+        log.info("从请求头中获取的令牌：{}",token);
+
+
+        //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）
+        if(!StringUtils.hasLength(token)){
+            log.info("Token不存在");
+
+            Result responseResult = Result.error("NOT_LOGIN");
+            //把Result对象转换为JSON格式字符串 (fastjson是阿里巴巴提供的用于实现对象和json的转换工具类)
+            String json = JSONObject.toJSONString(responseResult);
+            response.setContentType("application/json;charset=utf-8");
+            //响应
+            response.getWriter().write(json);
+
+            return;
+        }
+
+        //5.解析token，如果解析失败，返回错误结果（未登录）
+        try {
+            JwtUtils.parseJWT(token);
+        }catch (Exception e){
+            log.info("令牌解析失败!");
+
+            Result responseResult = Result.error("NOT_LOGIN");
+            //把Result对象转换为JSON格式字符串 (fastjson是阿里巴巴提供的用于实现对象和json的转换工具类)
+            String json = JSONObject.toJSONString(responseResult);
+            response.setContentType("application/json;charset=utf-8");
+            //响应
+            response.getWriter().write(json);
+
+            return;
+        }
+        //6.放行
+        chain.doFilter(request, response);
+
+    }
+}
+```
+
+在上述过滤器的功能实现中，使用到了一个第三方json处理的工具包fastjson
+
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <version>1.2.76</version>
+</dependency>
+```
+
+> 测试前先把之前所编写的测试使用的过滤器，暂时注释掉。直接将@WebFilter注解给注释掉即可。
+
+- 测试1：未登录是否可以访问部门管理页面
+
+  关闭浏览器，重新打开，在地址栏中输入：[http://localhost:9528/#/system/dept](http://localhost:9528/#/system/dept)
+
+  由于用户没有登录，登录校验过滤器返回错误信息，前端页面根据返回的错误信息结果，自动跳转到登录页面了
+
+  ![ ](./assets/springboot05/image-20230105085212629.png)
+
+- 测试2：先进行登录操作，再访问部门管理页面
+
+  登录校验成功之后，可以正常访问相关业务操作页面
+
+  ![ ](./assets/springboot05/image-20230107102922550.png)
+
+### 2.5 拦截器Interceptor
+
+#### 2.5.1 快速入门
+
+::: tip 什么是拦截器？
+
+- 是一种动态拦截方法调用的机制，类似于过滤器。
+- 拦截器是Spring框架中提供的，用来动态拦截控制器方法的执行。
+
+:::
+
+拦截器的作用：
+
+- 拦截请求，在指定方法调用前后，根据业务需要执行预先设定的代码。
+
+分为两步：
+
+1. 定义拦截器
+
+2. 注册配置拦截器
+
+**自定义拦截器：** 实现HandlerInterceptor接口，并重写其所有方法
+
+```java
+//自定义拦截器
+@Component
+public class LoginCheckInterceptor implements HandlerInterceptor {
+    //目标资源方法执行前执行。 返回true：放行    返回false：不放行
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("preHandle .... ");
+        
+        return true; //true表示放行
+    }
+
+    //目标资源方法执行后执行
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println("postHandle ... ");
+    }
+
+    //视图渲染完毕后执行，最后执行
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("afterCompletion .... ");
+    }
+}
+```
+
+> 注意：
+>
+> preHandle方法：目标资源方法执行前执行。 返回true：放行    返回false：不放行
+>
+> postHandle方法：目标资源方法执行后执行
+>
+> afterCompletion方法：视图渲染完毕后执行，最后执行
+
+**注册配置拦截器**：实现WebMvcConfigurer接口，并重写addInterceptors方法
+
+```java
+@Configuration  
+public class WebConfig implements WebMvcConfigurer {
+
+    //自定义的拦截器对象
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
+
+    
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+       //注册自定义拦截器对象
+        registry.addInterceptor(loginCheckInterceptor).addPathPatterns("/**");//设置拦截器拦截的请求路径（ /** 表示拦截所有请求）
+    }
+}
+```
+
+重新启动SpringBoot服务，打开postman测试：
+
+![ ](./assets/springboot05/image-20230107105224741.png)
+
+![ ](./assets/springboot05/image-20230107105415120.png)
+
+再来做一个测试：将拦截器中返回值改为false
+
+使用postman，再次点击send发送请求后，没有响应数据，说明请求被拦截了没有放行
+
+![ ](./assets/springboot05/image-20230107105815511.png)
+
+#### 2.5.2 Interceptor详解
+
+1. 拦截器的拦截路径配置
+2. 拦截器的执行流程
+
+**拦截路径**:
+
+在注册配置拦截器的时候，要指定拦截器的拦截路径，通过`addPathPatterns("要拦截路径")`方法，就可以指定要拦截哪些资源。
+
+还可以指定不拦截哪些资源，只需要调用`excludePathPatterns("不拦截路径")`方法，指定哪些资源不需要拦截。
+
+```java
+@Configuration  
+public class WebConfig implements WebMvcConfigurer {
+
+    //拦截器对象
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //注册自定义拦截器对象
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/**")//设置拦截器拦截的请求路径（ /** 表示拦截所有请求）
+                .excludePathPatterns("/login");//设置不拦截的请求路径
+    }
+}
+```
+
+| 拦截路径  | 含义                 | 举例                                                |
+| --------- | -------------------- | --------------------------------------------------- |
+| /*        | 一级路径             | 能匹配/depts，/emps，/login，不能匹配 /depts/1      |
+| /**       | 任意级路径           | 能匹配/depts，/depts/1，/depts/1/2                  |
+| /depts/*  | /depts下的一级路径   | 能匹配/depts/1，不能匹配/depts/1/2，/depts          |
+| /depts/** | /depts下的任意级路径 | 能匹配/depts，/depts/1，/depts/1/2，不能匹配/emps/1 |
+
+下面演示下`/**`与`/*`的区别：
+
+- 修改拦截器配置，把拦截路径设置为`/*`
+
+```java
+@Configuration 
+public class WebConfig implements WebMvcConfigurer {
+
+    //拦截器对象
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+       //注册自定义拦截器对象
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/*")
+                .excludePathPatterns("/login");//设置不拦截的请求路径
+    }
+}
+```
+
+使用postman测试：[http://localhost:8080/emps/1](http://localhost:8080/emps/1)
+
+![ ](./assets/springboot05/image-20230107111525558.png)
+
+控制台没有输出拦截器中的日志信息，说明`/*`没有匹配到拦截路径`/emp/1` 。
+
+![ ](./assets/springboot05/image-20230107111812963.png)
+
+**执行流程**:
+
+通过执行流程，能清晰的知道过滤器与拦截器的执行时机。
+
+![ ](./assets/springboot05/image-20230107112136151.png)
+
+- 打开浏览器访问部署在web服务器当中的web应用时，此时所定义的过滤器会拦截到这次请求。拦截到这次请求之后，它会先执行放行前的逻辑，然后再执行放行操作。而由于当前是基于springboot开发的，所以放行之后是进入到了spring的环境当中，也就是要来访问所定义的controller当中的接口方法。
+
+- Tomcat并不识别所编写的Controller程序，但是它识别Servlet程序，所以在Spring的Web环境中提供了一个非常核心的Servlet：DispatcherServlet（前端控制器），所有请求都会先进行到DispatcherServlet，再将请求转给Controller。
+
+- 定义了拦截器后，会在执行Controller的方法之前，请求被拦截器拦截住。执行`preHandle()`方法，这个方法执行完成后需要返回一个布尔类型的值，如果返回true，就表示放行本次操作，才会继续访问controller中的方法；如果返回false，则不会放行（controller中的方法也不会执行）。
+
+- controller当中的方法执行完毕，再执行`postHandle()`这个方法以及`afterCompletion()` 方法，然后再返回给DispatcherServlet，最终再来执行过滤器当中放行后的这一部分逻辑的逻辑。执行完毕之后，最终给浏览器响应数据。
+
+演示过滤器和拦截器同时存在的执行流程：
+
+- 开启LoginCheckInterceptor拦截器
+
+```java
+@Component
+public class LoginCheckInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("preHandle .... ");
+        
+        return true; //true表示放行
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println("postHandle ... ");
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("afterCompletion .... ");
+    }
+}
+```
+
+```java
+@Configuration  
+public class WebConfig implements WebMvcConfigurer {
+
+    //拦截器对象
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //注册自定义拦截器对象
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/**")//拦截所有请求
+                .excludePathPatterns("/login");//不拦截登录请求
+    }
+}
+```
+
+- 开启DemoFilter过滤器
+
+```java
+@WebFilter(urlPatterns = "/*") 
+public class DemoFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("DemoFilter   放行前逻辑.....");
+
+        //放行请求
+        filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("DemoFilter   放行后逻辑.....");
+    }
+}
+```
+
+重启SpringBoot服务后，清空日志，打开Postman，测试查询部门：
+
+![ ](./assets/springboot05/image-20230107113653871.png)
+
+![ ](./assets/springboot05/image-20230107114008004.png)
+
+过滤器和拦截器之间的区别：
+
+- 接口规范不同：过滤器需要实现Filter接口，而拦截器需要实现HandlerInterceptor接口。
+- 拦截范围不同：过滤器Filter会拦截所有的资源，而Interceptor只会拦截Spring环境中的资源。
+
+#### 2.5.3 登录校验- Interceptor
+
+**登录校验拦截器**:
+
+```java
+//自定义拦截器
+@Component //当前拦截器对象由Spring创建和管理
+@Slf4j
+public class LoginCheckInterceptor implements HandlerInterceptor {
+    //前置方式
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("preHandle .... ");
+        //1.获取请求url
+        //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行
+
+        //3.获取请求头中的令牌（token）
+        String token = request.getHeader("token");
+        log.info("从请求头中获取的令牌：{}",token);
+
+        //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）
+        if(!StringUtils.hasLength(token)){
+            log.info("Token不存在");
+
+            //创建响应结果对象
+            Result responseResult = Result.error("NOT_LOGIN");
+            //把Result对象转换为JSON格式字符串 (fastjson是阿里巴巴提供的用于实现对象和json的转换工具类)
+            String json = JSONObject.toJSONString(responseResult);
+            //设置响应头（告知浏览器：响应的数据类型为json、响应的数据编码表为utf-8）
+            response.setContentType("application/json;charset=utf-8");
+            //响应
+            response.getWriter().write(json);
+
+            return false;//不放行
+        }
+
+        //5.解析token，如果解析失败，返回错误结果（未登录）
+        try {
+            JwtUtils.parseJWT(token);
+        }catch (Exception e){
+            log.info("令牌解析失败!");
+
+            //创建响应结果对象
+            Result responseResult = Result.error("NOT_LOGIN");
+            //把Result对象转换为JSON格式字符串 (fastjson是阿里巴巴提供的用于实现对象和json的转换工具类)
+            String json = JSONObject.toJSONString(responseResult);
+            //设置响应头
+            response.setContentType("application/json;charset=utf-8");
+            //响应
+            response.getWriter().write(json);
+
+            return false;
+        }
+
+        //6.放行
+        return true;
+    }
+```
+
+**注册配置拦截器**:
+
+```java
+@Configuration  
+public class WebConfig implements WebMvcConfigurer {
+    //拦截器对象
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+       //注册自定义拦截器对象
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login");
+    }
+}
+
+```
+
+登录校验的拦截器编写完成后（**关闭登录校验Filter过滤器**）
+
+- 测试1：未登录是否可以访问部门管理页面
+
+  关闭浏览器，重新打开，在地址栏中输入：[http://localhost:9528/#/system/dept](http://localhost:9528/#/system/dept)
+
+  由于用户没有登录，校验机制返回错误信息，前端页面根据返回的错误信息结果，自动跳转到登录页面了
+
+  ![ ](./assets/springboot05/image-20230105085212629.png)
+
+- 测试2：先进行登录操作，再访问部门管理页面
+
+  登录校验成功之后，可以正常访问相关业务操作页面
+
+  ![ ](./assets/springboot05/image-20230107102922550.png)
+
+## 3. 异常处理
+
+### 3.1 当前问题
+
+打开浏览器，访问系统中的新增部门操作，系统中已经有了 "就业部" 这个部门，再增加一个就业部
+
+![ ](./assets/springboot05/image-20230112125651073.png)
+
+点击确定之后，窗口关闭了，页面没有任何反应，就业部也没有添加上。 F12网络请求报错了
+
+![ ](./assets/springboot05/image-20230112125737863.png)
+
+状态码为500，表示服务器端异常
+
+![ ](./assets/springboot05/image-20230112125826602.png)
+
+上述错误信息的含义是：dept部门表的name字段的值就业部重复了，再添加就业部这个部门时，就违反了唯一约束，此时就会报错。
+
+![ ](./assets/springboot05/image-20230112130253486.png)
+
+响应回来的数据是一个JSON格式的数据。但这种JSON格式的数据不是开发规范当中所提到的统一响应结果Result。由于返回的数据不符合开发规范，所以前端并不能解析出响应的JSON数据。
+
+出现异常之后，当前案例项目的异常是怎么处理的？
+
+- 答案：没有做任何的异常处理
+
+![ ](./assets/springboot05/image-20230107121909087.png)
+
+没有做任何的异常处理时，三层架构处理异常的方案：
+
+- Mapper接口在操作数据库的时候出错了，此时异常会往上抛(谁调用Mapper就抛给谁)，会抛给service。
+- service 中也存在异常了，会抛给controller。
+- 而在controller当中，没有做任何的异常处理，所以最终异常会再往上抛。最终抛给框架之后，框架就会返回一个JSON格式的数据，里面封装的就是错误的信息，但是框架返回的JSON格式的数据并不符合我们的开发规范。
+
+### 3.2 解决方案
+
+那么在三层构架项目中，出现了异常，该如何处理?
+
+- 方案一：在所有Controller的所有方法中进行try…catch处理
+  - 缺点：代码臃肿（不推荐）
+- 方案二：全局异常处理器
+  - 好处：简单、优雅（推荐）
+
+![ ](./assets/springboot05/image-20230107122904214.png)
+
+### 3.3 全局异常处理器
+
+- 定义全局异常处理器非常简单，就是定义一个类，在类上加上一个注解@RestControllerAdvice，加上这个注解就代表我们定义了一个全局异常处理器。
+- 在全局异常处理器当中，需要定义一个方法来捕获异常，在这个方法上需要加上注解@ExceptionHandler。通过@ExceptionHandler注解当中的value属性来指定要捕获的是哪一类型的异常。
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    //处理异常
+    @ExceptionHandler(Exception.class) //指定能够处理的异常类型
+    public Result ex(Exception e){
+        e.printStackTrace();//打印堆栈中的异常信息
+
+        //捕获到异常之后，响应一个标准的Result
+        return Result.error("对不起,操作失败,请联系管理员");
+    }
+}
+```
+
+> @RestControllerAdvice = @ControllerAdvice + @ResponseBody
+>
+> 处理异常的方法返回值会转换为json后再响应给前端
+
+重新启动SpringBoot服务，打开浏览器，依然添加已存在的 "就业部"
+
+![ ](./assets/springboot05/image-20230112131232032.png)
+
+![ ](./assets/springboot05/image-20230112131135272.png)
+
+异常已经被全局异常处理器捕获了。然后返回的错误信息，被前端程序正常解析，提示出了对应的错误提示信息。
+
+::: tip 主要涉及到两个注解
+
+- @RestControllerAdvice  //表示当前类为全局异常处理器
+- @ExceptionHandler  //指定可以捕获哪种类型的异常进行处理
+
+:::

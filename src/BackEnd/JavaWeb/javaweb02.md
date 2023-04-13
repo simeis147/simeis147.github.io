@@ -67,7 +67,7 @@ GET请求和POST请求的区别：
 
 与HTTP的请求一样，HTTP响应的数据也分为3部分：**响应行**、**响应头** 、**响应体**
 
-![ ](./assets/image-20220823202344149.png) 
+![ ](./assets/image-20220823202344149.png)
 
 响应行由`协议及版本`、`响应状态码`、`状态码描述`组成
 
@@ -138,7 +138,7 @@ spring-boot-starter-test：包含了单元测试所需要的常见依赖
 每一个起步依赖，都用于开发一个特定的功能。
 
 > 举例：  
->   开发中需要使用redis数据库时，只需要在SpringBoot项目中，引入：spring-boot-starter-redis ，即可导入redis开发所需要的依赖。
+> 开发中需要使用redis数据库时，只需要在SpringBoot项目中，引入：spring-boot-starter-redis ，即可导入redis开发所需要的依赖。
 
 ### 3.3 SpringBoot父工程
 
