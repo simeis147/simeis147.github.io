@@ -13,11 +13,12 @@ category:
 
 ![ ](./assets/springboot00/image-20221202202305118.png)
 
-在SpringBoot的项目中，起步依赖有一个共同的特征：都是以`spring-boot-starter-`作为开头
+在SpringBoot项目中，起步依赖有一个共同的特征：都是以`spring-boot-starter-`作为开头
 
-::: note 起步依赖特殊之处
+::: tip 起步依赖特殊之处
 
 spring-boot-starter-web：包含了web应用开发所需要的常见依赖  
+
 spring-boot-starter-test：包含了单元测试所需要的常见依赖
 
 :::
