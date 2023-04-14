@@ -23,7 +23,7 @@ spring-boot-starter-test：包含了单元测试所需要的常见依赖
 
 :::
 
-**spring-boot-starter-web**内部把关于Web开发所有的依赖都已经导入并且**指定了版本**，只需引入 `spring-boot-starter-web` 依赖就可以实现Web开发的需要的功能
+`spring-boot-starter-web` 内部把关于Web开发所有的依赖都已经导入并且**指定了版本**，只需引入 `spring-boot-starter-web` 依赖就可以实现Web开发的需要的功能
 
 ![ ](./assets/springboot00/image-20221202204013113.png)
 
@@ -34,7 +34,7 @@ spring-boot-starter-test：包含了单元测试所需要的常见依赖
 每一个起步依赖，都用于开发一个特定的功能。
 
 > 举例：  
-> 开发中需要使用redis数据库时，只需要在SpringBoot项目中，引入：spring-boot-starter-redis ，即可导入redis开发所需要的依赖。
+> 开发中需要使用redis数据库时，只需要在SpringBoot项目中，引入：spring-boot-starter-redis ，即可导入redis开发所需要的依赖
 
 ## 2 SpringBoot父工程
 
@@ -44,6 +44,6 @@ SpringBoot通过maven引入的依赖，是没有指定具体的依赖版本号�
 
 为什么没有指定\<version>版本号，可以正常使用呢？
 
-- 因为每一个SpringBoot工程，都有一个父工程。依赖的版本号，在父工程中统一管理。
+- 因为每一个SpringBoot工程，都有一个父工程。依赖的版本号在父工程中统一管理。
 
 ![ ](./assets/springboot00/image-20221202205318778.png)

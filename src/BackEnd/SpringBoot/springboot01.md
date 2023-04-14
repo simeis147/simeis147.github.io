@@ -9,12 +9,12 @@ category:
 
 ![ ](./assets/springboot01/image-20220826161735076.png)
 
-SpringBoot进行web程序开发时，它内置了一个核心的Servlet程序 DispatcherServlet，称之为 核心控制器。  
+SpringBoot进行web程序开发时，内置了一个核心的Servlet程序 DispatcherServlet ，称之为`核心控制器`  
 DispatcherServlet 负责接收页面发送的请求，然后根据执行的规则，将请求再转发给后面的请求处理器Controller，请求处理器处理完请求之后，最终再由DispatcherServlet给浏览器响应数据。
 
 ![ ](./assets/springboot01/image-20220826165340157.png)
 
-浏览器发送请求，会携带请求数据，包括：请求行、请求头；请求到达tomcat之后，tomcat会负责解析这些请求数据，然后解析后的请求数据会传递给Servlet程序的 HttpServletRequest 对象，也意味着 HttpServletRequest 对象就可以获取到请求数据。 而Tomcat，还给Servlet程序传递了一个参数 HttpServletResponse，通过这个对象，就可以给浏览器设置响应数据 。
+请求到达Tomcat之后，Tomcat会负责解析这些请求数据，解析后的请求数据会传递给Servlet程序的 HttpServletRequest 对象，也意味着 HttpServletRequest 对象就可以获取到请求数据。 而Tomcat，还给Servlet程序传递了一个参数 HttpServletResponse，通过这个对象，可以给浏览器设置响应数据 。
 
 ![ ](./assets/springboot01/image-20220826171407354.png)
 
@@ -26,39 +26,34 @@ DispatcherServlet 负责接收页面发送的请求，然后根据执行的规�
 
 ### 1.1 Postman
 
-Postman是一款功能强大的网页调试与发送网页HTTP请求的Chrome插件。
+一款功能强大的网页调试与发送网页HTTP请求的Chrome插件。
 
   > Postman原是Chrome浏览器的插件，可以模拟浏览器向后端服务器发起任何形式(如:get、post)的HTTP请求
   >
   > 使用Postman还可以在发起请求时，携带一些请求参数、请求头等信息
 
-作用：常用于进行接口测试
+**作用**：常用于进行接口测试
 
-特征
-
-- 简单
-- 实用
-- 美观
-- 大方
+**特征**：简单、实用、美观、大方
 
 ### 1.2 简单参数
 
-简单参数：在向服务器发起请求时，向服务器传递的是一些普通的请求数据。
-
 ![ ](./assets/springboot01/image-20220826180550583.png)
 
-在后端程序中，如何接收传递过来的普通参数数据呢？
+::: info 如何接收传递过来的普通参数数据呢？
 
 1. 原始方式
 2. SpringBoot方式
 
+:::
+
 #### 1.2.1 原始方式
 
-在原始的Web程序当中，需要通过Servlet中提供的API：HttpServletRequest（请求对象），获取请求的相关信息。比如获取请求参数：
+在原始的Web程序当中，需要通过Servlet中提供的API：HttpServletRequest（请求对象），获取请求的相关信息。
 
 > Tomcat接收到http请求时：把请求的相关信息封装到HttpServletRequest对象中
 
-在Controller中，我们要想获取Request对象，可以直接在方法的形参中声明 HttpServletRequest 对象。然后就可以通过该对象来获取请求信息：
+Controller获取Request对象，直接在方法的形参中声明 HttpServletRequest 对象
 
 ```json
 //根据指定的参数名获取请求参数的数据值
@@ -86,11 +81,12 @@ public class RequestController {
 }
 ```
 
-> 仅做了解。（在以后的开发中不会使用到）
+> 仅做了解
 
 #### 1.2.2 SpringBoot方式
 
-在Springboot的环境中，对原始的API进行了封装，接收参数的形式更加简单。 如果是简单参数，参数名与形参变量名相同，定义同名的形参即可接收参数。
+在Springboot的环境中，对原始的API进行了封装，接收参数的形式更加简单。   
+如果是简单参数，参数名与形参变量名相同，定义同名的形参即可接收参数。
 
 ```java
 @RestController
@@ -98,8 +94,7 @@ public class RequestController {
     // http://localhost:8080/simpleParam?name=Tom&age=10
     // 第1个请求参数： name=Tom   参数名:name，参数值:Tom
     // 第2个请求参数： age=10     参数名:age , 参数值:10
-    
-    //springboot方式
+
     @RequestMapping("/simpleParam")
     public String simpleParam(String name , Integer age ){//形参名和请求参数名保持一致
         System.out.println(name+"  :  "+age);
@@ -135,15 +130,15 @@ public class RequestController {
 }
 ```
 
-答案：运行没有报错。 controller方法中的username值为：null，age值为20
+运行后controller方法中的username值为null，age值为20
 
-- 结论：对于简单参数来讲，请求参数名和controller方法中的形参名不一致时，无法接收到请求数据
+::: tip 结论
 
-开发中遇到了这种请求参数名和controller方法中的形参名不相同，怎么办？
+请求参数名和controller方法中的形参名不一致时，无法接收到请求数据
 
-解决方案：可以使用Spring提供的@RequestParam注解完成映射
+:::
 
-在方法形参前面加上 @RequestParam 然后通过value属性执行请求参数名，从而完成映射。代码如下：
+解决方案：在方法形参前面加上 @RequestParam 注解然后通过value属性执行请求参数名，从而完成映射
 
 ```java
 @RestController
@@ -151,7 +146,6 @@ public class RequestController {
     // http://localhost:8080/simpleParam?name=Tom&age=20
     // 请求参数名：name
 
-    //springboot方式
     @RequestMapping("/simpleParam")
     public String simpleParam(@RequestParam("name") String username , Integer age ){
         System.out.println(username+"  :  "+age);
@@ -162,7 +156,7 @@ public class RequestController {
 
 > **注意事项：**
 >
-> @RequestParam中的required属性默认为true（默认值也是true），代表该请求参数必须传递，如果不传递将报错
+> @RequestParam中的required属性默认为true，代表该请求参数必须传递，如果不传递将报错
 >
 > ![ ](./assets/springboot01/image-20221203130726310.png)
 >
@@ -178,9 +172,7 @@ public class RequestController {
 
 ### 1.3 实体参数
 
-在使用简单参数做为数据传递方式时，前端传递了多少个请求参数，后端controller方法中的形参就要书写多少个。如果请求参数比较多，通过上述的方式一个参数一个参数的接收，会比较繁琐。
-
-将请求参数封装到一个实体类对象中。 要想完成数据封装，需要遵守如下规则：**请求参数名与实体类的属性名相同**
+将请求参数封装到一个实体类对象中，完成数据封装需要**请求参数名与实体类的属性名相同**
 
 ![ ](./assets/springboot01/image-20221203131954932.png)
 
@@ -246,7 +238,7 @@ Postman测试：
 
 #### 1.3.2 复杂实体对象
 
-复杂实体对象指的是，在实体类中有一个或多个属性，也是实体对象类型的。如下：
+在实体类中有一个或多个属性，也是实体对象类型的
 
 - User类中有一个Address类型的属性（Address是一个实体类）
 
@@ -254,7 +246,7 @@ Postman测试：
 
 复杂实体对象的封装，需要遵守如下规则：
 
-- **请求参数名与形参对象属性名相同，按照对象层次结构关系即可接收嵌套实体类属性参数。**
+**请求参数名与形参对象属性名相同，按照对象层次结构关系即可接收嵌套实体类属性参数。**
 
 定义POJO实体类：
 
@@ -354,11 +346,11 @@ Postman测试：
 
 ### 1.4 数组集合参数
 
-数组集合参数的使用场景：在HTML的表单中，有一个表单项是支持多选的(复选框)，可以提交选择的多个值。
+使用场景：在HTML的表单中，有一个表单项是支持多选的(复选框)，可以提交选择的多个值
 
 ![ ](./assets/springboot01/image-20221203164114083.png)
 
-多个值是怎么提交的呢？其实多个值也是一个一个的提交。
+多个值是怎么提交的呢？多个值也是一个一个的提交
 
 ![ ](./assets/springboot01/image-20221203164944144.png)
 
@@ -405,7 +397,7 @@ Postman测试：
 
 > 默认情况下，请求中参数名相同的多个值，是封装到数组。如果要封装到集合，要使用@RequestParam绑定参数关系
 
-![image-20221203211640646](./assets/springboot01/image-20221203211640646.png)
+![ ](./assets/springboot01/image-20221203211640646.png)
 
 Controller方法：
 
@@ -433,16 +425,14 @@ Postman测试：
 
 ### 1.5 日期参数
 
-上述演示的都是一些普通的参数，在一些特殊的需求中，可能会涉及到日期类型数据的封装
-
 ![ ](./assets/springboot01/image-20220826194159343.png)
 
-日期的格式多种多样（如：2022-12-12 10:05:45 、2022/12/12 10:05:45），那么对于日期类型的参数在进行封装的时候，需要通过@DateTimeFormat注解，以及其pattern属性来设置日期的格式。
+日期的格式多种多样（如：2022-12-12 10:05:45 、2022/12/12 10:05:45），对于日期类型的参数在进行封装的时候，需要通过 @DateTimeFormat 注解，以及其pattern属性来设置日期的格式。
 
 ![ ](./assets/springboot01/image-20221203213120692.png)
 
-- @DateTimeFormat注解的pattern属性中指定了哪种日期格式，前端的日期参数就必须按照指定的格式传递。
-- 后端controller方法中，需要使用Date类型或LocalDateTime类型，来封装传递的参数。
+- @DateTimeFormat注解的pattern属性中指定了哪种日期格式，前端的日期参数就必须按照指定的格式传递
+- 后端controller方法中，需要使用Date类型或LocalDateTime类型，来封装传递的参数
 
 Controller方法：
 
@@ -474,11 +464,11 @@ Postman发送JSON格式数据：
 服务端Controller方法接收JSON格式数据：
 
 - 传递json格式的参数，在Controller中会使用实体类进行封装。
-- 封装规则：**JSON数据键名与形参对象属性名相同，定义POJO类型形参即可接收参数。需要使用 @RequestBody标识。**
+- 封装规则：**JSON数据键名与形参对象属性名相同，定义POJO类型形参即可接收参数。需要使用 @RequestBody 标识**
 
 ![ ](./assets/springboot01/image-20221203230457901.png)
 
-- @RequestBody注解：将JSON数据映射到形参的实体类对象中（JSON中的key和实体类中的属性名保持一致）
+> @RequestBody注解：将JSON数据映射到形参的实体类对象中（JSON中的key和实体类中的属性名保持一致）
 
 实体类：Address
 
@@ -523,11 +513,11 @@ Postman测试：
 
 ### 1.7 路径参数
 
-传统的开发中请求参数是放在请求体(POST请求)传递或跟在URL后面通过?key=value的形式传递(GET请求)。
+传统的开发中请求参数是放在请求体(POST请求)传递 或 跟在URL后面通过?key=value的形式传递(GET请求)。
 
 ![ ](./assets/springboot01/image-20221203235715804.png)
 
-在现在的开发中，经常还会直接在请求的URL中传递参数。例如：
+现在的开发中经常还会直接在请求的URL中传递参数
 
 ```md
 http://localhost:8080/user/1
@@ -537,7 +527,7 @@ http://localhost:880/user/1/0
 路径参数：
 
 - 前端：通过请求URL直接传递参数
-- 后端：使用\{…\}来标识该路径参数，需要使用@PathVariable获取路径参数
+- 后端：使用\{…\}来标识该路径参数，需要使用 @PathVariable 获取路径参数
 
 ![ ](./assets/springboot01/image-20221204001520756.png)
 
@@ -561,7 +551,7 @@ Postman测试：
 
 **传递多个路径参数：**
 
-Postman：
+Postman测试：
 
 ![ ](./assets/springboot01/image-20221204002306288.png)
 
@@ -581,7 +571,7 @@ public class RequestController {
 
 ## 2. 响应
 
-HTTL协议的交互方式：请求响应模式（有请求就有响应）
+HTTL协议的交互方式：**请求响应模式（有请求就有响应）**
 
 ### 2.1 @ResponseBody
 
@@ -589,14 +579,19 @@ controller方法中的return的结果，怎么就可以响应给浏览器呢？
 
 答案：使用@ResponseBody注解
 
-**@ResponseBody注解：**
+::: tip @ResponseBody注解
 
-- 类型：方法注解、类注解
-- 位置：书写在Controller方法上或类上
-- 作用：将方法返回值直接响应给浏览器
-  - 如果返回值类型是实体对象/集合，将会转换为JSON格式后在响应给浏览器
+类型：方法注解、类注解  
 
-但是在所书写的Controller中，只在类上添加了@RestController注解、方法添加了@RequestMapping注解，并没有使用@ResponseBody注解，怎么给浏览器响应呢？
+位置：书写在Controller方法上或类上  
+
+作用：将方法返回值直接响应给浏览器  
+
+- 如果返回值类型是实体对象/集合，将会转换为JSON格式后再响应给浏览器
+
+:::
+
+在所书写的Controller中，只在类上添加了@RestController注解、方法添加了@RequestMapping注解，并没有使用@ResponseBody注解，怎么给浏览器响应呢？
 
 ```java
 @RestController
@@ -629,7 +624,7 @@ public @interface RestController {
 }
 ```
 
-结论：在类上添加@RestController就相当于添加了@ResponseBody注解。
+**结论**：在类上添加@RestController就相当于添加了@ResponseBody注解。
 
 ```java
 @RestController
@@ -676,11 +671,9 @@ public class ResponseController {
 
 ### 2.2 统一响应结果
 
-编写的这些Controller方法中，返回值各种各样，没有任何的规范。
-
 ![ ](./assets/springboot01/image-20221204174052622.png)
 
-真实的项目开发中，无论是哪种方法，都会定义一个统一的返回结果。方案如下：
+真实的项目开发中，无论是哪种方法，都会定义一个统一的返回结果
 
 ![ ](./assets/springboot01/image-20221204174537686.png)
 
@@ -694,7 +687,7 @@ public class ResponseController {
 
 - 返回的数据：给前端响应的数据（字符串、对象、集合）
 
-定义在一个实体类Result来包含以上信息。代码如下：
+定义在一个实体类Result来包含以上信息，代码如下：
 
 ```java
 public class Result {
@@ -802,13 +795,9 @@ public class ResponseController {
 
 需求：加载并解析xml文件中的数据，完成数据处理，并在页面展示
 
-![ ](./assets/springboot01/image-20221204185928260.png)  
-
-- 获取员工数据，返回统一响应结果，在页面渲染展示
+![ ](./assets/springboot01/image-20221204185928260.png)
 
 #### 2.3.2 准备工作
-
-案例准备：
 
 1. XML文件
 2. 工具类
@@ -944,7 +933,7 @@ public class Result {
 
 #### 2.3.6 问题分析
 
-案例中：解析XML数据，获取数据的代码，处理数据的逻辑的代码，给页面响应的代码全部都堆积在一起了，全部都写在controller方法中了。
+案例中：解析XML数据，获取数据的代码，处理数据的逻辑的代码，给页面响应的代码全部都堆积在一起了，全部都写在controller方法中了
 
 ![ ](./assets/springboot01/image-20221204190712411.png)
 
