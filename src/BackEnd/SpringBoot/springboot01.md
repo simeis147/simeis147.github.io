@@ -85,7 +85,7 @@ public class RequestController {
 
 #### 1.2.2 SpringBoot方式
 
-在Springboot的环境中，对原始的API进行了封装，接收参数的形式更加简单。   
+在Springboot的环境中，对原始的API进行了封装，接收参数的形式更加简单。  
 如果是简单参数，参数名与形参变量名相同，定义同名的形参即可接收参数。
 
 ```java
@@ -955,9 +955,9 @@ public class Result {
 
 ![ ](./assets/springboot01/image-20221204191650390.png)
 
-- 数据访问：负责业务数据的维护操作，包括增、删、改、查等操作。
-- 逻辑处理：负责业务逻辑处理的代码。
-- 请求处理、响应数据：负责，接收页面的请求，给页面响应数据。
+- 数据访问：负责业务数据的维护操作，包括增、删、改、查等操作  
+- 逻辑处理：负责业务逻辑处理的代码  
+- 请求处理、响应数据：负责，接收页面的请求，给页面响应数据  
 
 ![ ](./assets/springboot01/image-20221204193837678.png)
 
@@ -1081,23 +1081,25 @@ public class EmpDaoA implements EmpDao {
 
 ![ ](./assets/springboot01/image-20221204201342490.png)
 
-三层架构的好处：
+::: tip 三层架构的好处
 
 1. 复用性强
 2. 便于维护
 3. 利用扩展
 
-### 3.2 分层解耦
+:::
 
-解耦：解除耦合。
+### 3.2 分层解耦
 
 #### 3.2.1 耦合问题
 
-首先需要了解软件开发涉及到的两个概念：内聚和耦合。
+::: info 软件开发涉及到的两个概念：内聚和耦合
 
 - 内聚：软件中各个功能模块内部的功能联系。
 
 - 耦合：衡量软件中各个层/模块之间的依赖、关联的程度。
+
+:::
 
 **软件设计原则：高内聚低耦合。**
 
@@ -1133,13 +1135,15 @@ public class EmpDaoA implements EmpDao {
 
 - 不能new，就意味着没有业务层对象（程序运行就报错），怎么办呢？
 
-解决思路：
+::: tip 解决思路
 
 - 提供一个容器，容器中存储一些对象(例：EmpService对象)
 
 - controller程序从容器中获取EmpService类型的对象
 
-想要实现上述解耦操作，就涉及到Spring中的两个核心概念：
+:::
+
+想要实现上述解耦操作，涉及Spring中的两个核心概念：
 
 - **控制反转：** Inversion Of Control，简称IOC。对象的创建控制权由程序自身转移到外部（容器），这种思想称为控制反转。
 
@@ -1157,15 +1161,17 @@ IOC容器中创建、管理的对象，称之为：bean对象
 
 #### 3.3.1 IOC&DI入门
 
-任务：完成Controller层、Service层、Dao层的代码解耦
+完成Controller层、Service层、Dao层的代码解耦
 
-思路：
+::: tip 思路
 
 1. 删除Controller层、Service层中new对象的代码
 2. Service层及Dao层的实现类，交给IOC容器管理
 3. 为Controller及Service注入运行时依赖的对象
    - Controller程序中注入依赖的Service层对象
-     - Service程序中注入依赖的Dao层对象
+   - Service程序中注入依赖的Dao层对象
+
+:::
 
 第1步：删除Controller层、Service层中new对象的代码
 
@@ -1268,9 +1274,13 @@ public class EmpDaoA implements EmpDao {
 
 #### 3.3.2 IOC详解
 
-bean的声明:
+::: tip IOC控制反转
 
-IOC控制反转，就是将对象的控制权交给Spring的IOC容器，由IOC容器创建及管理对象。IOC容器创建的对象称为bean对象。
+就是将对象的控制权交给Spring的IOC容器，由IOC容器创建及管理对象  
+
+IOC容器创建的对象称为bean对象
+
+:::
 
 要把某个对象交给IOC容器管理，需要在类上添加一个注解：@Component
 
@@ -1379,11 +1389,11 @@ public class EmpDaoA implements EmpDao {
 
 组件扫描:
 
-问题：使用前面学习的四个注解声明的bean，一定会生效吗？
+问题：使用前面的四个注解声明的bean，一定会生效吗？
 
 答案：不一定。（原因：bean想要生效，还需要被组件扫描）
 
- 下面我们通过修改项目工程的目录结构，来测试bean对象是否生效：
+ 下面通过修改项目工程的目录结构，来测试bean对象是否生效：
 
 ![ ](./assets/springboot01/image-20221204223602694.png)
 
@@ -1395,17 +1405,17 @@ public class EmpDaoA implements EmpDao {
 
 - 使用四大注解声明的bean，要想生效，还需要被组件扫描注解@ComponentScan扫描
 
-> @ComponentScan注解虽然没有显式配置，但是实际上已经包含在了引导类声明注解 @SpringBootApplication 中，==**默认扫描的范围是SpringBoot启动类所在包及其子包**==。
+> @ComponentScan注解虽然没有显式配置，但是实际上已经包含在了引导类声明注解 @SpringBootApplication 中，**默认扫描的范围是SpringBoot启动类所在包及其子包**。
 >
 > ![ ](./assets/springboot01/image-20221204224643683.png)
 
-- 解决方案：手动添加@ComponentScan注解，指定要扫描的包   （==仅做了解，不推荐==）
+解决方案：手动添加@ComponentScan注解，指定要扫描的包（仅做了解，不推荐）
 
 ![ ](./assets/springboot01/image-20221204225437297.png)
 
-推荐做法（如下图）：
+推荐做法：
 
-- 将我们定义的controller，service，dao这些包呢，都放在引导类所在包com.itheima的子包下，这样我们定义的bean就会被自动的扫描到
+- 将定义的controller，service，dao这些包都放在引导类所在包com.itheima的子包下，定义的bean就会被自动的扫描到
 
 ![ ](./assets/springboot01/image-20221204225815624.png)
 
@@ -1417,7 +1427,7 @@ Autowired翻译过来叫：自动装配。
 
 @Autowired注解，默认是按照**类型**进行自动装配的（去IOC容器中找某个类型的对象，然后完成注入操作）
 
-> 入门程序举例：在EmpController运行的时候，就要到IOC容器当中去查找EmpService这个类型的对象，而我们的IOC容器中刚好有一个EmpService这个类型的对象，所以就找到了这个类型的对象完成注入操作。
+> 入门程序举例：在EmpController运行的时候，就要到IOC容器当中去查找EmpService这个类型的对象，而IOC容器中刚好有一个EmpService这个类型的对象，所以就找到了这个类型的对象完成注入操作。
 
 那如果在IOC容器中，存在多个相同类型的bean对象，会出现什么情况呢？
 
