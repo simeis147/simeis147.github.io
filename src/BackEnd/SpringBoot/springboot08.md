@@ -25,7 +25,7 @@ category:
 
     作为 `web` 程序，`web3.0` 的配置类不能缺少，而这个配置类还是比较麻烦的，代码如下
 
-    ![ ](./assets/springboot08/image-20210911133112602.pn)
+    ![ ](./assets/springboot08/image-20210911133112602.png)
   
 3. **编写 `SpringMVC` 的配置类**
 
