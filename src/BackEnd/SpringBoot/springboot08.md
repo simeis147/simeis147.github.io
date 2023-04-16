@@ -68,7 +68,7 @@ category:
 
   我们使用这种方式构建的 `SpringBoot` 工程其实也是 `Maven` 工程，而该方式只是一种快速构建的方式而已。
 
-  ![ ](./assets/springboot08/image-20210911155916899.p)
+  ![ ](./assets/springboot08/image-20210911155916899.png)
 
   > ==注意：打包方式这里需要设置为 `Jar`==
 
@@ -1138,7 +1138,7 @@ server:
 
   点击工程的 `package` 来打 `jar` 包
 
-![ ](./assets/springboot08/image-20210917201243721.pn)
+![ ](./assets/springboot08/image-20210917201243721.png)
 
 * 在硬盘上找到 `jar` 包所在位置
 
