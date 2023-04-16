@@ -7,6 +7,11 @@ category:
 
 # Spring IOC DI
 
+> * 掌握Spring相关概念
+> * 完成IOC/DI的入门案例编写
+> * 掌握IOC的相关配置与使用
+> * 掌握DI的相关配置与使用
+
 ## 1 Spring核心概念
 
 代码在编写过程中遇到的问题:
