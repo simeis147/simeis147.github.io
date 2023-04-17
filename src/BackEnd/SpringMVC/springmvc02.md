@@ -3,16 +3,17 @@ order: 2
 date: 2023-04-17
 category: 
   - SpringMVC
+  - SSM
 ---
 
-# SpringMVC_day02
+# SpringMVC SSM整合
 
 > * 完成SSM的整合开发
 > * 能够理解并实现统一结果封装与统一异常处理
 > * 能够完成前后台功能整合开发
 > * 掌握拦截器的编写
 
-## 1，SSM整合
+## 1 SSM整合
 
 前面我们已经把`Mybatis`、`Spring`和`SpringMVC`三个框架进行了学习，今天主要的内容就是把这三个框架整合在一起完成我们的业务功能开发，具体如何来整合，我们一步步来学习。
 
@@ -600,7 +601,7 @@ public class BookServiceTest {
 
 ![ ](./assets/springmvc02/1630652867493.png)
 
-## 2，统一结果封装
+## 2 统一结果封装
 
 ### 2.1 表现层与前端数据传输协议定义
 
@@ -763,7 +764,7 @@ public class BookController {
 
 至此，我们的返回结果就已经能以一种统一的格式返回给前端。前端根据返回的结果，先从中获取`code`,根据code判断，如何成功则取`data`属性的值，如果失败，则取`msg`中的值作提示。
 
-## 3，统一异常处理
+## 3 统一异常处理
 
 ### 3.1 问题描述
 
@@ -1144,7 +1145,7 @@ public class ProjectExceptionAdvice {
 
 ![ ](./assets/springmvc02/1630658821746.png)
 
-## 4，前后台协议联调
+## 4 前后台协议联调
 
 ### 4.1 环境准备
 
@@ -1915,7 +1916,7 @@ handleDelete(row) {
 </html>
 ```
 
-## 5，拦截器
+## 5 拦截器
 
 对于拦截器这节的知识，我们需要学习如下内容:
 
