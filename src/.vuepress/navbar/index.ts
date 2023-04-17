@@ -6,6 +6,7 @@ export const zhNavbar = navbar([
   { 
       text: '工具',
       link: '/Tools/',
+      icon: "tool",
       children: [
         {
           text: '文档',
@@ -29,14 +30,14 @@ export const zhNavbar = navbar([
       {
         text: '数据库基础和原理',
         children: [
-          {text: '数据库原理', link: '/Database/Basic/Principle/'},
-          {text: 'SQL语言', link: '/Database/Basic/Language/'},
+          {text: '数据库原理', icon: 'database', link: '/Database/Basic/Principle/'},
+          {text: 'SQL语言', icon: 'sql', link: '/Database/Basic/Language/'},
         ]
       },
       {
         text: 'SQL 数据库',
         children: [
-          { text: "Mysql详解", link: "/Database/SQL/" },
+          { text: "Mysql详解", icon: 'mysql',link: "/Database/SQL/" },
         ]
       },
       {
