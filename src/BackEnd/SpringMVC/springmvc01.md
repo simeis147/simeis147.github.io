@@ -7,16 +7,16 @@ category:
 
 # SpringMVC_day01
 
->* 理解SpringMVC相关概念
->* 完成SpringMVC的入门案例
->* 学会使用PostMan工具发送请求和数据
->* 掌握SpringMVC如何接收请求、数据和响应结果
->* 掌握RESTful风格及其使用
->* 完成基于RESTful的案例编写
+> 理解SpringMVC相关概念  
+> 完成SpringMVC的入门案例  
+> 学会使用PostMan工具发送请求和数据  
+> 掌握SpringMVC如何接收请求、数据和响应结果  
+> 掌握RESTful风格及其使用  
+> 完成基于RESTful的案例编写  
 
 ## 1，SpringMVC简介
 
-看到SpringMVC这个名字我们会发现其中包含Spring,那么SpringMVC和Spring之间的会有关系么?答案是肯定有，SpringMVC隶属于Spring，是Spring技术中的一部分。那么SpringMVC到底是用来做什么的呢?
+SpringMVC隶属于Spring，是Spring技术中的一部分。那么SpringMVC到底是用来做什么的呢?
 
 * 回想web阶段，我们学习过Servlet,而SpringMVC与Servlet技术功能等同，均属于web层或者说表现层开发技术。
 

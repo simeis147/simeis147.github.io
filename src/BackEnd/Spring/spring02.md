@@ -1213,7 +1213,7 @@ public class App {
 
 ![ ](./assets/spring02/1630032385498.png)
 
-****注意:**@PostConstruct和@PreDestroy注解如果找不到，需要导入下面的jar包**
+**注意:** @PostConstruct和@PreDestroy注解如果找不到，需要导入下面的jar包
 
 ```java
 <dependency>
@@ -1223,7 +1223,7 @@ public class App {
 </dependency>
 ```
 
-找不到的原因是，从JDK9以后jdk中的javax.annotation包被移除了，这两个注解刚好就在这个包中。
+> 找不到的原因是，从JDK9以后jdk中的javax.annotation包被移除了，这两个注解刚好就在这个包中
 
 ##### 知识点1：@PostConstruct
 
@@ -1249,11 +1249,9 @@ public class App {
 
 ### 3.5 注解开发依赖注入
 
-Spring为了使用注解简化开发，并没有提供`构造函数注入`、`setter注入`对应的注解，只提供了自动装配的注解实现。
+Spring为了使用注解简化开发，并没有提供`构造函数注入`、`setter注入`对应的注解，只提供了自动装配的注解实现
 
 #### 3.5.1 环境准备
-
-在学习之前，把案例环境介绍下:
 
 * 创建一个Maven项目
 
@@ -1326,7 +1324,7 @@ Spring为了使用注解简化开发，并没有提供`构造函数注入`、`se
 
 ![ ](./assets/spring02/1630033710052.png)
 
-出现问题的原因是，在BookServiceImpl类中添加了BookDao的属性，并提供了setter方法，但是目前是没有提供配置注入BookDao的，所以bookDao对象为Null,调用其save方法就会报`控指针异常`。
+出现问题的原因是，在BookServiceImpl类中添加了BookDao的属性，并提供了setter方法，但是目前是没有提供配置注入BookDao的，所以bookDao对象为Null，调用其save方法就会报`控指针异常`。
 
 #### 3.5.2 注解实现按照类型注入
 
@@ -1429,8 +1427,6 @@ public class BookServiceImpl implements BookService {
 
 #### 3.5.4 简单数据类型注入
 
-引用类型看完，简单类型注入就比较容易懂了。简单类型注入就是注入的东西不是对象了，是基本数据类型或者字符串类型，下面在`BookDaoImpl`类中添加一个`name`属性，用其进行简单类型注入
-
 ```java
 @Repository("bookDao")
 public class BookDaoImpl implements BookDao {
@@ -1454,13 +1450,9 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-注意数据格式要匹配，不要将"abc"注入给int值，这样程序就会报错。
-
-介绍完后，会有一种感觉就是这个注解好像没什么用，跟直接赋值是一个效果，还没有直接赋值简单，所以这个注解存在的意义是什么?
-
 #### 3.5.5 注解读取properties配置文件
 
-`@Value`一般会被用在从properties配置文件中读取内容进行使用，具体如何实现?
+`@Value`一般会被用在从properties配置文件中读取内容进行使用
 
 ##### 步骤1：resource下准备properties文件
 
@@ -1496,9 +1488,7 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-步骤4:运行程序
-
-运行App类，查看运行结果，说明配置文件中的内容已经被加载到
+##### 步骤4: 运行程序
 
 ![ ](./assets/spring02/1630084683663.png)
 
@@ -1510,13 +1500,13 @@ public class BookDaoImpl implements BookDao {
   @PropertySource({"jdbc.properties","xxx.properties"})
   ```
 
-* `@PropertySource`注解属性中不支持使用通配符`*`,运行会报错
+* `@PropertySource`注解属性中不支持使用通配符`*`，运行会报错
 
   ```java
   @PropertySource({"*.properties"})
   ```
 
-* `@PropertySource`注解属性中可以把`classpath:`加上,代表从当前项目的根路径找文件
+* `@PropertySource`注解属性中可以把`classpath:`加上，代表从当前项目的根路径找文件
 
   ```java
   @PropertySource({"classpath:jdbc.properties"})
@@ -1560,17 +1550,7 @@ public class BookDaoImpl implements BookDao {
 
 ## 4 IOC/DI注解开发管理第三方bean
 
-前面定义bean的时候都是在自己开发的类上面写个注解就完成了，但是如果第三方的类，这些类都是在jar包中，我们没有办法在类上面添加注解，这个时候该怎么办?
-
-遇到上述问题，我们就需要有一种更加灵活的方式来定义bean,这种方式不能在原始代码上面书写注解，一样能定义bean,这就用到了一个全新的注解**@Bean**。
-
-这个注解该如何使用呢?
-
-咱们把之前使用配置方式管理的数据源使用注解再来一遍，通过这个案例来学习下@Bean的使用。
-
 ### 4.1 环境准备
-
-学习@Bean注解之前先来准备环境:
 
 * 创建一个Maven项目
 
@@ -1675,7 +1655,7 @@ public class SpringConfig {
 
 **注意:不能使用`DataSource ds = new DruidDataSource()`**
 
-因为DataSource接口中没有对应的setter方法来设置属性。
+> 因为DataSource接口中没有对应的setter方法来设置属性
 
 #### 步骤4:从IOC容器中获取对象并打印
 
@@ -1689,15 +1669,9 @@ public class App {
 }
 ```
 
-至此使用@Bean来管理第三方bean的案例就已经完成。
-
-如果有多个bean要被Spring管理，直接在配置类中多些几个方法，方法上添加@Bean注解即可。
-
 ### 4.3 引入外部配置类
 
-如果把所有的第三方bean对配置到Spring的配置文件`SpringConfig`，虽然可以，但是不利于代码阅读和分类管理，所有我们就想能不能按照类别将这些bean配置到不同的配置类中?
-
-对于数据源的bean,我们新建一个`JdbcConfig`配置类，并把数据源配置到该类下。
+对于数据源的bean，新建一个`JdbcConfig`配置类，并把数据源配置到该类下。
 
 ```java
 public class JdbcConfig {
@@ -1752,11 +1726,9 @@ public class JdbcConfig {
 
 依然能获取到bean对象并打印控制台。
 
-这种方式虽然能够扫描到，但是不能很快的知晓都引入了哪些配置类，所有这种方式不推荐使用。
+> 这种方式虽然能够扫描到，但是不能很快的知晓都引入了哪些配置类，所有这种方式不推荐使用。
 
 #### 4.3.2 使用`@Import`引入
-
-方案一实现起来有点小复杂，Spring早就想到了这一点，于是又给我们提供了第二种方案。
 
 这种方案可以不用加`@Configuration`注解，但是必须在Spring配置类上使用`@Import`注解手动引入需要加载的配置类
 
@@ -1899,22 +1871,6 @@ public class JdbcConfig {
 }
 ```
 
-###### 扩展
-
-现在的数据库连接四要素还是写在代码中，需要做的是将这些内容提
-
-取到jdbc.properties配置文件，大家思考下该如何实现?
-
-> 1.resources目录下添加jdbc.properties
->
-> 2.配置文件中提供四个键值对分别是数据库的四要素
->
-> 3.使用@PropertySource加载jdbc.properties配置文件
->
-> 4.修改@Value注解属性的值，将其修改为`${key}`，key就是键值对中的键的值
-
-具体的实现就交由大家自行实现下。
-
 #### 4.4.2 引用数据类型
 
 ##### 4.4.2.1 需求分析
@@ -1972,19 +1928,13 @@ public DataSource dataSource(BookDao bookDao){
 
 ## 5 注解开发总结
 
-前面我们已经完成了XML配置和注解的开发实现，至于两者之间的差异，咱们放在一块去对比回顾下:
-
 ![ ](./assets/spring02/1630134786448.png)
 
 ## 6 Spring整合
 
-课程学习到这里，已经对Spring有一个简单的认识了，Spring有一个容器，叫做IoC容器，里面保存bean。在进行企业级开发的时候，其实除了将自己写的类让Spring管理之外，还有一部分重要的工作就是使用第三方的技术。前面已经讲了如何管理第三方bean了，下面结合IoC和DI，整合2个常用技术，进一步加深对Spring的使用理解。
-
 ### 6.1 Spring整合Mybatis思路分析
 
 #### 6.1.1 环境准备
-
-在准备环境的过程中，我们也来回顾下Mybatis开发的相关内容:
 
 ##### 步骤1:准备数据库表
 
@@ -2119,7 +2069,7 @@ jdbc.username=root
 jdbc.password=root
 ```
 
-useSSL:关闭MySQL的SSL连接
+> useSSL:关闭MySQL的SSL连接
 
 ##### 步骤7:添加Mybatis核心配置文件
 
@@ -2185,8 +2135,6 @@ public class App {
 
 #### 6.1.2 整合思路分析
 
-Mybatis的基础环境我们已经准备好了，接下来就得分析下在上述的内容中，哪些对象可以交给Spring来管理?
-
 * Mybatis程序核心对象分析
 
   ![ ](./assets/spring02/1630137189480.png)
@@ -2207,13 +2155,9 @@ Mybatis的基础环境我们已经准备好了，接下来就得分析下在上�
 
 ### 6.2 Spring整合Mybatis
 
-前面我们已经分析了Spring与Mybatis的整合，大体需要做两件事，
-
 第一件事是:Spring要管理MyBatis中的SqlSessionFactory
 
 第二件事是:Spring要管理Mapper接口的扫描
-
-具体该如何实现，具体的步骤为:
 
 #### 步骤1:项目中导入整合需要的jar包
 
@@ -2316,7 +2260,7 @@ public class MybatisConfig {
 
   ![ ](./assets/spring02/1630138835057.png)
 
-  * SqlSessionFactoryBean是前面我们讲解FactoryBean的一个子类，在该类中将SqlSessionFactory的创建进行了封装，简化对象的创建，我们只需要将其需要的内容设置进行即可。
+  * SqlSessionFactoryBean是FactoryBean的一个子类，在该类中将SqlSessionFactory的创建进行了封装，简化对象的创建，只需将其需要的内容设置进行即可。
   * 方法中有一个参数为dataSource,当前Spring容器中已经创建了Druid数据源，类型刚好是DataSource类型的，此时在初始化SqlSessionFactoryBean这个对象的时候，发现需要使用DataSource对象，而容器中刚好有这么一个对象，就自动加载了DruidDataSource对象。
 
 * 使用MapperScannerConfigurer加载Dao接口，创建代理对象保存到IOC容器中
@@ -2367,17 +2311,11 @@ public class App2 {
 
 ### 6.3 Spring整合Junit
 
-整合JUnit与整合Druid和MyBatis差异比较大，为什么呢？JUnit是一个搞单元测试用的工具，它不是我们程序的主体，也不会参加最终程序的运行，从作用上来说就和之前的东西不一样，它不是做功能的，看做是一个辅助工具就可以了。
-
 #### 6.3.1 环境准备
-
-这块环境，大家可以直接使用Spring与Mybatis整合的环境即可。当然也可以重新创建一个，因为内容是一模一样，所以我们直接来看下项目结构即可:
 
 ![ ](./assets/spring02/1630139720273.png)
 
 #### 6.3.2 整合Junit步骤
-
-在上述环境的基础上，我们来对Junit进行整合。
 
 ##### 步骤1:引入依赖
 
@@ -2426,8 +2364,8 @@ public class AccountServiceTest {
 
 **注意:**
 
-* 单元测试，如何测试的是注解配置类，则使用`@ContextConfiguration(classes = 配置类.class)`
-* 单元测试，如何测试的是注解配置类，则使用`@ContextConfiguration(locations={配置文件名,...})`
+* 单元测试，如果测试的是注解配置类，则使用`@ContextConfiguration(classes = 配置类.class)`
+* 单元测试，如果测试的是注解配置类，则使用`@ContextConfiguration(locations={配置文件名,...})`
 * JUnit运行后是基于Spring环境运行的，所以Spring提供了一个专用的类运行器，这个务必要设置，这个类运行器就在Spring的测试专用包中提供的，导入的坐标就是这个东西`SpringJUnit4ClassRunner`
 * 上面两个配置都是固定格式，当需要测试哪个bean时，使用自动装配加载对应的接口就行了，下面的工作就和以前做JUnit单元测试完全一样了
 
@@ -2447,4 +2385,4 @@ public class AccountServiceTest {
 | 类型 | 测试类注解                                                   |
 | 位置 | 测试类定义上方                                               |
 | 作用 | 设置JUnit加载的Spring核心配置                                |
-| 属性 | classes：核心配置类，可以使用数组的格式设定加载多个配置类\<br/>locations:配置文件，可以使用数组的格式设定加载多个配置文件名称
+| 属性 | classes：核心配置类，可以使用数组的格式设定加载多个配置类<br/>locations: 配置文件，可以使用数组的格式设定加载多个配置文件名称

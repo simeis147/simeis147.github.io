@@ -33,7 +33,7 @@ export default hopeTheme({
     orange: "#fb9b5f",
     green: "#7f8c8d",
   },
-  fullscreen: true,
+  // fullscreen: true,
 
   // 页面元数据：贡献者，最后修改时间，编辑链接
   contributors: true,
