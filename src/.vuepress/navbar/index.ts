@@ -17,7 +17,7 @@ export const zhNavbar = navbar([
         {
           text: '工具',
           children: [
-            { text: "Git", icon: "git",link: "/Tools/Git/" },
+            { text: "Git", icon: 'git', link: "/Tools/Git/" },
           ]
         }
       ]
