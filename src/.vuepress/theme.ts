@@ -3,6 +3,7 @@ import { zhNavbar } from "./navbar/index.js";
 import { zhSidebar } from "./sidebar/index.js";
 
 export default hopeTheme({
+  backToTop: true,
   hostname: "https://github.com/simeis147",
   author: {
     name: "Dongcp",
