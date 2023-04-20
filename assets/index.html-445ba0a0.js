@@ -1,0 +1,1 @@
+import{_ as a,W as t,X as o,Y as n,a0 as e,a2 as r}from"./framework-88c75fbc.js";const s={},c=e("h1",{id:"nosql",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#nosql","aria-hidden":"true"},"#"),r(" NoSQL")],-1);function d(_,i){return t(),o("div",null,[c,n(" more ")])}const h=a(s,[["render",d],["__file","index.html.vue"]]);export{h as default};

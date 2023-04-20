@@ -1,1 +1,0 @@
-import{_ as a,W as r,X as t,Y as c,a0 as e,a2 as n}from"./framework-b7f92011.js";const i={},o=e("h1",{id:"principle",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#principle","aria-hidden":"true"},"#"),n(" Principle")],-1);function s(d,_){return r(),t("div",null,[o,c(" more ")])}const h=a(i,[["render",s],["__file","index.html.vue"]]);export{h as default};
