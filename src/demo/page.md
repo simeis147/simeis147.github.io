@@ -6,7 +6,7 @@ icon: page
 # 这是侧边栏的顺序
 order: 1
 # 设置作者
-author: Ms.Hope
+author: Dongcp
 # 设置写作时间
 date: 2023-01-01
 # 一个页面可以有多个分类
@@ -34,7 +34,6 @@ copyright: 无版权
 
 你可以在 Markdown 的 Frontmatter 中设置页面信息。
 
-- 作者设置为 Ms.Hope。
 - 写作日期为 2020 年 1 月 1 日
 - 分类为 “使用指南”
 - 标签为 “页面配置” 和 “使用指南”
