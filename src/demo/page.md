@@ -50,7 +50,7 @@ copyright: 无版权
 
 :::
 
-主题包含了一个自定义徽章可以使用: <Badge text="wenzi" color="#777">
+主题包含了一个自定义徽章可以使用: <Badge text="wenzi" color="#777" />
 
 > 文字结尾应该有深蓝色的 徽章文字 徽章。 <Badge text="徽章文字" color="#242378" />
 
