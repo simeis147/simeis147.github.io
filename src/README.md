@@ -31,6 +31,6 @@ projects:
     desc: 装备前线
     link: https://www.zfrontier.com/app/#new
 
-footer: ""
+footer: "Powered by <a href=\"https://v2.vuepress.vuejs.org/zh/\" target=\"_blank\"> VuePress </a> | Theme <a href=\"https://theme-hope.vuejs.press/zh/\" target=\"_blank\"> Hope </a>"
 copyright: Copyright © 2023 - present
 ---
