@@ -61,8 +61,8 @@ export default hopeTheme({
     "/": {
       navbar: zhNavbar,
       sidebar: zhSidebar,
-      footer: "Powered by <a href=\"https://v2.vuepress.vuejs.org/zh/\" target=\"_blank\"> VuePress </a> | Theme <a href=\"https://theme-hope.vuejs.press/zh/\" target=\"_blank\"> Hope </a>",
-      displayFooter: true,
+      // footer: "Powered by <a href=\"https://v2.vuepress.vuejs.org/zh/\" target=\"_blank\"> VuePress </a> | Theme <a href=\"https://theme-hope.vuejs.press/zh/\" target=\"_blank\"> Hope </a>",
+      // displayFooter: true,
 
       metaLocales: {
         editLink: "在 GitHub 上编辑此页",
@@ -70,8 +70,8 @@ export default hopeTheme({
     },
   },
 
-  displayFooter: true,
-  copyright: 'Copyright © 2023 - present ',
+  // displayFooter: true,
+  // copyright: 'Copyright © 2023 - present ',
 
   // encrypt: {
   //   global: true, //全局加密
