@@ -3,7 +3,6 @@ import { zhNavbar } from "./navbar/index.js";
 import { zhSidebar } from "./sidebar/index.js";
 
 export default hopeTheme({
-  backToTop: true,
   hostname: "https://github.com/simeis147",
   author: {
     name: "Dongcp",
@@ -22,6 +21,7 @@ export default hopeTheme({
   // hotReload: true,  // 开发模式下是否启动热更新，显示所有更改并重新渲染
   docsDir: "docs",  // 文档存放路径
 
+  
   repo: "simeis147", //github图标链接
   // print: false //打印按钮
   // pure: true, //纯净模式！
@@ -135,6 +135,7 @@ export default hopeTheme({
       tabs: true,
       vPre: true,
       vuePlayground: true,
+      card:true,
     },
 
   },
