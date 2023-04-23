@@ -226,9 +226,9 @@ resources下添加spring配置文件applicationContext.xml，并完成bean的配
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
  
-    <!--bean标签标示配置bean
-    	id属性标示给bean起名字
-    	class属性表示给bean定义类型
+    <!--  bean标签表示配置bean
+    	    id属性表示给bean起名字
+    	    class属性表示给bean定义类型
 	-->
     <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl"/>
     <bean id="bookService" class="com.itheima.service.impl.BookServiceImpl"/>
@@ -236,7 +236,7 @@ resources下添加spring配置文件applicationContext.xml，并完成bean的配
 </beans>
 ```
 
-> 注意事项：bean定义时id属性在同一个上下文中(配置文件)不能重复
+> 注意事项：bean定义时id属性在同一个上下文中（配置文件）不能重复
 
 ##### 步骤6:获取IOC容器
 
@@ -276,19 +276,19 @@ Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然
 
 #### 2.2.1 入门案例思路分析
 
-(1) 要想实现依赖注入，必须要基于IOC管理Bean
+1. 要想实现依赖注入，必须要基于IOC管理Bean
 
-(2) Service中使用new形式创建的Dao对象是否保留?
+2. Service中使用new形式创建的Dao对象是否保留?
 
-* 需要删除掉，最终要使用IOC容器中的bean对象
+   * 需要删除掉，最终要使用IOC容器中的bean对象
 
-(3) Service中需要的Dao对象如何进入到Service中?
+3. Service中需要的Dao对象如何进入到Service中?
 
-* 在Service中提供方法，让Spring的IOC容器可以通过该方法传入bean对象
+   * 在Service中提供方法，让Spring的IOC容器可以通过该方法传入bean对象
 
-(4) Service与Dao间的关系如何描述?
+4. Service与Dao间的关系如何描述?
 
-* 使用配置文件
+   * 使用配置文件
 
 #### 2.2.2 入门案例代码实现
 
@@ -354,8 +354,8 @@ public class BookServiceImpl implements BookService {
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <!--bean标签标示配置bean
-    	id属性标示给bean起名字
+    <!--bean标签表示配置bean
+    	id属性表示给bean起名字
     	class属性表示给bean定义类型
 	-->
     <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl"/>
@@ -372,10 +372,13 @@ public class BookServiceImpl implements BookService {
 </beans>
 ```
 
-**注意:配置中的两个bookDao的含义是不一样的**:
+::: warning 配置中的两个bookDao的含义是不一样的
 
-* name="bookDao"中`bookDao`的作用是让Spring的IOC容器在获取到名称后，将首字母大写，前面加set找对应的`setBookDao()`方法进行对象注入
+* name="bookDao"中`bookDao`的作用是让Spring的IOC容器在获取到名称后，将首字母大写，前面加set找对应的`setBookDao()`方法进行对象注入  
+
 * ref="bookDao"中`bookDao`的作用是让Spring能在IOC容器中找到id为`bookDao`的Bean对象给`bookService`进行注入  
+
+:::
 
 ![ ](./assets/spring01/1629736314989.png)
 
@@ -387,9 +390,9 @@ public class BookServiceImpl implements BookService {
 
 ### 3.1 bean基础配置
 
-对于bean的配置中，主要有`bean基础配置`，`bean的别名配置`，`bean的作用范围配置`**(重点)**
+对于bean的配置中，主要有`bean基础配置`，`bean的别名配置`，`bean的作用范围配置`<Badge text="重点" color="#242378" />
 
-#### 3.1.1 bean基础配置(id与class)
+#### 3.1.1 bean基础配置（id 与 class）
 
 ```java
 <bean id="" class=""/>
@@ -467,8 +470,6 @@ public class AppForName {
   ![ ](./assets/spring01/1629771972886.png)
 
 #### 3.1.3 bean作用范围scope配置
-
-`bean作用范围的配置属性`
 
 ![ ](./assets/spring01/image-20210729183628138.png)
 
@@ -565,7 +566,7 @@ IOC容器是如何来创建对象的呢? `bean的实例化过程`
 
 实例化bean的三种方式： `构造方法`，`静态工厂`和`实例工厂`
 
-bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的
+> bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的
 
 #### 3.2.1 环境准备
 
@@ -733,9 +734,9 @@ public class AppForInstanceOrder {
 <bean id="orderDao" class="com.itheima.factory.OrderDaoFactory" factory-method="getOrderDao"/>
 ```
 
-class:工厂类的类全名
+class：工厂类的类全名
 
-factory-mehod:具体工厂类中创建对象的方法名
+factory-mehod：具体工厂类中创建对象的方法名
 
 对应关系如下图:
 
@@ -1166,13 +1167,15 @@ public class BookServiceImpl implements BookService， InitializingBean， Dispo
 
 ![ ](./assets/spring01/1629794527419.png)
 
-**细节**:
+::: tip 细节
 
 * 对于InitializingBean接口中的afterPropertiesSet方法，翻译过来为`属性设置之后`。
 
 * 对于BookServiceImpl来说，bookDao是它的一个属性
 
 * setBookDao方法是Spring的IOC容器为其注入属性的方法
+
+:::
 
 **思考**:
 
@@ -1199,7 +1202,7 @@ afterPropertiesSet和setBookDao谁先执行?
 1. 关于Spring中对bean生命周期控制提供了两种方式:
 
    * 在配置文件中的bean标签中添加`init-method`和`destroy-method`属性
-   * 类实现`InitializingBean`与`DisposableBean`接口(了解即可)
+   * 类实现`InitializingBean`与`DisposableBean`接口<Badge text="了解即可" color="#242378" />
 
 2. 对于bean的生命周期控制在bean的整个生命周期中所处的位置如下:
 
@@ -1341,7 +1344,7 @@ public class AppForDISet {
 
 #### 4.1.2 注入引用数据类型
 
-> 需求:在bookServiceImpl对象中引入userDao
+> 需求: 在bookServiceImpl对象中引入userDao
 >
 > 1. 在BookServiceImpl中声明userDao属性  
 >
@@ -1609,13 +1612,15 @@ public class BookServiceImpl implements BookService{
 </beans>
 ```
 
-**说明:**
+::: tip 说明
 
 标签\<constructor-arg>中
 
 * name属性对应的值为构造函数中方法形参的参数名，必须要保持一致。
 
 * ref属性指向的是spring的IOC容器中其他bean对象。
+
+:::
 
 ##### 步骤3：运行程序
 
@@ -1625,7 +1630,7 @@ public class BookServiceImpl implements BookService{
 
 #### 4.2.3 构造器注入多个引用数据类型
 
-> 需求:在BookServiceImpl使用构造函数注入多个引用数据类型，比如userDao
+> 需求: 在BookServiceImpl使用构造函数注入多个引用数据类型，比如userDao
 >
 > 1. 声明userDao属性
 >
@@ -2144,8 +2149,12 @@ public class AppForDICollection {
 
 ![ ](./assets/spring01/1629808046783.png)
 
-**说明：**
+::: tip 说明
 
 * property标签表示setter方式注入，构造方式注入constructor-arg标签内部也可以写\<array>、\<list>、\<set>、\<map>、\<props>标签
+
 * List的底层也是通过数组实现的，所以\<list>和\<array>标签是可以混用
+
 * 集合中要添加引用类型，只需要把\<value>标签改成\<ref>标签，这种方式用的比较少
+
+:::
