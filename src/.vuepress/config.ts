@@ -1,11 +1,11 @@
 import { defineUserConfig } from "vuepress";
 import theme from "./theme.js";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
-import {
-  canvasPlugin,
-  CanvasPluginType,
-} from "./plugins/vuepress-plugin-canvas";
-import { gradientCoverPlugin } from "./plugins/vuepress-plugin-gradient-cover";
+// import {
+//   canvasPlugin,
+//   CanvasPluginType,
+// } from "./plugins/vuepress-plugin-canvas";
+// import { gradientCoverPlugin } from "./plugins/vuepress-plugin-gradient-cover";
 
 
 export default defineUserConfig({
@@ -28,16 +28,16 @@ export default defineUserConfig({
       indexContent: true,
     }),
      // 背景插件
-    canvasPlugin({
-      type: CanvasPluginType.Figure,
-      ribbonOption: {
-        zIndex: 0.1,
-        alpha: 0.1,
-        size: 90,
-      },
-    }),
-    // 遮罩插件
-    gradientCoverPlugin({}),
+    // canvasPlugin({
+    //   type: CanvasPluginType.Figure,
+    //   ribbonOption: {
+    //     zIndex: 0.1,
+    //     alpha: 0.1,
+    //     size: 90,
+    //   },
+    // }),
+    // // 遮罩插件
+    // gradientCoverPlugin({}),
   ],
 
 

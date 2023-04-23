@@ -7,22 +7,22 @@ category:
 
 # Spring IOC DI
 
-> * 掌握Spring相关概念
-> * 完成IOC/DI的入门案例编写
-> * 掌握IOC的相关配置与使用
-> * 掌握DI的相关配置与使用
+> 1. 掌握 Spring 相关概念
+> 2. 完成 IOC/DI 的入门案例编写
+> 3. 掌握 IOC 的相关配置与使用
+> 4. 掌握 DI 的相关配置与使用
 
 ## 1 Spring核心概念
 
-代码在编写过程中遇到的问题:
-
 ![ ](./assets/spring01/1629723232339.png)
 
-1. 业务层需要调用数据层的方法，就需要在业务层new数据层的对象
+::: warning 代码在编写过程中遇到的问题:
 
-2. 如果数据层的实现类发生变化，那么业务层的代码也需要跟着改变，发生变更后，都需要进行编译打包和重部署
+1. 业务层需要调用数据层的方法，就需要在业务层new数据层的对象 <Badge text="耦合度偏高" color="#242378" />
 
-3. 代码在编写的过程中存在的问题是：**耦合度偏高**
+2. 如果数据层的实现类发生变化，那么业务层的代码也需要跟着改变，发生变更后，都需要进行编译打包和重新部署
+
+:::
 
 ![ ](./assets/spring01/1629724206002.png)
 
@@ -36,10 +36,17 @@ category:
 
 (1) 什么是控制反转？
 
-* 使用对象时，由主动new产生对象转换为由**外部**提供对象，此过程中对象创建控制权由程序转移到外部，此思想称为控制反转。
-  * 业务层要用数据层的类对象，以前是自己`new`的
-  * 现在自己不new了，交给`别人[外部]`来创建对象
-  * `别人[外部]`就反转控制了数据层对象的创建权
+* 使用对象时，由主动new产生对象转换为由**外部**提供对象，此过程中对象创建控制权由程序转移到外部，此思想称为控制反转
+
+::: tip
+
+业务层要用数据层的类对象，以前是自己`new`的
+
+现在自己不new了，交给`别人[外部]`来创建对象
+
+`别人[外部]`就反转控制了数据层对象的创建权
+
+:::
 
 (2) Spring和IOC之间的关系是什么?
 
@@ -49,15 +56,19 @@ category:
 (3) IOC容器的作用以及内部存放的是什么?
 
 * IOC容器负责对象的创建、初始化等一系列工作，其中包含了数据层和业务层的类对象
-* 被创建或被管理的对象在IoC容器中统称为**Bean**
+* 被创建或被管理的对象在IOC容器中统称为**Bean**
 * IOC容器中放的就是一个个的Bean对象
 
 (4) 当IOC容器中创建好service和dao对象后，程序能正确执行么?
 
-* 不行，因为service运行需要依赖dao对象
+::: danger 不行
+
+* 因为service运行需要依赖dao对象
 * IOC容器中虽然有service和dao对象
 * service对象和dao对象没有任何关系
 * 需要把dao对象交给service，也就是说要绑定service和dao对象之间的关系
+
+:::
 
 像这种在容器中建立对象与对象之间的绑定关系就要用到Spring的另一个核心概念:
 
@@ -68,12 +79,17 @@ category:
 (1) 什么是依赖注入?
 
 * 在容器中建立bean与bean之间的依赖关系的整个过程，称为依赖注入
-  * 业务层要用数据层的类对象，以前是自己`new`的
-  * 现在自己不new了，靠`别人[外部其实指的就是IOC容器]`来给注入进来
+
+::: tip
+
+业务层要用数据层的类对象，以前是自己`new`的  
+现在自己不new了，靠`别人[外部其实指的就是IOC容器]`来给注入进来
+
+:::
 
 (2) IOC容器中哪些bean之间要建立依赖关系呢?
 
-* 需要根据业务需求提前建立好关系，如业务层需要依赖数据层，service就要和dao建立依赖关系
+需要根据业务需求提前建立好关系，如业务层需要依赖数据层，service就要和dao建立依赖关系
 
 ::: info 这两个概念的最终目标就是 充分解耦
 
@@ -81,7 +97,7 @@ category:
 
 * 使用IoC容器管理bean（IOC）
 * 在IoC容器内将有依赖关系的bean进行关系绑定（DI）
-* 最终结果为: 使用对象时不仅可以直接从IOC容器中获取，并且获取到的bean已经绑定了所有的依赖关系.
+* 最终结果为:  使用对象时不仅可以直接从IOC容器中获取，并且获取到的bean已经绑定了所有的依赖关系
 
 :::
 
@@ -257,7 +273,7 @@ public class App {
 
 ![ ](./assets/spring01/image-20210729184337603.png)
 
-Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然存在`BookDaoImpl`对象的new操作，它们之间的耦合度还是比较高，这块该如何解决，就需要用到下面的`DI:依赖注入`。
+Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然存在`BookDaoImpl`对象的new操作，它们之间的耦合度还是比较高，需要用到下面的`DI:依赖注入`。
 
 ### 2.2 DI入门案例
 
@@ -364,8 +380,6 @@ public class BookServiceImpl implements BookService {
 * name="bookDao"中`bookDao`的作用是让Spring的IOC容器在获取到名称后，将首字母大写，前面加set找对应的`setBookDao()`方法进行对象注入
 * ref="bookDao"中`bookDao`的作用是让Spring能在IOC容器中找到id为`bookDao`的Bean对象给`bookService`进行注入  
 
-综上所述，对应关系如下:
-
 ![ ](./assets/spring01/1629736314989.png)
 
 ##### 步骤4:运行程序
@@ -392,7 +406,7 @@ bean标签的功能、使用方式以及**id**和**class**属性的作用
 
 * class属性能不能写接口如`BookDao`的类全名呢?
 
-答案可定是不行，因为接口是没办法创建对象的。
+不行，因为接口是没办法创建对象的。
 
 * id必须唯一，但是如果由于命名习惯而产生了分歧后，该如何解决呢?
 
@@ -400,7 +414,7 @@ Bean别名
 
 :::
 
-#### 3.1.2 bean别名name属性
+#### 3.1.2 bean别名 name属性
 
 ![ ](./assets/spring01/image-20210729183558051.png)
 
@@ -424,7 +438,7 @@ Bean别名
 </beans>
 ```
 
-> 说明:Ebi全称Enterprise Business Interface，翻译为企业业务接口
+> 说明：Ebi 全称 Enterprise Business Interface ，翻译为企业业务接口
 
 ##### 步骤2:根据名称容器中获取bean对象
 
@@ -454,9 +468,6 @@ public class AppForName {
   ![ ](./assets/spring01/1629771880920.png)
 
   ![ ](./assets/spring01/1629771972886.png)
-
-  获取bean无论是通过id还是name获取，如果无法获取到，将抛出异常  
-  **NoSuchBeanDefinitionException**
 
 #### 3.1.3 bean作用范围scope配置
 
@@ -490,15 +501,9 @@ public class AppForScope {
 
 ![ ](./assets/spring01/1629772538893.png)
 
-* 结论: 默认情况下，Spring创建的bean对象都是单例的
+> 结论: 默认情况下，Spring创建的bean对象都是单例的
 
 **配置bean为非单例**:
-
-在Spring的配置文件中，修改\<bean>的scope属性
-
-```xml
-<bean id="bookDao" name="dao" class="com.itheima.dao.impl.BookDaoImpl" scope=""/>
-```
 
 将scope设置为`singleton`
 
@@ -520,35 +525,32 @@ public class AppForScope {
 
 ![ ](./assets/spring01/1629772928714.png)
 
-* 结论，使用bean的`scope`属性可以控制bean的创建是否为单例：
+::: tip `scope` 使用后续思考
 
-  * `singleton`默认为单例
-  * `prototype`为非单例
+1. 为什么bean默认为单例?
 
-**`scope`使用后续思考**:
+   * bean为单例的意思是在Spring的IOC容器中只会有该类的一个对象
+   * bean对象只有一个就避免了对象的频繁创建与销毁，达到了bean对象的复用，性能高
 
-为什么bean默认为单例?
+2. bean在容器中是单例的，会不会产生线程安全问题?
 
-* bean为单例的意思是在Spring的IOC容器中只会有该类的一个对象
-* bean对象只有一个就避免了对象的频繁创建与销毁，达到了bean对象的复用，性能高
+    * 如果对象是有状态对象，即该对象有成员变量可以用来存储数据的，
+        因为所有请求线程共用一个bean对象，所以会存在线程安全问题。
+    * 如果对象是无状态对象，即该对象没有成员变量没有进行数据存储的，
+        因方法中的局部变量在方法调用完成后就会被销毁，所以不会存在线程安全问题。
 
-bean在容器中是单例的，会不会产生线程安全问题?
+3. 哪些bean对象适合交给容器进行管理?
 
-* 如果对象是有状态对象，即该对象有成员变量可以用来存储数据的，
-* 因为所有请求线程共用一个bean对象，所以会存在线程安全问题。
-* 如果对象是无状态对象，即该对象没有成员变量没有进行数据存储的，
-* 因方法中的局部变量在方法调用完成后就会被销毁，所以不会存在线程安全问题。
+   * 表现层对象
+   * 业务层对象
+   * 数据层对象
+   * 工具对象
 
-哪些bean对象适合交给容器进行管理?
+4. 哪些bean对象不适合交给容器进行管理?
 
-* 表现层对象
-* 业务层对象
-* 数据层对象
-* 工具对象
+   * 封装实例的域对象，因为会引发线程安全问题，所以不适合
 
-哪些bean对象不适合交给容器进行管理?
-
-* 封装实例的域对象，因为会引发线程安全问题，所以不适合。
+:::
 
 **关于bean的基础配置中，掌握**:
 
@@ -562,12 +564,11 @@ bean在容器中是单例的，会不会产生线程安全问题?
 
 ### 3.2 bean实例化
 
-对象已经能交给Spring的IOC容器来创建了，但是容器是如何来创建对象的呢? `bean的实例化过程`
+IOC容器是如何来创建对象的呢? `bean的实例化过程`
 
-* bean是如何创建的
-* 实例化bean的三种方式，`构造方法`，`静态工厂`和`实例工厂`
+实例化bean的三种方式： `构造方法`，`静态工厂`和`实例工厂`
 
-bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的。
+bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的
 
 #### 3.2.1 环境准备
 
@@ -680,30 +681,7 @@ public class BookDaoImpl implements BookDao {
 
 ![ ](./assets/spring01/1629776331499.png)
 
-#### 3.2.3 分析Spring的错误信息
-
-* Caused by: java.lang.NoSuchMethodException: com.itheima.dao.impl.BookDaoImpl.\<init>()
-  * Caused by 翻译为`引起`，即出现错误的原因
-  * java.lang.NoSuchMethodException: 抛出的异常为`没有这样的方法异常`
-  * com.itheima.dao.impl.BookDaoImpl.\<init>(): 哪个类的哪个方法没有被找到导致的异常，\<init>()指定是类的构造方法，即该类的无参构造方法
-
-如果最后一行错误获取不到错误信息，接下来查看第二层:
-
-```java
-Caused by: org.springframework.beans.BeanInstantiationException: 
-Failed to instantiate [com.itheima.dao.impl.BookDaoImpl]: 
-No default constructor found; 
-nested exception is java.lang.NoSuchMethodException: 
-com.itheima.dao.impl.BookDaoImpl.\<init>()
-```
-
-* nested:嵌套的意思，后面的异常内容和最底层的异常是一致的
-* Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itheima.dao.impl.BookDaoImpl]: No default constructor found;
-  * Caused by: `引发`
-  * BeanInstantiationException: 翻译为`bean实例化异常`
-  * No default constructor found: 没有一个默认的构造函数被发现
-
-#### 3.2.4 静态工厂实例化
+#### 3.2.3 静态工厂实例化
 
 **工厂方式创建bean**:
 
@@ -787,10 +765,12 @@ public class AppForInstanceOrder {
 
 静态工厂的方式反而更复杂，这种方式的意义是什么?
 
-主要的原因是:
+::: tip
 
 * 在工厂的静态方法中，除了new对象还可以做其他的一些业务操作，有些操作必不可少
 * 如果直接使用new是没法实现的，比如下面操作:
+
+:::
 
 ```java
 public class OrderDaoFactory {
@@ -807,7 +787,7 @@ public class OrderDaoFactory {
 
 > 静态工厂的实例化一般是用来兼容早期的一些系统中对象的创建，了解为主
 
-#### 3.2.5 实例工厂与FactoryBean
+#### 3.2.4 实例工厂与FactoryBean
 
 **环境准备**:
 
@@ -826,7 +806,7 @@ public class UserDaoImpl implements UserDao {
 }
 ```
 
-(2) 创建一个工厂类OrderDaoFactory并提供一个普通方法，注意此处和静态工厂的工厂类不一样的地方是方法不是静态方法
+(2) 创建一个工厂类UserDaoFactory并提供一个普通方法，注意此处和静态工厂的工厂类不一样的地方是方法**不是静态方法**
 
 ```java
 public class UserDaoFactory {
@@ -870,13 +850,11 @@ public class AppForInstanceUser {
 
 * 调用对象中的方法来创建bean，对应的是第二行配置
 
-  * factory-bean:工厂的实例对象
+  * factory-bean：工厂的实例对象
 
-  * factory-method:工厂对象中的具体创建对象的方法名，对应关系如下:
+  * factory-method：工厂对象中的具体创建对象的方法名，对应关系如下:
 
     ![ ](./assets/spring01/image-20210729200203249.png)
-
-factory-mehod: 具体工厂类中创建对象的方法名
 
 (2) 在AppForInstanceUser运行类，使用从IOC容器中获取bean的方法进行运行测试
 
@@ -981,7 +959,7 @@ public class UserDaoFactoryBean implements FactoryBean<UserDao> {
 
 ![ ](./assets/spring01/1629790197860.png)
 
-#### 3.2.6 bean实例化小结
+::: tip bean实例化小结
 
 1. bean是如何创建的呢?
 
@@ -993,6 +971,8 @@ public class UserDaoFactoryBean implements FactoryBean<UserDao> {
    * 静态工厂(了解)
    * 实例工厂(了解)
      * **FactoryBean**(实用)
+
+:::
 
 ### 3.3 bean的生命周期
 
@@ -1068,7 +1048,7 @@ public class AppForLifeCycle {
 }
 ```
 
-#### 4.3.2 生命周期设置
+#### 3.3.2 生命周期设置
 
 添加生命周期的控制方法
 
@@ -1107,12 +1087,17 @@ public class BookDaoImpl implements BookDao {
 
 ![ ](./assets/spring01/1629792339889.png)
 
-init方法执行了，但是destroy方法却未执行，这是为什么呢?
+::: tip init方法执行了，但是destroy方法却未执行，这是为什么呢?
 
-* Spring的IOC容器是运行在JVM中
-* 运行main方法后，JVM启动，Spring加载配置文件生成IOC容器，从容器获取bean对象，然后调方法执行
-* main方法执行完后，JVM退出，这个时候IOC容器中的bean还没有来得及销毁就已经结束了
-* 所以没有调用对应的destroy方法
+Spring的IOC容器是运行在JVM中  
+
+运行main方法后，JVM启动，Spring加载配置文件生成IOC容器，从容器获取bean对象，然后调方法执行  
+
+main方法执行完后，JVM退出，这个时候IOC容器中的bean还没有来得及销毁就已经结束了  
+
+所以没有调用对应的destroy方法  
+
+:::
 
 解决方案有两种
 
@@ -1153,9 +1138,9 @@ init方法执行了，但是destroy方法却未执行，这是为什么呢?
 
   ![ ](./assets/spring01/1629792857608.png)
 
-相同点:这两种都能用来关闭容器
+相同点：这两种都能用来关闭容器
 
-不同点:close()是在调用的时候关闭，registerShutdownHook()是在JVM退出后关闭。
+不同点：close()是在调用的时候关闭，registerShutdownHook()是在JVM退出后关闭。
 
 ---
 
@@ -1330,7 +1315,7 @@ public class BookServiceImpl implements BookService{
 }
 ```
 
-(2)resources下提供spring的配置文件，applicationContext.xml
+(2) resources下提供spring的配置文件，applicationContext.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1345,7 +1330,7 @@ public class BookServiceImpl implements BookService{
 </beans>
 ```
 
-(3)编写AppForDISet运行类，加载Spring的IOC容器，并从中获取对应的bean对象
+(3) 编写AppForDISet运行类，加载Spring的IOC容器，并从中获取对应的bean对象
 
 ```java
 public class AppForDISet {
@@ -1420,7 +1405,7 @@ public class BookServiceImpl implements BookService{
 
 > 需求：给BookDaoImpl注入一些简单数据类型的数据
 >
-> 参考引用数据类型的注入，我们可以推出具体的步骤为:
+> 参考引用数据类型的注入，可以推出具体的步骤为:
 >
 > 1. 在BookDaoImpl类中声明对应的简单数据类型的属性
 >
@@ -1496,7 +1481,7 @@ value:后面跟的是简单数据类型，对于参数类型，Spring在注入�
 
 ![ ](./assets/spring01/1629800324721.png)
 
-**注意:** 两个property注入标签的顺序可以任意。
+**注意:** 两个property注入标签的顺序可以任意
 
 > 对于引用数据类型使用的是\<property name="" ref=""/>  
 > 对于简单数据类型使用的是\<property name="" value=""/>
@@ -1554,7 +1539,7 @@ public class BookServiceImpl implements BookService{
 }
 ```
 
-(2)resources下提供spring的配置文件，applicationContext.xml
+(2) resources下提供spring的配置文件，applicationContext.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1569,7 +1554,7 @@ public class BookServiceImpl implements BookService{
 </beans>
 ```
 
-(3)编写AppForDIConstructor运行类，加载Spring的IOC容器，并从中获取对应的bean对象
+(3) 编写AppForDIConstructor运行类，加载Spring的IOC容器，并从中获取对应的bean对象
 
 ```java
 public class AppForDIConstructor {
@@ -1637,7 +1622,7 @@ public class BookServiceImpl implements BookService{
 
 ##### 步骤3：运行程序
 
-运行AppForDIConstructor类，查看结果，说明bookDao已经成功注入。
+运行AppForDIConstructor类，查看结果，说明bookDao已经成功注入
 
 ![ ](./assets/spring01/1629802656916.png)
 
@@ -1704,7 +1689,7 @@ public class BookServiceImpl implements BookService{
 
 > 需求:在BookDaoImpl中，使用构造函数注入databaseName和connectionNum两个参数。
 >
-> 参考引用数据类型的注入，我们可以推出具体的步骤为:
+> 参考引用数据类型的注入，可以推出具体的步骤为:
 >
 > 1. 提供一个包含这两个参数的构造方法
 >
@@ -1764,12 +1749,13 @@ public class BookDaoImpl implements BookDao {
 
 ![ ](./assets/spring01/1629803529598.png)
 
-* 当构造函数中方法的参数名发生变化后，配置文件中的name属性也需要跟着变
-* 这两块存在紧耦合，具体该如何解决?
+* 当构造函数中方法的参数名发生变化后，配置文件中的name属性也需要跟着变  
 
-> 在解决这个问题之前，需要提前说明的是，这个参数名发生变化的情况并不多，所以上面的还是比较主流的配置方式，下面介绍的，大家都以了解为主。
+这两块存在紧耦合，具体该如何解决?
 
-方式一:删除name属性，添加type属性，按照类型注入
+> 在解决这个问题之前，需要提前说明的是，这个参数名发生变化的情况并不多，所以上面的还是比较主流的配置方式，下面介绍的，都以了解为主
+
+方式一： 删除name属性，添加type属性，按照类型注入
 
 ```xml
 <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl">
@@ -1781,7 +1767,7 @@ public class BookDaoImpl implements BookDao {
 * 这种方式可以解决构造函数形参名发生变化带来的耦合问题
 * 但是如果构造方法参数中有类型相同的参数，这种方式就不太好实现了
 
-方式二:删除type属性，添加index属性，按照索引下标注入，下标从0开始
+方式二： 删除type属性，添加index属性，按照索引下标注入，下标从0开始
 
 ```xml
 <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl">
@@ -1793,16 +1779,23 @@ public class BookDaoImpl implements BookDao {
 * 这种方式可以解决参数类型重复问题
 * 但是如果构造方法参数顺序发生变化后，这种方式又带来了耦合问题
 
-两种参数的注入方式，具体如何选择?
+::: tip 两种参数的注入方式，具体如何选择?
 
 1. 强制依赖使用构造器进行，使用setter注入有概率不进行注入导致null对象出现
-   * 强制依赖指对象在创建的过程中必须要注入指定的参数
+   * 强制依赖指对象在创建的过程中必须要注入指定的参数  
+
 2. 可选依赖使用setter注入进行，灵活性强
-   * 可选依赖指对象在创建过程中注入的参数可有可无
-3. Spring框架倡导使用构造器，第三方框架内部大多数采用构造器注入的形式进行数据初始化，相对严谨
-4. 如果有必要可以两者同时使用，使用构造器注入完成强制依赖的注入，使用setter注入完成可选依赖的注入
-5. 实际开发过程中还要根据实际情况分析，如果受控对象没有提供setter方法就必须使用构造器注入
+   * 可选依赖指对象在创建过程中注入的参数可有可无  
+
+3. Spring框架倡导使用构造器，第三方框架内部大多数采用构造器注入的形式进行数据初始化，相对严谨  
+
+4. 如果有必要可以两者同时使用，使用构造器注入完成强制依赖的注入，使用setter注入完成可选依赖的注入  
+
+5. 实际开发过程中还要根据实际情况分析，如果受控对象没有提供setter方法就必须使用构造器注入  
+
 6. ****自己开发的模块推荐使用setter注入****
+
+:::
 
 **总结**：
 
@@ -1841,11 +1834,6 @@ public class BookDaoImpl implements BookDao {
         <constructor-arg name="" index="" type="" ref=""/>
     </bean>
     ```
-
-* 依赖注入的方式选择上
-
-  * 建议使用setter注入
-  * 第三方技术根据情况选择
 
 ### 4.3 自动配置
 
@@ -1952,11 +1940,13 @@ public class AppForAutoware {
 </beans>
 ```
 
-**注意事项:**
+::: warning 注意事项
 
 * 需要注入属性的类中对应属性的setter方法不能省略
 * 被注入的对象必须要被Spring的IOC容器管理
 * 按照类型在Spring的IOC容器中如果找到多个对象，会报`NoUniqueBeanDefinitionException`
+
+:::
 
 一个类型在IOC中有多个对象，还想要注入成功，这个时候就需要按照名称注入，配置方式为:
 
@@ -2017,7 +2007,7 @@ public class AppForAutoware {
 
 ![ ](./assets/spring01/1629807579330.png)
 
-(1)项目中添加添加BookDao、BookDaoImpl类
+(1) 项目中添加添加BookDao、BookDaoImpl类
 
 ```java
 public interface BookDao {
@@ -2053,7 +2043,7 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-(2)resources下提供spring的配置文件，applicationContext.xml
+(2) resources下提供spring的配置文件，applicationContext.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2065,7 +2055,7 @@ public class BookDaoImpl implements BookDao {
 </beans>
 ```
 
-(3)编写AppForDICollection运行类，加载Spring的IOC容器，并从中获取对应的bean对象
+(3) 编写AppForDICollection运行类，加载Spring的IOC容器，并从中获取对应的bean对象
 
 ```java
 public class AppForDICollection {
@@ -2077,7 +2067,7 @@ public class AppForDICollection {
 }
 ```
 
-下面的所以配置方式，都是在bookDao的bean标签中使用\<property>进行注入
+下面的所有配置方式，都是在bookDao的bean标签中使用\<property>进行注入
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
