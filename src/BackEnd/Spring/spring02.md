@@ -3,16 +3,18 @@ order: 2
 date: 2023-04-17
 category: 
   - Spring
+  - Ioc
+  - DI
 ---
 
 # Spring IOC DI 注解开发
 
-> * 掌握IOC/DI配置管理第三方bean
-> * 掌握IOC/DI的注解开发
-> * 掌握IOC/DI注解管理第三方bean
+> * 掌握 IOC/DI 配置管理第三方bean
+> * 掌握 IOC/DI 的注解开发
+> * 掌握 IOC/DI 注解管理第三方bean
 > * 完成Spring与Mybatis及Junit的整合开发
 
-## 1 IOC/DI配置管理第三方bean
+## 1 IOC/DI 配置管理第三方bean
 
 ### 1.1 案例:数据源对象管理
 
@@ -61,7 +63,7 @@ category:
 
 #### 1.1.2 思路分析
 
-> 需求:在Spring的IOC容器中对Druid数据连接池进行管理
+> 需求：在Spring的IOC容器中对Druid数据连接池进行管理
 >
 > 1. 使用第三方的技术，需要在pom.xml添加依赖  
 >
@@ -106,13 +108,16 @@ pom.xml中添加依赖
 </beans>
 ```
 
-**说明:**
+::: note 说明
 
-* driverClassName:数据库驱动
-* url:数据库连接地址
-* username:数据库连接用户名
-* password:数据库连接密码
-* 数据库连接的四要素要和自己使用的数据库信息一致。
+* driverClassName：数据库驱动
+* url：数据库连接地址
+* username：数据库连接用户名
+* password：数据库连接密码
+
+数据库连接的四要素要和自己使用的数据库信息一致
+
+:::
 
 ##### 步骤3:从IOC容器中获取对应的bean对象
 
@@ -142,7 +147,7 @@ public class App {
 
 #### 1.1.4 实现C3P0管理
 
->需求:在Spring的IOC容器中对C3P0数据连接池进行管理
+>需求：在Spring的IOC容器中对C3P0数据连接池进行管理
 >
 > 重点关注`管理的是哪个bean对象`?
 
@@ -208,8 +213,10 @@ pom.xml中添加依赖
 
 ::: warning
 
-* 数据连接池在配置属性的时候，除了可以注入数据库连接四要素外还可以配置很多其他的属性，具体都有哪些属性用到的时候再去查，一般配置基础的四个，其他都有自己的默认值
-* Druid和C3P0在没有导入mysql驱动包的前提下，一个没报错一个报错，说明Druid在初始化的时候没有去加载驱动，而C3P0刚好相反
+* 数据连接池在配置属性的时候，除了可以注入数据库连接四要素外还可以配置很多其他的属性，具体都有哪些属性用到的时候再去查，一般配置基础的四个，其他都有自己的默认值  
+
+* Druid和C3P0在没有导入mysql驱动包的前提下，一个没报错一个报错，说明Druid在初始化的时候没有去加载驱动，而C3P0刚好相反  
+
 * Druid启动虽然没有报错，但是当调用DruidDataSource的getConnection()方法获取连接的时候，也会报找不到驱动类的错误
 
 :::
@@ -219,14 +226,14 @@ pom.xml中添加依赖
 上节两个数据源`druid`和`C3P0`的配置，其中包含一些问题
 
 1. 这两个数据源中都使用到了一些固定的常量如数据库连接四要素，把这些值写在Spring的配置文件中不利于后期维护
-2. 我们需要将这些值提取到一个外部的properties配置文件中
+2. 需要将这些值提取到一个外部的properties配置文件中
 3. 提取到properties配置文件后，Spring框架如何将其加载后并设置进去
 
 #### 1.2.1 第三方bean属性优化
 
 ##### 1.2.1.1 实现思路
 
-> 需求:将数据库连接四要素提取到properties配置文件，spring来加载配置信息并使用这些信息来完成属性注入。
+> 需求：将数据库连接四要素提取到properties配置文件，spring来加载配置信息并使用这些信息来完成属性注入
 >
 > 1. 在resources下创建一个jdbc.properties(文件的名称可以任意)
 >
@@ -307,7 +314,7 @@ jdbc.password=root
 
 对于上面的案例，效果不是很明显，我们可以换个案例来演示下:
 
-> 需求:从properties配置文件中读取key为name的值，并将其注入到BookDao中并在save方法中进行打印。
+> 需求：从properties配置文件中读取key为name的值，并将其注入到BookDao中并在save方法中进行打印。
 >
 > 1. 在项目中添加BookDao和BookDaoImpl类
 >
@@ -485,13 +492,15 @@ public class App {
       <context:property-placeholder location="classpath*:*.properties" system-properties-mode="NEVER"/>
   </beans>
   ```
+  
+  ::: info 说明
 
-  **说明:**
-
-  * 方式一:可以实现，如果配置文件多的话，每个都需要配置
-  * 方式二:`*.properties`代表所有以properties结尾的文件都会被加载，可以解决方式一的问题，但是不标准
-  * 方式三:标准的写法，`classpath:`代表的是从根路径下开始查找，但是只能查询当前项目的根路径
-  * 方式四:不仅可以加载当前项目还可以加载当前项目所依赖的所有项目的根路径下的properties配置文件
+  * 方式一：可以实现，如果配置文件多的话，每个都需要配置
+  * 方式二：`*.properties`代表所有以properties结尾的文件都会被加载，可以解决方式一的问题，但是不标准
+  * 方式三：标准的写法，`classpath:`代表的是从根路径下开始查找，但是只能查询当前项目的根路径
+  * 方式四：不仅可以加载当前项目还可以加载当前项目所依赖的所有项目的根路径下的properties配置文件
+  
+  :::
 
 #### 1.2.3 加载properties文件小结
 
@@ -685,8 +694,8 @@ public class BookDaoImpl implements BookDao {
 
 ::: tip 容器创建的两种方式
 
-* ClassPathXmlApplicationContext[掌握]
-* FileSystemXmlApplicationContext[知道即可]
+* ClassPathXmlApplicationContext <Badge text="掌握" color="#B8C6DF" />
+* FileSystemXmlApplicationContext <Badge text="知道即可" color="#B8C6DF" />
 
 :::
 
@@ -696,7 +705,7 @@ public class BookDaoImpl implements BookDao {
 * getBean("名称",类型.class):多了一个参数
 * getBean(类型.class):容器中不能有多个该类的bean对象
 
-  上述三种方式，各有各的优缺点，用哪个都可以。
+  上述三种方式，各有各的优缺点，用哪个都可以
 
 :::
 
@@ -706,7 +715,7 @@ public class BookDaoImpl implements BookDao {
 
 :::
 
-::: tip BeanFactory ApplicationContext
+::: tip BeanFactory | ApplicationContext
 
 * 使用BeanFactory创建的容器是延迟加载
 * 使用ApplicationContext创建的容器是立即加载
@@ -860,7 +869,7 @@ XML与注解配置的对应关系:
 
 ::: tip component-scan
 
-* component:组件,Spring将管理的bean视作自己的一个组件
+* component:组件，Spring将管理的bean视作自己的一个组件
 * scan:扫描
 
 :::
@@ -868,7 +877,7 @@ XML与注解配置的对应关系:
 base-package指定Spring框架扫描的包路径，它会扫描指定包及其子包中的所有类上的注解。
 
 * 包路径越多[如:com.itheima.dao.impl]，扫描的范围越小速度越快
-* 包路径越少[如:com.itheima],扫描的范围越大速度越慢
+* 包路径越少[如:com.itheima]，扫描的范围越大速度越慢
 * 一般扫描到项目的组织名称即Maven的groupId下[如:com.itheima]即可。
 
 #### 步骤4：运行程序
@@ -940,7 +949,7 @@ public class App {
 #### 知识点1:@Component等
 
 | 名称 | @Component/@Controller/@Service/@Repository |
-| ---- | ------------------------------------------- |
+| :---- | ------------------------------------------- |
 | 类型 | 类注解                                      |
 | 位置 | 类定义上方                                  |
 | 作用 | 设置该类为spring管理的bean                  |
@@ -968,7 +977,7 @@ public class SpringConfig {
 
 ##### 步骤2:标识该类为配置类
 
-在配置类上添加`@Configuration`注解，将其标识为一个配置类,替换`applicationContext.xml`
+在配置类上添加`@Configuration`注解，将其标识为一个配置类，替换`applicationContext.xml`
 
 ```java
 @Configuration
@@ -1052,10 +1061,14 @@ public class AppForAnnotation {
 
 ::: tip 小结
 
-* @Component、@Controller、@Service、@Repository
-* applicationContext.xml中`<context:component-san/>`的作用是指定扫描包路径，注解为@ComponentScan
-* @Configuration标识该类为配置类，使用类替换applicationContext.xml文件
-* ClassPathXmlApplicationContext是加载XML配置文件
+* @Component、@Controller、@Service、@Repository  
+
+* applicationContext.xml中`<context:component-san/>`的作用是指定扫描包路径，注解为@ComponentScan  
+
+* @Configuration标识该类为配置类，使用类替换applicationContext.xml文件  
+
+* ClassPathXmlApplicationContext是加载XML配置文件  
+
 * AnnotationConfigApplicationContext是加载配置类
 
 :::
@@ -1121,11 +1134,11 @@ public class AppForAnnotation {
 
 #### 3.4.2 Bean的作用范围
 
-(1)先运行App类,在控制台打印两个一摸一样的地址，说明默认情况下bean是单例
+(1) 先运行App类,在控制台打印两个一摸一样的地址，说明默认情况下bean是单例
 
 ![ ](./assets/spring02/1630031192753.png)
 
-(2)要想将BookDaoImpl变成非单例，只需要在其类上添加`@scope`注解
+(2) 要想将BookDaoImpl变成非单例，只需要在其类上添加`@scope`注解
 
 ```java
 @Repository
@@ -1154,7 +1167,7 @@ public class BookDaoImpl implements BookDao {
 
 #### 3.4.3 Bean的生命周期
 
-(1)在BookDaoImpl中添加两个方法，`init`和`destroy`,方法名可以任意
+(1) 在BookDaoImpl中添加两个方法，`init`和`destroy`,方法名可以任意
 
 ```java
 @Repository
@@ -1172,7 +1185,7 @@ public class BookDaoImpl implements BookDao {
 
 ```
 
-(2)如何对方法进行标识，哪个是初始化方法，哪个是销毁方法?
+(2) 如何对方法进行标识，哪个是初始化方法，哪个是销毁方法?
 
 只需要在对应的方法上添加`@PostConstruct`和`@PreDestroy`注解即可。
 
@@ -1194,7 +1207,7 @@ public class BookDaoImpl implements BookDao {
 
 ```
 
-(3)要想看到两个方法执行，需要注意的是`destroy`只有在容器关闭的时候，才会执行，所以需要修改App的类
+(3) 要想看到两个方法执行，需要注意的是`destroy`只有在容器关闭的时候，才会执行，所以需要修改App的类
 
 ```java
 public class App {
@@ -1209,7 +1222,7 @@ public class App {
 }
 ```
 
-(4)运行App,类查看打印结果，证明init和destroy方法都被执行了。
+(4) 运行App,类查看打印结果，证明init和destroy方法都被执行了。
 
 ![ ](./assets/spring02/1630032385498.png)
 
@@ -1357,7 +1370,7 @@ public class BookServiceImpl implements BookService {
   * 暴力反射除了获取public修饰的内容还可以获取private修改的内容
   * 所以此处无需提供setter方法
 
-(2)@Autowired是按照类型注入，那么对应BookDao接口如果有多个实现类，比如添加BookDaoImpl2
+(2) @Autowired是按照类型注入，那么对应BookDao接口如果有多个实现类，比如添加BookDaoImpl2
 
 ```java
 @Repository
@@ -1397,15 +1410,15 @@ public class BookDaoImpl2 implements BookDao {
 
   * @Autowired默认按照类型自动装配，如果IOC容器中同类的Bean找到多个，就按照变量名和Bean的名称匹配。因为变量名叫`bookDao`而容器中也有一个`booDao`，所以将其成功注入。
 
-  * 分析下面这种情况是否能完成注入呢?
+  分析下面这种情况是否能完成注入呢?
 
-    ![1630036236150](./assets/spring02/1630036236150.png)
+    ![ ](./assets/spring02/1630036236150.png)
 
   * 不行，因为按照类型会找到多个bean对象，此时会按照`bookDao`名称去找，因为IOC容器只有名称叫`bookDao1`和`bookDao2`,所以找不到，会报`NoUniqueBeanDefinitionException`
 
 #### 3.5.3 注解实现按照名称注入
 
-当根据类型在容器中找到多个bean,注入参数的属性名又和容器中bean的名称不一致，这个时候该如何解决，就需要使用到`@Qualifier`来指定注入哪个名称的bean对象。
+当根据类型在容器中找到多个bean，注入参数的属性名又和容器中bean的名称不一致，这个时候该如何解决，就需要使用到`@Qualifier`来指定注入哪个名称的bean对象。
 
 ```java
 @Service
@@ -1797,7 +1810,7 @@ public class SpringConfig {
 | 类型 | 类注解                                                       |
 | 位置 | 类定义上方                                                   |
 | 作用 | 导入配置类                                                   |
-| 属性 | value（默认）：定义导入的配置类类名，\<br/>当配置类有多个时使用数组格式一次性导入多个配置类 |
+| 属性 | value（默认）：定义导入的配置类类名，<br/>当配置类有多个时使用数组格式一次性导入多个配置类 |
 
 ### 4.4 注解开发实现为第三方bean注入资源
 
@@ -2145,13 +2158,15 @@ public class App {
 
   ![ ](./assets/spring02/1630137388717.png)
 
-  **说明:**
+  ::: info 说明
 
   * 第一行读取外部properties配置文件，Spring有提供具体的解决方案`@PropertySource`,需要交给Spring
   * 第二行起别名包扫描，为SqlSessionFactory服务的，需要交给Spring
   * 第三行主要用于做连接池，Spring之前我们已经整合了Druid连接池，这块也需要交给Spring
-  * 前面三行一起都是为了创建SqlSession对象用的，那么用Spring管理SqlSession对象吗?回一下SqlSession是由SqlSessionFactory创建出来的，所以只需要将SqlSessionFactory交给Spring管理即可。
+  * 前面三行一起都是为了创建SqlSession对象用的，那么用Spring管理SqlSession对象吗?SqlSession是由SqlSessionFactory创建出来的，所以只需要将SqlSessionFactory交给Spring管理即可。
   * 第四行是Mapper接口和映射文件[如果使用注解就没有该映射文件]，这个是在获取到SqlSession以后执行具体操作的时候用，所以它和SqlSessionFactory创建的时机都不在同一个时间，可能需要单独管理。
+
+  :::
 
 ### 6.2 Spring整合Mybatis
 

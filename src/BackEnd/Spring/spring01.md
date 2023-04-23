@@ -3,6 +3,8 @@ order: 1
 date: 2023-04-15
 category: 
   - Spring
+  - Ioc
+  - DI
 ---
 
 # Spring IOC DI
