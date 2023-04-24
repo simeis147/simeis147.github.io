@@ -99,7 +99,7 @@ pom.xml中添加依赖
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!--管理DruidDataSource对象-->
-    <bean class="com.alibaba.druid.pool.DruidDataSource">
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/spring_db"/>
         <property name="username" value="root"/>
@@ -197,7 +197,7 @@ pom.xml中添加依赖
 
 ![ ](./assets/spring02/1629889170229.png)
 
-报的错为**ClassNotFoundException**,具体的类为`com.mysql.jdbc.Driver`
+报的错为`ClassNotFoundException`，具体的类为`com.mysql.jdbc.Driver`
 
 原因是缺少mysql的驱动包
 
@@ -449,7 +449,7 @@ public class App {
   </beans>
   ```
 
-  system-properties-mode:设置为NEVER,表示不加载系统属性
+  > system-properties-mode:设置为NEVER，表示不加载系统属性
 
 * 问题二:当有多个properties配置文件需要被加载，该如何配置?
 
@@ -496,8 +496,11 @@ public class App {
   ::: info 说明
 
   * 方式一：可以实现，如果配置文件多的话，每个都需要配置
+  
   * 方式二：`*.properties`代表所有以properties结尾的文件都会被加载，可以解决方式一的问题，但是不标准
+  
   * 方式三：标准的写法，`classpath:`代表的是从根路径下开始查找，但是只能查询当前项目的根路径
+  
   * 方式四：不仅可以加载当前项目还可以加载当前项目所依赖的所有项目的根路径下的properties配置文件
   
   :::
@@ -621,7 +624,7 @@ BookDao bookDao = (BookDao) ctx.getBean("bookDao");
 方式二：
 
 ```java
-BookDao bookDao = ctx.getBean("bookDao"，BookDao.class);
+BookDao bookDao = ctx.getBean("bookDao",BookDao.class);
 ```
 
 方式三:
@@ -638,7 +641,7 @@ BookDao bookDao = ctx.getBean(BookDao.class);
 
 ![ ](./assets/spring02/1629985148294.png)
 
-(2)点击进入BeanFactory类，ctrl+h,就能查看到如下结构的层次关系
+(2)点击进入BeanFactory类，ctrl+h，就能查看到如下结构的层次关系
 
 ![ ](./assets/spring02/1629984980781.png)
 
@@ -865,20 +868,18 @@ XML与注解配置的对应关系:
 </beans>
 ```
 
-**说明:**
-
 ::: tip component-scan
 
-* component:组件，Spring将管理的bean视作自己的一个组件
-* scan:扫描
+* component：组件，Spring将管理的bean视作自己的一个组件
+* scan：扫描
 
 :::
 
 base-package指定Spring框架扫描的包路径，它会扫描指定包及其子包中的所有类上的注解。
 
-* 包路径越多[如:com.itheima.dao.impl]，扫描的范围越小速度越快
-* 包路径越少[如:com.itheima]，扫描的范围越大速度越慢
-* 一般扫描到项目的组织名称即Maven的groupId下[如:com.itheima]即可。
+* 包路径越多 [如:com.itheima.dao.impl] ，扫描的范围越小速度越快
+* 包路径越少 [如:com.itheima] ，扫描的范围越大速度越慢
+* 一般扫描到项目的组织名称即Maven的groupId下 [如:com.itheima] 即可。
 
 #### 步骤4：运行程序
 
@@ -961,7 +962,7 @@ Spring3.0开启了纯注解开发模式，使用Java类替代配置文件，开�
 
 #### 3.3.1 思路分析
 
-> 将配置文件applicationContext.xml删除掉，使用类来替换。
+> 将配置文件applicationContext.xml删除掉，使用类来替换
 
 #### 3.3.2 实现步骤
 
@@ -971,8 +972,8 @@ Spring3.0开启了纯注解开发模式，使用Java类替代配置文件，开�
 
 ```java
 public class SpringConfig {
-}
 
+}
 ```
 
 ##### 步骤2:标识该类为配置类
@@ -1026,7 +1027,7 @@ public class AppForAnnotation {
 
 * @Configuration注解用于设定当前类为配置类
 
-* @ComponentScan注解用于设定扫描路径，此注解只能添加一次，多个数据请用数组格式
+* @ComponentScan注解用于设定扫描路径，此注解只能添加一次，多个数据用数组格式
 
   ```java
   @ComponentScan({"com.itheima.service","com.itheima.dao"})
@@ -1167,7 +1168,7 @@ public class BookDaoImpl implements BookDao {
 
 #### 3.4.3 Bean的生命周期
 
-(1) 在BookDaoImpl中添加两个方法，`init`和`destroy`,方法名可以任意
+(1) 在BookDaoImpl中添加两个方法，`init`和`destroy`，方法名可以任意
 
 ```java
 @Repository
