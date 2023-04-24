@@ -1,0 +1,1 @@
+import{_ as a,X as t,Y as c,a1 as e,a3 as r}from"./framework-adf91b4c.js";const s={},d=e("h1",{id:"瑞吉外卖优化-day01",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#瑞吉外卖优化-day01","aria-hidden":"true"},"#"),r(" 瑞吉外卖优化-Day01")],-1),o=[d];function n(_,i){return t(),c("div",null,o)}const l=a(s,[["render",n],["__file","day01.html.vue"]]);export{l as default};
