@@ -9,10 +9,10 @@ category:
 
 # Spring IOC DI 注解开发
 
-> * 掌握 IOC/DI 配置管理第三方bean
-> * 掌握 IOC/DI 的注解开发
-> * 掌握 IOC/DI 注解管理第三方bean
-> * 完成Spring与Mybatis及Junit的整合开发
+> 1. 掌握 IOC/DI 配置管理第三方bean
+> 1. 掌握 IOC/DI 的注解开发
+> 1. 掌握 IOC/DI 注解管理第三方bean
+> 1. 完成Spring与Mybatis及Junit的整合开发
 
 ## 1 IOC/DI 配置管理第三方bean
 
@@ -1338,7 +1338,7 @@ Spring为了使用注解简化开发，并没有提供`构造函数注入`、`se
 
 ![ ](./assets/spring02/1630033710052.png)
 
-出现问题的原因是，在BookServiceImpl类中添加了BookDao的属性，并提供了setter方法，但是目前是没有提供配置注入BookDao的，所以bookDao对象为Null，调用其save方法就会报`控指针异常`。
+出现问题的原因是，在BookServiceImpl类中添加了BookDao的属性，并提供了setter方法，但是目前是没有提供配置注入BookDao的，所以bookDao对象为Null，调用其save方法就会报`控指针异常`
 
 #### 3.5.2 注解实现按照类型注入
 
@@ -1362,14 +1362,17 @@ public class BookServiceImpl implements BookService {
 }
 ```
 
-**注意:**
+::: warning 注意
 
-* @Autowired可以写在属性上，也可也写在setter方法上，最简单的处理方式是`写在属性上并将setter方法删除掉`
+@Autowired可以写在属性上，也可也写在setter方法上，最简单的处理方式是`写在属性上并将setter方法删除掉`
+
 * 为什么setter方法可以删除呢?
   * 自动装配基于反射设计创建对象并暴力反射对应属性为私有属性初始化数据
   * 普通反射只能获取public修饰的内容
   * 暴力反射除了获取public修饰的内容还可以获取private修改的内容
   * 所以此处无需提供setter方法
+
+:::
 
 (2) @Autowired是按照类型注入，那么对应BookDao接口如果有多个实现类，比如添加BookDaoImpl2
 
@@ -1407,7 +1410,7 @@ public class BookDaoImpl2 implements BookDao {
 
   此时就可以注入成功，但是得思考个问题:
 
-  * @Autowired是按照类型注入的，给BookDao的两个实现起了名称，它还是有两个bean对象，为什么不报错?
+  @Autowired是按照类型注入的，给BookDao的两个实现起了名称，它还是有两个bean对象，为什么不报错?
 
   * @Autowired默认按照类型自动装配，如果IOC容器中同类的Bean找到多个，就按照变量名和Bean的名称匹配。因为变量名叫`bookDao`而容器中也有一个`booDao`，所以将其成功注入。
 
@@ -1795,7 +1798,7 @@ public class SpringConfig {
 
 依然能获取到bean对象并打印控制台
 
-### 知识点1：@Bean
+#### 知识点1：@Bean
 
 | 名称 | @Bean                                  |
 | ---- | -------------------------------------- |
@@ -1804,7 +1807,7 @@ public class SpringConfig {
 | 作用 | 设置该方法的返回值作为spring管理的bean |
 | 属性 | value（默认）：定义bean的id            |
 
-### 知识点2：@Import
+#### 知识点2：@Import
 
 | 名称 | @Import                                                      |
 | ---- | ------------------------------------------------------------ |
@@ -1951,8 +1954,6 @@ public DataSource dataSource(BookDao bookDao){
 #### 6.1.1 环境准备
 
 ##### 步骤1:准备数据库表
-
-Mybatis是来操作数据库表，所以先创建一个数据库及表
 
 ```sql
 create database spring_db character set utf8;
@@ -2159,21 +2160,25 @@ public class App {
 
   ![ ](./assets/spring02/1630137388717.png)
 
-  ::: info 说明
+  ::: tip 说明
 
-  * 第一行读取外部properties配置文件，Spring有提供具体的解决方案`@PropertySource`,需要交给Spring
-  * 第二行起别名包扫描，为SqlSessionFactory服务的，需要交给Spring
-  * 第三行主要用于做连接池，Spring之前我们已经整合了Druid连接池，这块也需要交给Spring
-  * 前面三行一起都是为了创建SqlSession对象用的，那么用Spring管理SqlSession对象吗?SqlSession是由SqlSessionFactory创建出来的，所以只需要将SqlSessionFactory交给Spring管理即可。
-  * 第四行是Mapper接口和映射文件[如果使用注解就没有该映射文件]，这个是在获取到SqlSession以后执行具体操作的时候用，所以它和SqlSessionFactory创建的时机都不在同一个时间，可能需要单独管理。
+  * 第一行读取外部properties配置文件，Spring有提供具体的解决方案`@PropertySource`,需要交给Spring  
+  
+  * 第二行起别名包扫描，为SqlSessionFactory服务的，需要交给Spring  
+  
+  * 第三行主要用于做连接池，Spring之前我们已经整合了Druid连接池，这块也需要交给Spring  
+  
+  * 前面三行一起都是为了创建SqlSession对象用的，那么用Spring管理SqlSession对象吗?SqlSession是由SqlSessionFactory创建出来的，所以只需要将SqlSessionFactory交给Spring管理即可。  
+  
+  * 第四行是Mapper接口和映射文件（如果使用注解就没有该映射文件），这个是在获取到SqlSession以后执行具体操作的时候用，所以它和SqlSessionFactory创建的时机都不在同一个时间，可能需要单独管理。
 
   :::
 
 ### 6.2 Spring整合Mybatis
 
-第一件事是:Spring要管理MyBatis中的SqlSessionFactory
+第一件事是：Spring要管理MyBatis中的SqlSessionFactory
 
-第二件事是:Spring要管理Mapper接口的扫描
+第二件事是：Spring要管理Mapper接口的扫描
 
 #### 步骤1:项目中导入整合需要的jar包
 
@@ -2276,16 +2281,16 @@ public class MybatisConfig {
 
   ![ ](./assets/spring02/1630138835057.png)
 
-  * SqlSessionFactoryBean是FactoryBean的一个子类，在该类中将SqlSessionFactory的创建进行了封装，简化对象的创建，只需将其需要的内容设置进行即可。
-  * 方法中有一个参数为dataSource,当前Spring容器中已经创建了Druid数据源，类型刚好是DataSource类型的，此时在初始化SqlSessionFactoryBean这个对象的时候，发现需要使用DataSource对象，而容器中刚好有这么一个对象，就自动加载了DruidDataSource对象。
+  * SqlSessionFactoryBean是FactoryBean的一个子类，在该类中将SqlSessionFactory的创建进行了封装，简化对象的创建，只需将其需要的内容设置进行即可  
+  * 方法中有一个参数为dataSource，当前Spring容器中已经创建了Druid数据源，类型刚好是DataSource类型的，此时在初始化SqlSessionFactoryBean这个对象的时候，发现需要使用DataSource对象，而容器中刚好有这么一个对象，就自动加载了DruidDataSource对象   
 
 * 使用MapperScannerConfigurer加载Dao接口，创建代理对象保存到IOC容器中
 
   ![ ](./assets/spring02/1630138916939.png)
 
-  * 这个MapperScannerConfigurer对象也是MyBatis提供的专用于整合的jar包中的类，用来处理原始配置文件中的mappers相关配置的，加载数据层对应的Mapper，因此类名是一个扫描配置的名称。
+  * MapperScannerConfigurer对象也是MyBatis提供的专用于整合的jar包中的类，用来处理原始配置文件中的mappers相关配置的，加载数据层对应的Mapper，因此类名是一个扫描配置的名称
   * MapperScannerConfigurer有一个核心属性，就是将原始配置中的扫描路径
-  * 这个MapperScannerConfigurer对象也是MyBatis提供的专用于整合的jar包中的类，对应原始配置文件中的\<mappers>相关内容。从类名上可以分辨出，它主要工作是扫描后生成配置，因此需要配置扫描的路径，所以需要为其设置扫描的路径包，也就是之前\<mappers>配置中定义的主要内容。
+  * 从类名上可以分辨出，它主要工作是扫描后生成配置，因此需要配置扫描的路径，所以需要为其设置扫描的路径包，也就是之前\<mappers>配置中定义的主要内容
 
 #### 步骤6:主配置类中引入Mybatis配置类
 
@@ -2320,7 +2325,7 @@ public class App2 {
 
 ![ ](./assets/spring02/1630139036627.png)
 
-支持Spring与Mybatis的整合就已经完成了，其中主要用到的两个类分别是:
+其中主要用到的两个类
 
 * **SqlSessionFactoryBean**
 * **MapperScannerConfigurer**
@@ -2354,7 +2359,7 @@ pom.xml
 
 ##### 步骤2:编写测试类
 
-再test\java下创建一个AccountServiceTest,这个名字任意
+在 test\java 下创建一个AccountServiceTest
 
 ```java
 //设置类运行器
@@ -2378,12 +2383,15 @@ public class AccountServiceTest {
 }
 ```
 
-**注意:**
+::: tip 注意
 
-* 单元测试，如果测试的是注解配置类，则使用`@ContextConfiguration(classes = 配置类.class)`
-* 单元测试，如果测试的是注解配置类，则使用`@ContextConfiguration(locations={配置文件名,...})`
-* JUnit运行后是基于Spring环境运行的，所以Spring提供了一个专用的类运行器，这个务必要设置，这个类运行器就在Spring的测试专用包中提供的，导入的坐标就是这个东西`SpringJUnit4ClassRunner`
-* 上面两个配置都是固定格式，当需要测试哪个bean时，使用自动装配加载对应的接口就行了，下面的工作就和以前做JUnit单元测试完全一样了
+* 单元测试，如果测试的是注解配置类，则使用`@ContextConfiguration(classes = {配置类.class})`
+
+* 单元测试，如果测试的是注解配置文件，则使用`@ContextConfiguration(locations={配置文件名,...})`
+
+* JUnit 运行后是基于Spring环境运行的，所以Spring提供了一个专用的类运行器，这个务必要设置，这个类运行器就在Spring的测试专用包中提供的，导入的坐标就是这个东西`SpringJUnit4ClassRunner`
+
+:::
 
 #### 知识点1：@RunWith
 
@@ -2401,4 +2409,4 @@ public class AccountServiceTest {
 | 类型 | 测试类注解                                                   |
 | 位置 | 测试类定义上方                                               |
 | 作用 | 设置JUnit加载的Spring核心配置                                |
-| 属性 | classes：核心配置类，可以使用数组的格式设定加载多个配置类<br/>locations: 配置文件，可以使用数组的格式设定加载多个配置文件名称
+| 属性 | classes：核心配置类，可以使用数组的格式设定加载多个配置类<br/>locations： 配置文件，可以使用数组的格式设定加载多个配置文件名称
