@@ -2,7 +2,7 @@
 order: 6
 date: 2023-04-07
 category: 
-  - Mybatis
+  - MyBatis
 ---
 
 # Mybatis的XML配置文件

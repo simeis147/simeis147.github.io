@@ -2,7 +2,7 @@
 order: 2
 date: 2023-04-07
 category: 
-  - Mybatis
+  - MyBatis
 ---
 
 # JDBC vs Mybatis

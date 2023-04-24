@@ -1,6 +1,8 @@
 ---
 order: 3
 date: 2023-04-15
+word:
+cover: /assets/bgImage/iTab-85oxlo.webp
 category: 
   - Spring
 ---

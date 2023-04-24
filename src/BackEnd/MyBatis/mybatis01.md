@@ -3,7 +3,7 @@ order: 1
 date: 2023-04-07
 category: 
   - JDBC
-  - Mybatis
+  - MyBatis
 ---
 
 # JDBC

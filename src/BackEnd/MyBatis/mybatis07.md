@@ -2,7 +2,7 @@
 order: 7
 date: 2023-04-07
 category: 
-  - Mybatis
+  - MyBatis
 ---
 
 # Mybatis动态SQL

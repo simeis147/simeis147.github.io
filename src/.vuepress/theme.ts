@@ -10,6 +10,8 @@ export default hopeTheme({
     
   },
  
+  pageInfo: ['Author', 'Date', 'Original',  'Word', 'ReadingTime', 'PageView', 'Category', 'Tag'],
+
   iconAssets: [
     "iconfont", 
     "//at.alicdn.com/t/c/font_4010207_zfris1seurl.css",
@@ -49,8 +51,8 @@ export default hopeTheme({
     avatar: "/logo.png", //博客头像
     roundAvatar: true, //圆形
     medias: {
-      Gmail: "https://mail.google.com/mail/u/0/#inbox",
-      Email: "https://mail.qq.com/cgi-bin/frame_html?sid=eSmHvgbjcenD00Ak&r=9db842c66dcc4a7215849b6518253232&lang=zh",
+      Gmail: "mailto:cpdong@gmail.com",
+      Email: "'mailto:24726259408@qq.com",
       GitHub: "https://github.com/simeis147",
       Gitee: "https://gitee.com/dong-chengpeng",
       Gitlab: "https://gitlab.cn/",
@@ -86,13 +88,9 @@ export default hopeTheme({
 
   plugins: {
     blog: true,
-    // comment: {
-    //   // @ts-expect-error: You should generate and use your own comment service
-    //   provider: "Giscus",
-    // },
     comment: {
       provider: "Waline",
-      serverURL: "https://test-commit-six.vercel.app/", // your server url
+      serverURL: "https://test-commit-six.vercel.app/", 
     },
 
     mdEnhance: {

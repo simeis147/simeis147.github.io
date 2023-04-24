@@ -2,7 +2,7 @@
 order: 5
 date: 2023-04-07
 category: 
-  - Mybatis
+  - MyBatis
 ---
 
 # Mybatis基础操作

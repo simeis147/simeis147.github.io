@@ -2,7 +2,7 @@
 order: 1
 date: 2023-04-16
 category: 
-  - MybatisPlus
+  - MyBatisPlus
 ---
 
 # MybatisPlus01
