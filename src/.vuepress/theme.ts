@@ -52,7 +52,7 @@ export default hopeTheme({
     roundAvatar: true, //圆形
     medias: {
       Gmail: "mailto:cpdong@gmail.com",
-      Email: "'mailto:24726259408@qq.com",
+      Email: "mailto:24726259408@qq.com",
       GitHub: "https://github.com/simeis147",
       Gitee: "https://gitee.com/dong-chengpeng",
       Gitlab: "https://gitlab.cn/",
