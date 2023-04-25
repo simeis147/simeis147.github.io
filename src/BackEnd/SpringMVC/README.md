@@ -7,21 +7,24 @@ category:
 ---
 
 # SpringMVC
-<!-- more -->
 
 ## 1 SpringMVC简介
 
-SpringMVC隶属于Spring，是Spring技术中的一部分
+> SpringMVC 隶属于 Spring ，是 Spring 技术中的一部分
 
-SpringMVC与Servlet技术功能等同，均属于web层或者说是表现层开发技术
+SpringMVC 与 Servlet 技术功能等同，均属于web层或者说是表现层开发技术
 
-SpringMVC与Servlet相比，开发起来更简单快捷，用更少的代码完成表现层代码的开发
+::: tip SpringMVC 与 Servlet相比
 
-例子:
+开发起来更简单快捷，用更少的代码完成表现层代码的开发
+
+:::
+
+### 1.1 Servlet例子
 
 ![ ](./assets/readme/1651590778564.png)
 
-* UserSaveServlet:使用Servlet开发的用户新增模块
+* UserSaveServlet：使用Servlet开发的用户新增模块
 
 ```java
 @WebServlet("/user/save")
@@ -45,7 +48,7 @@ public class UserSaveServlet extends HttpServlet{
 }
 ```
 
-* UserUpdateServlet:使用Servlet开发的用户修改模块
+* UserUpdateServlet：使用Servlet开发的用户修改模块
 
 ```java
 @WebServlet("/user/update")
@@ -68,7 +71,7 @@ public class UserUpdateServlet extends HttpServlet{
 }
 ```
 
-* UserDeleteServlet:使用Servlet开发的用户删除模块
+* UserDeleteServlet：使用Servlet开发的用户删除模块
 
 ```java
 @WebServlet("/user/delete")
@@ -92,7 +95,7 @@ public class UserDeleteServlet extends HttpServlet {
 }
 ```
 
-* UserDeleteServlet:使用Servlet开发的用户查询模块
+* UserDeleteServlet：使用Servlet开发的用户查询模块
 
 ```java
 @WebServlet("/user/select")
@@ -121,6 +124,8 @@ public class UserSelectServlet extends HttpServlet{
 ![ ](./assets/readme/1651591732224.png)
 
 > 上面就是通过Servlet的方式来实现的用户模块的增删改查功能
+
+### 1.2 springMVC例子
 
 springmvc下的`UserController`类
 
@@ -162,32 +167,28 @@ public class UserController {
 
 ![ ](./assets/readme/1651592524644.png)
 
-::: tip 
+::: note
 
-请求与相应：SpringMVC是替换Servlet处于Web的框架，所以其主要的作用就是用来接收前端发过来的请求和数据然后经过处理并将处理的结果响应给前端，所以如何处理请求和响应是SpringMVC中非常重要的一块内容。
+请求与响应：SpringMVC 主要的作用就是用来接收前端发过来的请求和数据然后经过处理并将处理的结果响应给前端，所以如何处理请求和响应是SpringMVC中非常重要的一块内容
 
-REST风格：是一种软件架构风格，可以降低开发的复杂性，提高系统的可伸缩性，在以后开发中非常重要和常用。
-
-SSM整合：是把咱们所学习的SpringMVC+Spring+Mybatis整合在一起来完成业务开发
-
-拦截器：是SpringMVC中的一个小知识点。
+REST风格：是一种软件架构风格，可以降低开发的复杂性，提高系统的可伸缩性，在以后开发中非常重要和常用
 
 :::
 
 ## 2 SpringMVC概述
 
-![ ](./assets/readme/1651595619453.png)
+> 当前WEB程序的工作流程:
 
-当前WEB程序的工作流程:
+![ ](./assets/readme/1651595619453.png =600x)
 
 ### 2.1 三层架构
 
 1. web程序通过浏览器访问前端页面，发送异步请求到后端服务器
 
 2. 后台服务器采用三层架构进行功能开发
-     * 表现层负责接收请求和数据然后将数据转交给业务层
-     * 业务层负责调用数据层完成数据库表的增删改查，并将结果返给表现层
-     * 表现层将数据转换成json格式返回给前端
+     * 表现层 负责接收请求和数据然后将数据转交给业务层
+     * 业务层 负责调用数据层完成数据库表的增删改查，并将结果返给表现层
+     * 表现层 将数据转换成json格式返回给前端
 
 3. 前端页面将数据进行解析最终展示给用户
 

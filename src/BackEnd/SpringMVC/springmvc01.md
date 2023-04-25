@@ -17,7 +17,9 @@ category:
 
 2. Tomcat服务器接收到请求后，会根据请求路径来匹配对应的Servlet，并将请求交给对应的Servlet来处理
 
-所以对于Servlet来说，主要完成的是Servlet类的开发以及对应路径的配置
+> 对于Servlet来说，主要完成的是Servlet类的开发以及对应路径的配置
+
+---
 
 那么对于SpringMVC程序的流程会是什么样的呢?
 
@@ -25,7 +27,7 @@ category:
 
 1. 浏览器发送请求到Tomcat服务器
 
-2. Tomcat服务器接收到请求后，会将请求交给SpringMVC中的DispatcherServlet(前端控制器)来处理请求
+2. Tomcat服务器接收到请求后，会将请求交给SpringMVC中的DispatcherServlet（前端控制器）来处理请求
 
 3. DispatcherServlet不真正处理请求，只是按照对应的规则将请求分发到对应的Bean对象
 
@@ -44,15 +46,15 @@ category:
 
 ### 1.1 需求分析
 
-具体的实现步骤如下:
-
-1. 创建web工程(Maven结构)并在工程的pom.xml添加SpringMVC和Servlet坐标
-
-2. 创建SpringMVC控制器类(等同于Servlet功能)
-
-3. 初始化SpringMVC环境(同Spring环境)，设定SpringMVC加载对应的bean
-
-4. 初始化Servlet容器，加载SpringMVC环境，并设置SpringMVC技术处理的请求
+> 具体的实现步骤如下:
+>
+> 1. 创建web工程(Maven结构)并在工程的pom.xml添加SpringMVC和Servlet坐标
+>
+> 2. 创建SpringMVC控制器类(等同于Servlet功能)
+>
+> 3. 初始化SpringMVC环境(同Spring环境)，设定SpringMVC加载对应的bean
+>
+> 4. 初始化Servlet容器，加载SpringMVC环境，并设置SpringMVC技术处理的请求
 
 ### 1.2 案例制作
 
@@ -191,13 +193,11 @@ public class ServletContainersInitConfig extends AbstractDispatcherServletInitia
 
 #### 步骤7:浏览器访问
 
-浏览器输入`http://localhost/save`进行访问，可以看得如下内容
+浏览器输入`http://localhost/save`进行访问
 
 ![ ](./assets/springmvc01/1651602301329.png)
 
-至此SpringMVC的入门案例就已经完成。
-
-### 知识点1：@Controller
+#### 知识点1：@Controller
 
 | 名称 | @Controller                   |
 | ---- | ----------------------------- |
@@ -205,7 +205,7 @@ public class ServletContainersInitConfig extends AbstractDispatcherServletInitia
 | 位置 | SpringMVC控制器类定义上方     |
 | 作用 | 设定SpringMVC的核心控制器bean |
 
-### 知识点2：@RequestMapping
+#### 知识点2：@RequestMapping
 
 | 名称     | @RequestMapping                 |
 | -------- | ------------------------------- |
@@ -214,7 +214,7 @@ public class ServletContainersInitConfig extends AbstractDispatcherServletInitia
 | 作用     | 设置当前控制器方法请求访问路径  |
 | 相关属性 | value(默认)，请求访问路径       |
 
-### 知识点3：@ResponseBody
+#### 知识点3：@ResponseBody
 
 | 名称 | @ResponseBody                                    |
 | ---- | ------------------------------------------------ |
@@ -235,7 +235,7 @@ SpringMVC入门程序开发总结(1+N)
 * 多次工作
   * 定义处理请求的控制器类
   * 定义处理请求的控制器方法，并配置映射路径（@RequestMapping）与返回json数据（@ResponseBody）
-  * 多次工作我们可以通过实现一个用户的删除功能来体验一把
+  * 多次工作通过实现一个用户的删除功能来体验一把
   
     * controller类中编写删除方法
   
@@ -264,17 +264,21 @@ SpringMVC入门程序开发总结(1+N)
     
     ```
   
-    * 重启服务器，访问`http://localhost/delete`,可以看得如下效果:
+    * 重启服务器，访问`http://localhost/delete`
   
     ![ ](./assets/springmvc01/1651602676209.png)
 
 针对本案例中出现的Tomcat的Servlet容器配置总结:
 
 * AbstractDispatcherServletInitializer类是SpringMVC提供的快速初始化Web3.0容器的抽象类
+
 * AbstractDispatcherServletInitializer提供三个接口方法供用户实现
   * createRootApplicationContext()方法，如果创建Servlet容器时需要加载非SpringMVC对应的bean，使用当前方法进行，使用方式同createServletApplicationContext()
+  
   * createServletApplicationContext()方法，创建Servlet容器时，加载SpringMVC对应的bean并放入WebApplicationContext对象范围中，而WebApplicationContext的作用范围为ServletContext范围，即整个web容器范围
+  
   * ngetServletMappings()方法，设定SpringMVC对应的请求映射路径，设置为/表示拦截所有请求，任意请求都将转入到SpringMVC进行处理
+  
   * createServletApplicationContext用来加载SpringMVC环境
   * createRootApplicationContext用来加载Spring环境
 
@@ -282,7 +286,7 @@ SpringMVC入门程序开发总结(1+N)
 
 将SpringMVC的使用过程分两个阶段来分析，分别是`启动服务器初始化过程`和`单次请求过程`
 
-![ ](./assets/springmvc01/1630432494752.png)
+![ ](./assets/springmvc01/1630432494752.png =400x)
 
 #### 1.4.1 启动服务器初始化过程
 
@@ -294,7 +298,7 @@ SpringMVC入门程序开发总结(1+N)
 
 3. 加载SpringMvcConfig配置类
 
-   ![ ](./assets/springmvc01/1630433335744.png)
+   ![ ](./assets/springmvc01/1630433335744.png =400x)
 
 4. 执行@ComponentScan加载对应的bean
 
@@ -302,13 +306,13 @@ SpringMVC入门程序开发总结(1+N)
 
 5. 加载UserController，每个@RequestMapping的名称对应一个具体的方法
 
-   ![ ](./assets/springmvc01/1630433398932.png)
+   ![ ](./assets/springmvc01/1630433398932.png =400x)
 
    * 此时就建立了 `/save` 和 save方法的对应关系
 
 6. 执行getServletMappings方法，定义所有的请求都通过SpringMVC
 
-   ![ ](./assets/springmvc01/1630433510528.png)
+   ![ ](./assets/springmvc01/1630433510528.png =400x)
 
    * `/`代表所拦截请求的路径规则，只有被拦截后才能交给SpringMVC来处理请求
 
@@ -331,7 +335,7 @@ SpringMVC入门程序开发总结(1+N)
 
 项目目录结构:
 
-![ ](./assets/springmvc01/1630459727575.png)
+![ ](./assets/springmvc01/1630459727575.png =200x)
 
 * config目录存入的是配置类，写过的配置类有:
 
@@ -344,38 +348,36 @@ SpringMVC入门程序开发总结(1+N)
 * service目录存放的是service接口和实现类
 * dao目录存放的是dao/Mapper接口
 
-controller、service和dao这些类都需要被容器管理成bean对象，那么到底是该让SpringMVC加载还是让Spring加载呢?
+::: tip controller、service和dao这些类都需要被容器管理成bean对象，那么到底是该让SpringMVC加载还是让Spring加载呢?
 
 * SpringMVC加载其相关bean(表现层bean),也就是controller包下的类
 * Spring控制的bean
   * 业务bean(Service)
   * 功能bean(DataSource,SqlSessionFactoryBean,MapperScannerConfigurer等)
 
-分析清楚谁该管哪些bean以后，接下来要解决的问题是如何让Spring和SpringMVC分开加载各自的内容。
+:::
 
-在SpringMVC的配置类`SpringMvcConfig`中使用注解`@ComponentScan`，我们只需要将其扫描范围设置到controller即可，如
+在SpringMVC的配置类`SpringMvcConfig`中使用注解`@ComponentScan`
 
 ![ ](./assets/springmvc01/1630460319004.png)
 
-在Spring的配置类`SpringConfig`中使用注解`@ComponentScan`,当时扫描的范围中其实是已经包含了controller,如:
+在Spring的配置类`SpringConfig`中使用注解`@ComponentScan`，当时扫描的范围中其实是已经包含了controller，如:
 
 ![ ](./assets/springmvc01/1630460408159.png)
 
-从包结构来看的话，Spring已经多把SpringMVC的controller类也给扫描了
+从包结构来看，Spring已经把SpringMVC的controller类也给扫描了
 
 现在的问题就是**因为功能不同，如何避免Spring错误加载到SpringMVC的bean?**
 
 #### 1.5.2 思路分析
 
-针对上面的问题，解决方案
-
 * 加载Spring控制的bean的时候排除掉SpringMVC控制的备案
 
-具体该如何排除，有两种方式来解决:
+具体该如何排除:
 
-* 方式一:Spring加载的bean设定扫描范围为com.itheima,排除掉controller包中的bean
-* 方式二:Spring加载的bean设定扫描范围为精准范围，例如service包、dao包等
-* 方式三:不区分Spring与SpringMVC的环境，加载到同一个环境中
+* 方式一：Spring加载的bean设定扫描范围为com.itheima，排除掉controller包中的bean
+* 方式二：Spring加载的bean设定扫描范围为精准范围，例如service包、dao包等
+* 方式三：不区分Spring与SpringMVC的环境，加载到同一个环境中
 
 #### 1.5.4 环境准备
 
@@ -527,7 +529,7 @@ controller、service和dao这些类都需要被容器管理成bean对象，那�
 
 #### 1.5.5 设置bean加载控制
 
-方式一:修改Spring配置类，设定扫描范围为精准范围。
+方式一：修改Spring配置类，设定扫描范围为精准范围。
 
 ```java
 @Configuration
@@ -536,9 +538,9 @@ public class SpringConfig {
 }
 ```
 
-> 说明: 上述只是通过例子说明可以精确指定让Spring扫描对应的包结构，真正在做开发的时候，因为Dao最终是交给`MapperScannerConfigurer`对象来进行扫描处理的，我们只需要将其扫描到service包即可
+> 说明: 上述只是通过例子说明可以精确指定让Spring扫描对应的包结构，真正在做开发的时候，因为Dao最终是交给`MapperScannerConfigurer`对象来进行扫描处理的，只需要将其扫描到service包即可
 
-方式二:修改Spring配置类，设定扫描范围为com.itheima,排除掉controller包中的bean
+方式二：修改Spring配置类，设定扫描范围为com.itheima，排除掉controller包中的bean
 
 ```java
 @Configuration
@@ -557,10 +559,10 @@ public class SpringConfig {
 * type属性：设置排除规则，当前使用按照bean定义时的注解类型进行排除
 
   * **ANNOTATION：按照注解排除**
-  * ASSIGNABLE_TYPE:按照指定的类型过滤
-  * ASPECTJ:按照Aspectj表达式排除，基本上不会用
-  * REGEX:按照正则表达式排除
-  * CUSTOM:按照自定义规则排除
+  * ASSIGNABLE_TYPE：按照指定的类型过滤
+  * ASPECTJ：按照Aspectj表达式排除，基本上不会用
+  * REGEX：按照正则表达式排除
+  * CUSTOM：按照自定义规则排除
 
 * classes属性：设置排除的具体注解类，当前设置排除@Controller定义的bean
 
@@ -581,13 +583,15 @@ public class App{
 
 > 注意:测试的时候，需要把SpringMvcConfig配置类上的@ComponentScan注解注释掉，否则不会报错
 
-出现问题的原因是
+::: warning 出现问题的原因是
 
 * Spring配置类扫描的包是`com.itheima`
 * SpringMVC的配置类，`SpringMvcConfig`上有一个@Configuration注解，也会被Spring扫描到
 * SpringMvcConfig上又有一个@ComponentScan，把controller类又给扫描进来了
 * 所以如果不把@ComponentScan注释掉，Spring配置类将Controller排除，但是因为扫描到SpringMVC的配置类，又将其加载回来，演示的效果就出不来
-* 解决方案，也简单，把SpringMVC的配置类移出Spring配置类的扫描范围即可。
+* 解决方案，把SpringMVC的配置类移出Spring配置类的扫描范围即可。
+
+:::
 
 有了Spring的配置类，要想在tomcat服务器启动将其加载，需要修改ServletContainersInitConfig
 
@@ -609,7 +613,7 @@ public class ServletContainersInitConfig extends AbstractDispatcherServletInitia
 }
 ```
 
-对于上述的配置方式，Spring还提供了一种更简单的配置方式，可以不用再去创建`AnnotationConfigWebApplicationContext`对象，不用手动`register`对应的配置类，如何实现?
+Spring还提供了一种更简单的配置方式，不用创建`AnnotationConfigWebApplicationContext`对象，不用手动`register`对应的配置类
 
 ```java
 public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -628,14 +632,14 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 }
 ```
 
-### 知识点1：@ComponentScan
+#### 知识点1：@ComponentScan
 
 | 名称     | @ComponentScan                                               |
 | -------- | ------------------------------------------------------------ |
 | 类型     | 类注解                                                       |
 | 位置     | 类定义上方                                                   |
 | 作用     | 设置spring配置类扫描路径，用于加载使用注解格式定义的bean     |
-| 相关属性 | excludeFilters:排除扫描路径中加载的bean,需要指定类别(type)和具体项(classes)<br/>includeFilters:加载指定的bean，需要指定类别(type)和具体项(classes) |
+| 相关属性 | excludeFilters:排除扫描路径中加载的bean，需要指定类别(type)和具体项(classes)<br/>includeFilters:加载指定的bean，需要指定类别(type)和具体项(classes) |
 
 ## 2 PostMan工具的使用
 
@@ -784,7 +788,7 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 
 ![ ](./assets/springmvc01/1630466555934.png)
 
-从错误信息可以看出:
+从错误信息可以看出：
 
 * UserController有一个save方法，访问路径为`http://localhost/save`
 * BookController也有一个save方法，访问路径为`http://localhost/save`
@@ -794,11 +798,11 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 
 团队多人开发，每人设置不同的请求路径，冲突问题该如何解决?
 
-解决思路:为不同模块设置模块名作为请求路径前置
+解决思路：为不同模块设置模块名作为请求路径前置
 
-对于Book模块的save,将其访问路径设置`http://localhost/book/save`
+对于Book模块的save，将其访问路径设置`http://localhost/book/save`
 
-对于User模块的save,将其访问路径设置`http://localhost/user/save`
+对于User模块的save，将其访问路径设置`http://localhost/user/save`
 
 #### 3.1.3 设置映射路径
 
@@ -835,7 +839,7 @@ public class BookController {
 }
 ```
 
-写起来比较麻烦而且还有很多重复代码，如果/user后期发生变化，所有的方法都需要改，耦合度太高
+> 写起来比较麻烦而且还有很多重复代码，如果/user后期发生变化，所有的方法都需要改，耦合度太高
 
 ##### 步骤2:优化路径配置
 
@@ -876,7 +880,7 @@ public class BookController {
 
 ::: warning
 
-* 当类上和方法上都添加了`@RequestMapping`注解，前端发送请求的时候，要和两个注解的value值相加匹配才能访问到。
+* 当类上和方法上都添加了`@RequestMapping`注解，前端发送请求的时候，要和两个注解的value值相加匹配才能访问到
 * @RequestMapping注解value属性前面加不加`/`都可以
 
 :::
@@ -889,8 +893,6 @@ public class BookController {
 
 * GET
 * POST
-
-针对于不同的请求前端如何发送，后端如何接收?
 
 #### 3.2.1 环境准备
 
@@ -1054,8 +1056,6 @@ public class UserController {
 
 发送请求:`http://localhost/commonParam?name=张三&age=18`
 
-控制台:
-
 ![ ](./assets/springmvc01/1630480536510.png)
 
 Tomcat8.5以后的版本已经处理了中文乱码的问题，但是IDEA中的Tomcat插件目前只到Tomcat7，所以需要修改pom.xml来解决GET请求中文乱码问题
@@ -1137,11 +1137,11 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 }
 ```
 
-CharacterEncodingFilter是在spring-web包中，所以用之前需要导入对应的jar包。
+> CharacterEncodingFilter是在spring-web包中，所以用之前需要导入对应的jar包
 
 ### 3.3 五种类型参数传递
 
-常见的参数种类有:
+::: tip 常见的参数种类有
 
 * 普通参数
 * POJO类型参数
@@ -1149,9 +1149,11 @@ CharacterEncodingFilter是在spring-web包中，所以用之前需要导入对�
 * 数组类型参数
 * 集合类型参数
 
+:::
+
 #### 3.3.1 普通参数
 
-* 普通参数:url地址传参，地址参数名与形参变量名相同，定义形参即可接收参数。
+* 普通参数：url地址传参，地址参数名与形参变量名相同，定义形参即可接收参数
 
 ![ ](./assets/springmvc01/1630481585729.png)
 
@@ -1179,7 +1181,7 @@ public String commonParamDifferentName(String userName , int age){
 
 ![ ](./assets/springmvc01/1630481772035.png)
 
-解决方案:使用@RequestParam注解
+使用@RequestParam注解
 
 ```java
 @RequestMapping("/commonParamDifferentName")
@@ -1191,11 +1193,11 @@ public String commonParamDifferentName(String userName , int age){
     }
 ```
 
-注意: **写上@RequestParam注解框架就不需要自己去解析注入，能提升框架处理性能**
+> 注意: **写上@RequestParam注解框架就不需要自己去解析注入，能提升框架处理性能**
 
 #### 3.3.2 POJO数据类型
 
-简单数据类型一般处理的是参数个数比较少的请求，如果参数比较多，那么后台接收参数的时候就比较复杂，这个时候可以考虑使用POJO数据类型。
+简单数据类型一般处理的是参数个数比较少的请求，如果参数比较多，那么后台接收参数的时候就比较复杂，这个时候可以考虑使用POJO数据类型
 
 * POJO参数：请求参数名与形参对象属性名相同，定义POJO类型形参即可接收参数
 
@@ -1312,9 +1314,9 @@ public String listParam(List<String> likes){
 
 ![ ](./assets/springmvc01/1630484339065.png)
 
-错误的原因是:SpringMVC将List看做是一个POJO对象来处理，将其创建一个对象并准备把前端的数据封装到对象中，但是List是一个接口无法创建对象，所以报错。
+错误的原因是：SpringMVC将List看做是一个POJO对象来处理，将其创建一个对象并准备把前端的数据封装到对象中，但是List是一个接口无法创建对象，所以报错
 
-解决方案是:使用`@RequestParam`注解
+解决方案是：使用`@RequestParam`注解
 
 ```java
 //集合参数：同名请求参数可以使用@RequestParam注解映射到对应名称的集合对象中作为数据
@@ -1327,9 +1329,9 @@ public String listParam(@RequestParam List<String> likes){
 ```
 
 * 集合保存普通参数：请求参数名与形参集合对象名相同且请求参数为多个，@RequestParam绑定参数关系
-* 对于简单数据类型使用数组会比集合更简单些。
+* 对于简单数据类型使用数组会比集合更简单些
 
-### 知识点1：@RequestParam
+#### 知识点1：@RequestParam
 
 | 名称     | @RequestParam                                          |
 | -------- | ------------------------------------------------------ |
@@ -1340,7 +1342,7 @@ public String listParam(@RequestParam List<String> likes){
 
 ### 3.4 JSON数据传输参数
 
-现在比较流行的开发方式为异步调用。前后台以异步方式进行交换，传输的数据使用的是JSON,所以前端如果发送的是JSON数据，后端该如何接收?
+现在比较流行的开发方式为异步调用。前后台以异步方式进行交换，传输的数据使用的是JSON，所以前端如果发送的是JSON数据，后端该如何接收?
 
 对于JSON数据类型:
 
@@ -1395,11 +1397,7 @@ public String listParamForJson(@RequestBody List<String> likes){
 
 ![ ](./assets/springmvc01/1630492624684.png)
 
-JSON普通数组的数据就已经传递完成，下面针对JSON对象数据和JSON对象数组的数据该如何传递呢?
-
 #### JSON对象数据
-
-我们会发现，只需要关注请求和数据如何发送?后端数据如何接收?
 
 请求和数据的发送:
 
@@ -1429,9 +1427,9 @@ public String pojoParamForJson(@RequestBody User user){
 
 **说明:**
 
-address为null的原因是前端没有传递数据给后端。
+address为null的原因是前端没有传递数据给后端
 
-如果想要address也有数据，我们需求修改前端传递的数据内容:
+如果想要address也有数据
 
 ```json
 {
@@ -1478,17 +1476,17 @@ public String listPojoParamForJson(@RequestBody List<User> list){
 
 ![ ](./assets/springmvc01/1630493561137.png)
 
-**小结**:
+#### **小结**
 
 SpringMVC接收JSON数据的实现步骤为:
 
-(1)导入jackson包
+1. 导入jackson包
 
-(2)使用PostMan发送JSON数据
+2. 使用PostMan发送JSON数据
 
-(3)开启SpringMVC注解驱动，在配置类上添加@EnableWebMvc注解
+3. 开启SpringMVC注解驱动，在配置类上添加@EnableWebMvc注解
 
-(4)Controller方法的参数前添加@RequestBody注解
+4. Controller方法的参数前添加@RequestBody注解
 
 #### 知识点1：@EnableWebMvc
 
@@ -1575,11 +1573,17 @@ public String dataParam(Date date,Date date1)
 
 发送请求和数据后，页面会报400，控制台会报错一个错误
 
-Resolved org.springframework.web.method.annotation.**MethodArgumentTypeMismatchException**: Failed to convert value of type 'java.lang.String' to required type 'java.util.Date'; nested exception is org.springframework.core.convert.**ConversionFailedException**: Failed to convert from type **java.lang.String** to type **java.util.Date** for value '2088-08-08'; nested exception is java.lang.IllegalArgumentException
+``` java
+Resolved org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: 
+Failed to convert value of type 'java.lang.String' to required type 'java.util.Date'; 
+nested exception is org.springframework.core.convert.  ConversionFailedException: 
+Failed to convert from type java.lang.String to type java.util.Date for value '2088-08-08'; 
+nested exception is java.lang.IllegalArgumentException  
+```
 
-从错误信息可以看出，错误的原因是在将`2088-08-08`转换成日期类型的时候失败了，原因是SpringMVC默认支持的字符串转日期的格式为`yyyy/MM/dd`,而我们现在传递的不符合其默认格式，SpringMVC就无法进行格式转换，所以报错。
+从错误信息可以看出，错误的原因是在将`2088-08-08`转换成日期类型的时候失败了，原因是SpringMVC默认支持的字符串转日期的格式为`yyyy/MM/dd`
 
-解决方案也比较简单，需要使用`@DateTimeFormat`
+解决方案使用`@DateTimeFormat`
 
 ```java
 @RequestMapping("/dataParam")
@@ -1594,10 +1598,6 @@ public String dataParam(Date date,
 ![ ](./assets/springmvc01/1630495221038.png)
 
 #### 步骤6:携带时间的日期
-
-接下来再来发送一个携带时间的日期，看下SpringMVC该如何处理?
-
-先修改UserController类，添加第三个参数
 
 ```java
 @RequestMapping("/dataParam")
@@ -1669,19 +1669,19 @@ public interface Converter<S, T> {
 
 ![ ](./assets/springmvc01/1630496385398.png)
 
-框架中有提供很多对应Converter接口的实现类，用来实现不同数据类型之间的转换。前面咱们其实一直在使用这个类型转换,如:
+框架中有提供很多对应Converter接口的实现类，用来实现不同数据类型之间的转换
 
 * 请求参数年龄数据（String→Integer）
 * json数据转对象（json → POJO）
 * 日期格式转换（String → Date）
 
-注意:**SpringMVC的配置类把@EnableWebMvc当做标配配置上去，不要省略**
+> 注意: **SpringMVC的配置类把@EnableWebMvc当做标配配置上去，不要省略**
 
 ### 3.6 响应
 
-SpringMVC接收到请求和数据后，进行一些了的处理，当然这个处理可以是转发给Service，Service层再调用Dao层完成的，不管怎样，处理完以后，都需要将结果告知给用户。
+SpringMVC接收到请求和数据后，进行一些了的处理，当然这个处理可以是转发给Service，Service层再调用Dao层完成的，不管怎样，处理完以后，都需要将结果告知给用户
 
-比如:根据用户ID查询用户信息、查询用户列表、新增用户等。
+比如：根据用户ID查询用户信息、查询用户列表、新增用户等
 
 对于响应，主要就包含两部分内容：
 
@@ -1689,8 +1689,6 @@ SpringMVC接收到请求和数据后，进行一些了的处理，当然这个�
 * 响应数据
   * 文本数据
   * json数据
-
-因为异步调用是目前常用的主流方式，所以我们需要更关注的就是如何返回JSON数据，对于其他只需要认识了解即可。
 
 #### 3.6.1 环境准备
 
@@ -1776,9 +1774,8 @@ SpringMVC接收到请求和数据后，进行一些了的处理，当然这个�
   //开启json数据类型自动转换
   @EnableWebMvc
   public class SpringMvcConfig {
+
   }
-  
-  
   ```
 
 * 编写模型类User
@@ -1807,7 +1804,6 @@ SpringMVC接收到请求和数据后，进行一些了的处理，当然这个�
   @Controller
   public class UserController {
   
-      
   }
   ```
 
@@ -1864,7 +1860,7 @@ public class UserController {
 
 ##### 步骤2: 启动程序测试
 
-此处不涉及到页面跳转，因为我们现在发送的是post请求，可以使用浏览器也可以使用PostMan进行测试，输入地址`http://localhost/toText`访问
+此处不涉及到页面跳转，现在发送的是post请求，可以使用浏览器也可以使用PostMan进行测试，输入地址`http://localhost/toText`访问
 
 ![ ](./assets/springmvc01/1630497741388.png)
 
@@ -1954,7 +1950,7 @@ public class UserController {
 
 ### 4.1 REST简介
 
-* REST（Representational State Transfer），表现形式状态转换,它是一种软件架构风格
+* REST（Representational State Transfer），表现形式状态转换，它是一种软件架构风格
 
   * 传统风格资源描述形式
     * `http://localhost/user/getById?id=1` 查询id为1的用户信息
@@ -1963,12 +1959,14 @@ public class UserController {
     * `http://localhost/user/1`
     * `http://localhost/user`
 
-REST的优点有:
+::: tip REST的优点有
 
 * 隐藏资源的访问行为，无法通过地址得知对资源是何种操作
 * 书写简化
 
-问题: 一个相同的url地址即可以是新增也可以是修改或者查询，那么到底我们该如何区分该请求到底是什么操作呢?
+:::
+
+问题： 一个相同的url地址即可以是新增也可以是修改或者查询，那么该如何区分该请求到底是什么操作呢?
 
 * 按照REST风格访问资源时使用**行为动作**区分对资源进行了何种操作
   * `http://localhost/users`  查询全部用户信息 GET（查询）
@@ -1977,15 +1975,15 @@ REST的优点有:
   * `http://localhost/users`    修改用户信息    PUT（修改/更新）
   * `http://localhost/users/1`  删除用户信息    DELETE（删除）
 
-请求的方式比较多，但是比较常用的就4种，分别是`GET`,`POST`,`PUT`,`DELETE`。
+请求的方式比较多，但是比较常用的就4种，分别是`GET`,`POST`,`PUT`,`DELETE`
 
 ::: warning 注意:
 
 * 上述行为是约定方式，约定不是规范，可以打破，所以称REST风格，而不是REST规范
   * REST提供了对应的架构方式，按照这种架构设计项目可以降低开发的复杂性，提高系统的可伸缩性
-  * REST中规定GET/POST/PUT/DELETE针对的是查询/新增/修改/删除，但是我们如果非要用GET请求做删除，这点在程序上运行是可以实现的
+  * REST中规定GET/POST/PUT/DELETE针对的是查询/新增/修改/删除，但是如果非要用GET请求做删除，这点在程序上运行是可以实现的
   * 但是如果绝大多数人都遵循这种风格，你写的代码让别人读起来就有点莫名其妙了。
-* 描述模块的名称通常使用复数，也就是加s的格式描述，表示此类资源，而非单个资源，例如:users、books、accounts......
+* 描述模块的名称通常使用复数，也就是加s的格式描述，表示此类资源，而非单个资源，例如：users、books、accounts......
 
 :::
 
@@ -2189,17 +2187,15 @@ REST的优点有:
 
 #### 4.2.2 思路分析
 
-> 需求:将之前的增删改查替换成RESTful的开发方式。
+> 需求：将之前的增删改查替换成RESTful的开发方式
 >
-> 1.之前不同的请求有不同的路径,现在要将其修改为统一的请求路径
+> 1. 之前不同的请求有不同的路径,现在要将其修改为统一的请求路径  
+>   修改前: 新增: /save ,修改: /update,删除 /delete...  
+>   修改后: 增删改查: /users
 >
-> 修改前: 新增: /save ,修改: /update,删除 /delete...
+> 2. 根据GET查询、POST新增、PUT修改、DELETE删除对方法的请求方式进行限定
 >
-> 修改后: 增删改查: /users
->
-> 2.根据GET查询、POST新增、PUT修改、DELETE删除对方法的请求方式进行限定
->
-> 3.发送请求的过程中如何设置请求参数?
+> 3. 发送请求的过程中如何设置请求参数?
 
 #### 4.2.3 修改RESTful风格
 
@@ -2246,11 +2242,11 @@ public class UserController {
 * 将请求路径更改为`/users`
   * 访问该方法使用 DELETE: `http://localhost/users`
 
-访问成功，但是删除方法没有携带所要删除数据的id,所以针对RESTful的开发，如何携带数据参数?
+访问成功，但是删除方法没有携带所要删除数据的id，所以针对RESTful的开发，如何携带数据参数?
 
 ###### 传递路径参数
 
-前端发送请求的时候使用:`http://localhost/users/1`,路径中的`1`就是我们想要传递的参数。
+前端发送请求的时候使用:`http://localhost/users/1`,路径中的`1`就是想要传递的参数。
 
 后端获取参数，需要做如下修改:
 
@@ -2278,9 +2274,9 @@ public class UserController {
 
 (2)如果有多个参数需要传递该如何编写?
 
-前端发送请求的时候使用:`http://localhost/users/1/tom`,路径中的`1`和`tom`就是我们想要传递的两个参数。
+前端发送请求的时候使用:`http://localhost/users/1/tom`,路径中的`1`和`tom`就是我们想要传递的两个参数
 
-后端获取参数，需要做如下修改:
+后端获取参数，需要做如下修改：
 
 ```java
 @Controller
@@ -2382,7 +2378,7 @@ public String delete(@PathVariable Integer id){
 | 位置 | SpringMVC控制器方法形参定义前面                              |
 | 作用 | 绑定路径参数与处理器方法形参间的关系，要求路径参数名与形参名一一对应 |
 
-关于接收参数，我们学过三个注解`@RequestBody`、`@RequestParam`、`@PathVariable`,这三个注解之间的区别和应用分别是什么?
+关于接收参数，`@RequestBody`、`@RequestParam`、`@PathVariable`，这三个注解之间的区别和应用分别是什么?
 
 * 区别
   * @RequestParam用于接收url地址传参或表单传参
@@ -2397,11 +2393,11 @@ public String delete(@PathVariable Integer id){
 
 ![ ](./assets/springmvc01/1630507339724.png)
 
-问题1：每个方法的@RequestMapping注解中都定义了访问路径/books，重复性太高。
+问题1：每个方法的@RequestMapping注解中都定义了访问路径/books，重复性太高
 
-问题2：每个方法的@RequestMapping注解中都要使用method属性定义请求方式，重复性太高。
+问题2：每个方法的@RequestMapping注解中都要使用method属性定义请求方式，重复性太高
 
-问题3：每个方法响应json都需要加上@ResponseBody注解，重复性太高。
+问题3：每个方法响应json都需要加上@ResponseBody注解，重复性太高
 
 对于上面所提的这三个问题，具体该如何解决?
 
@@ -2448,19 +2444,19 @@ public class BookController {
 }
 ```
 
-问题1：每个方法的@RequestMapping注解中都定义了访问路径/books，重复性太高。
+问题1：每个方法的@RequestMapping注解中都定义了访问路径/books，重复性太高
 
 ```md
 将@RequestMapping提到类上面，用来定义所有方法共同的访问路径。
 ```
 
-问题2：每个方法的@RequestMapping注解中都要使用method属性定义请求方式，重复性太高。
+问题2：每个方法的@RequestMapping注解中都要使用method属性定义请求方式，重复性太高
 
 ```md
 使用@GetMapping  @PostMapping  @PutMapping  @DeleteMapping代替
 ```
 
-问题3：每个方法响应json都需要加上@ResponseBody注解，重复性太高。
+问题3：每个方法响应json都需要加上@ResponseBody注解，重复性太高
 
 ```md
 1.将ResponseBody提到类上面，让所有的方法都有@ResponseBody的功能
@@ -2711,13 +2707,13 @@ public class BookController {
 
 ![ ](./assets/springmvc01/1630510264650.png)
 
-SpringMVC拦截了静态资源，根据/pages/books.html去controller找对应的方法，找不到所以会报404的错误。
+SpringMVC拦截了静态资源，根据/pages/books.html去controller找对应的方法，找不到所以会报404的错误
 
 (2)SpringMVC为什么会拦截静态资源呢?
 
 ![ ](./assets/springmvc01/1630510397429.png)
 
-(3)解决方案?
+(3)解决方案
 
 * SpringMVC需要将静态资源进行放行。
 
