@@ -13,13 +13,13 @@ category:
 
 #### 1.1.1 创建数据库
 
-通过以下两种方式中的任意一种, 创建项目的数据库:
+通过以下两种方式中的任意一种，创建项目的数据库:
 
 **1.图形界面**:
 
 ![ ](./assets/day01/image-20210726123903694.png)
 
-注意: 本项目数据库的字符串, 选择 utf8mb4
+注意: 本项目数据库的字符串，选择 utf8mb4
 
 **2命令行**:
 
@@ -27,7 +27,7 @@ category:
 
 #### 1.1.2 数据库表导入
 
-直接将 `db_reggie.sql` 直接导入到数据库中, 也可以通过两种方式实现:
+直接将 `db_reggie.sql` 直接导入到数据库中，也可以通过两种方式实现:
 
 **1.图形界面**:
 
@@ -59,7 +59,7 @@ category:
 
 #### 1.2.1 创建maven项目
 
-**1. 在idea中创建maven project, 项目名称 reggie_take_out** :
+**1. 在idea中创建maven project，项目名称 reggie_take_out** :
 
 ![ ](./assets/day01/image-20210726172842675.png)
 **2. 检查项目编码**:
@@ -160,7 +160,7 @@ server:
   port: 8080
 spring:
   application:
-    #应用名称 , 可选
+    #应用名称 ，可选
     name: reggie_take_out
   datasource:
     druid:
@@ -181,7 +181,7 @@ mybatis-plus:
 
 :::
 
-3.创建包 com.itheima.reggie , 并编写启动类
+3.创建包 com.itheima.reggie，并编写启动类
 
 ```java
 import lombok.extern.slf4j.Slf4j;
@@ -200,19 +200,19 @@ public class ReggieApplication {
 
 > @Slf4j :
 >
-> 是lombok中提供的注解, 用来通过slf4j记录日志。
+> 是lombok中提供的注解，用来通过slf4j记录日志  
 
 #### 1.2.3 前端静态资源导入
 
 **1. 导入静态资源**:
 
-将 资料/前端资源 两个目录中的静态资源文件, 导入到项目的resources目录下:
+将 资料/前端资源 两个目录中的静态资源文件，导入到项目的resources目录下:
 
 ![ ](./assets/day01/image-20210726230327313.png)
 
 **2. 创建配置类WebMvcConfig，设置静态资源映射**:
 
-默认静态资源的存放目录为 : "classpath:/resources/", "classpath:/static/", "classpath:/public/" ; 而在项目中静态资源存放在 backend, front 目录中, 这个时候要想访问到静态资源, 就需要设置**静态资源映射**。
+默认静态资源的存放目录为 : "classpath:/resources/"，"classpath:/static/"，"classpath:/public/" ; 而在项目中静态资源存放在 backend，front 目录中，这个时候要想访问到静态资源，就需要设置**静态资源映射**  
 
 ```java
 import lombok.extern.slf4j.Slf4j;
@@ -258,7 +258,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 **3. 查看登录请求**:
 
-通过浏览器调试工具（F12），可以发现，点击登录按钮时，页面会发送请求（请求地址为[http://localhost:8080/employee/login](http://localhost:8080/employee/login)）并提交参数 username和password, 请求参数为json格式数据 {"username":"admin","password":"123456"}。
+通过浏览器调试工具（F12），可以发现，点击登录按钮时，页面会发送请求（请求地址为[http://localhost:8080/employee/login](http://localhost:8080/employee/login)）并提交参数 username和password，请求参数为json格式数据 \{"username":"admin","password":"123456"\}  
 
 ![ ](./assets/day01/image-20210726234439684.png)
 
@@ -273,13 +273,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ![ ](./assets/day01/image-20210727000040403.png)
 
-当点击 "登录" 按钮, 会触发Vue中定义的 handleLogin 方法:
+当点击 "登录" 按钮，会触发Vue中定义的 handleLogin 方法:
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
-发送登录的异步请求之后, 获取到响应结果, 在响应结果中至少包含三个属性: code、data、msg 。
+发送登录的异步请求之后， 获取到响应结果，在响应结果中至少包含三个属性: code、data、msg  
 
-用户登录成功之后，服务端会返回用户信息，而前端是将这些用户信息，存储在客户端的 localStorage 中了。
+用户登录成功之后，服务端会返回用户信息，而前端是将这些用户信息，存储在客户端的 localStorage 中了  
 
 ```js
 localStorage.setItem('userInfo',JSON.stringify(res.data))
@@ -295,7 +295,7 @@ localStorage.setItem('userInfo',JSON.stringify(res.data))
 
 **1. 创建实体类Employee**:
 
-该实体类主要用于员工表 employee 进行映射。
+该实体类主要用于员工表 employee 进行映射  
 
 所属包: com.itheima.reggie.entity
 
@@ -340,7 +340,7 @@ public class Employee implements Serializable {
 
 **2. 定义Mapper接口**:
 
-在MybatisPlus中, 自定义的Mapper接口, 需要继承自 BaseMapper。
+在MybatisPlus中，自定义的Mapper接口，需要继承自 BaseMapper  
 
 所属包: com.itheima.reggie.mapper
 
@@ -352,7 +352,7 @@ public interface EmployeeMapper extends BaseMapper<Employee>{
 
 **3.Service接口**:
 
-本项目的Service接口，在定义时需要继承自MybatisPlus提供的Service层接口 IService，这样就可以直接调用 父接口的方法直接执行业务操作，简化业务层代码实现。
+本项目的Service接口，在定义时需要继承自MybatisPlus提供的Service层接口 IService，这样就可以直接调用 父接口的方法直接执行业务操作，简化业务层代码实现  
 
 所属包: com.itheima.reggie.service
 
@@ -400,7 +400,7 @@ public class EmployeeController {
 
 **6. 导入通用结果类R**:
 
-此类是一个通用结果类，服务端响应的所有结果最终都会包装成此种类型返回给前端页面。
+此类是一个通用结果类，服务端响应的所有结果最终都会包装成此种类型返回给前端页面  
 
 所属包: com.itheima.reggie.common
 
@@ -439,9 +439,9 @@ public class R<T> {
 }
 ```
 
-A. 如果业务执行结果为成功, 构建R对象时, 只需要调用 success 方法; 如果需要返回数据传递 object 参数, 如果无需返回, 可以直接传递null。
+A. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法; 如果需要返回数据传递 object 参数，如果无需返回，可以直接传递null  
 
-B. 如果业务执行结果为失败, 构建R对象时, 只需要调用error 方法, 传递错误提示信息即可。
+B. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
 
 #### 2.2.2 登录逻辑分析
 
@@ -449,25 +449,25 @@ B. 如果业务执行结果为失败, 构建R对象时, 只需要调用error 方
 
 处理逻辑如下：
 
-①. 将页面提交的密码password进行md5加密处理, 得到加密后的字符串
+①. 将页面提交的密码password进行md5加密处理，得到加密后的字符串
 
 ②. 根据页面提交的用户名username查询数据库中员工数据信息
 
-③. 如果没有查询到, 则返回登录失败结果
+③. 如果没有查询到，则返回登录失败结果
 
-④. 密码比对，如果不一致, 则返回登录失败结果
+④. 密码比对，如果不一致，则返回登录失败结果
 
 ⑤. 查看员工状态，如果为已禁用状态，则返回员工已禁用结果
 
-⑥. 登录成功，将员工id存入Session, 并返回登录成功结果
+⑥. 登录成功，将员工id存入Session，并返回登录成功结果
 
 #### 2.2.3 代码实现
 
 **技术点说明:** :
 
-A. 前端发起的请求为post请求, 所以服务端需要使用注解 @PostMapping
+A. 前端发起的请求为post请求，所以服务端需要使用注解 @PostMapping
 
-B. 由于前端传递的请求参数为json格式的数据, 这里使用Employee对象接收, 但是将json格式数据封装到实体类中, 在形参前需要加注解@RequestBody
+B. 由于前端传递的请求参数为json格式的数据，这里使用Employee对象接收，但是将json格式数据封装到实体类中，在形参前需要加注解@RequestBody
 
 ```java
 /**
@@ -513,29 +513,29 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 启动项目，访问url: [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html)
 
-在测试过程中，可以通过debug断点调试的方式来跟踪程序的执行过程，并且可以查看程序运行时各个对象的具体赋值情况。而且需要注意，在测试过程中，需要将所有的情况都覆盖到。
+在测试过程中，可以通过debug断点调试的方式来跟踪程序的执行过程，并且可以查看程序运行时各个对象的具体赋值情况  而且需要注意，在测试过程中，需要将所有的情况都覆盖到  
 
 **1. 问题说明**:
 
-进行debug端点调试时, 前端可能会出现如下问题: 前端页面的控制台报出错误-超时;
+进行debug端点调试时，前端可能会出现如下问题: 前端页面的控制台报出错误-超时;
 
 ![ ](./assets/day01/image-20210727004455855.png)
 
 **2. 解决方案**:
 
-前端进行异步请求时, 默认超时10000ms , 可以将该值调大一些。
+前端进行异步请求时，默认超时10000ms ，可以将该值调大一些  
 
 ![ ](./assets/day01/image-20210727004706639.png)
 
-**由于修改了JS文件，需要手动清理一下浏览器缓存，避免缓存影响，JS不能及时生效。**
+**由于修改了JS文件，需要手动清理一下浏览器缓存，避免缓存影响，JS不能及时生效**
 
 ## 3. 后台系统退出功能
 
 ### 3.1 需求分析
 
-在后台管理系统中，管理员或者员工，登录进入系统之后，页面跳转到后台系统首页面(backend/index.html)，此时会在系统的右上角显示当前登录用户的姓名。
+在后台管理系统中，管理员或者员工，登录进入系统之后，页面跳转到后台系统首页面(backend/index.html)，此时会在系统的右上角显示当前登录用户的姓名  
 
-如果员工需要退出系统，直接点击右侧的退出按钮即可退出系统，退出系统后页面应跳转回登录页面。
+如果员工需要退出系统，直接点击右侧的退出按钮即可退出系统，退出系统后页面应跳转回登录页面  
 
 **1. 退出页面展示**:
 
@@ -545,13 +545,13 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 ![ ](./assets/day01/image-20210727010054851.png)
 
-点击 ![ ](./assets/day01/image-20210727010150207.png) 将会调用一个js方法logout, 在logout的方法中执行如下逻辑:
+点击 ![ ](./assets/day01/image-20210727010150207.png) 将会调用一个js方法logout，在logout的方法中执行如下逻辑:
 
 ![ ](./assets/day01/image-20210727010422199.png)
 
-A. 发起post请求, 调用服务端接口 /employee/logout 执行退出操作 ;
+A. 发起post请求，调用服务端接口 /employee/logout 执行退出操作 ;
 
-B. 删除客户端 localStorage 中存储的用户登录信息, 跳转至登录页面 ;
+B. 删除客户端 localStorage 中存储的用户登录信息，跳转至登录页面 ;
 
 ### 3.2 代码实现
 
@@ -577,9 +577,9 @@ public R<String> logout(HttpServletRequest request){
 
 ### 3.3 功能测试
 
-1. 重启服务, 访问登录界面 [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html) ;
+1. 重启服务，访问登录界面 [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html) ;
 
-2. 登录完成之后, 进入到系统首页 backend/index.html, 点击右上角 ![ ](./assets/day01/image-20210727011020244.png) 按钮 执行退出操作, 完成后看看是否可以跳转到登录页面 , 并检查localStorage。
+2. 登录完成之后，进入到系统首页 backend/index.html，点击右上角 ![ ](./assets/day01/image-20210727011020244.png) 按钮 执行退出操作，完成后看看是否可以跳转到登录页面 ，并检查localStorage  
 
 ![ ](./assets/day01/image-20210727011215186.png)
 
