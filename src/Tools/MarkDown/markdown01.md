@@ -1,6 +1,7 @@
 ---
 order: 1
 date: 2023-04-08
+cover: https://pic.peo.pw/a/2023/04/27/644a41a13b0b0.jpg
 category: 
   - Markdown
 ---

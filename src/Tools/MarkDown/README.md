@@ -1,8 +1,10 @@
 ---
+sticky: true
 star: true
 index: true
 order: number
 date: 2023-03-02
+cover: https://pic.peo.pw/a/2023/04/27/644a41a239f4a.jpg
 category: 
   - Markdown
 ---
