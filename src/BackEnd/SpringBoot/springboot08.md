@@ -5,7 +5,7 @@ category:
   - SpringBoot
 ---
 
-# SpringBoot
+# SpringBoot整合
 
 > * 掌握基于SpringBoot框架的程序开发步骤
 > * 熟练使用SpringBoot配置信息修改服务器配置
@@ -117,7 +117,7 @@ public class BookController {
 
 ##### 1.1.1.3  启动服务器
 
-运行 SpringBoot 工程不需要使用本地的 Tomcat 和 插件，只运行项目 com.itheima 包下的 Application 类，我们就可以在控制台看出如下信息
+运行 SpringBoot 工程不需要使用本地的 Tomcat 和 插件，只运行项目 com.itheima 包下的 Application 类，就可以在控制台看出如下信息
 
 ![ ](./assets/springboot08/image-20210911165642280.png)
 
@@ -141,7 +141,7 @@ public class Application {
 ```
 
 > 类上添加了一个 @SpringBootApplication 注解，而在主方法中就一行代码  
-> 我们在启动服务器时就是执行的该类中的主方法
+> 在启动服务器时就是执行的该类中的主方法
 
 再看看 pom.xml 配置文件中的内容
 
@@ -275,7 +275,7 @@ https://spring.io/projects/spring-boot
 </plugin>
 ```
 
-所以我们只需要使用 Maven 的 package 指令打包就会在 target 目录下生成对应的 Jar 包
+所以只需要使用 Maven 的 package 指令打包就会在 target 目录下生成对应的 Jar 包
 
 > **注意：该插件必须配置，不然打好的 jar 包也是有问题的**
 
@@ -312,8 +312,6 @@ jar -jar springboot_01_quickstart-0.0.1-SNAPSHOT.jar
 
 ![ ](./assets/springboot08/image-20210918220338109.png =600x)
 
-> 这些依赖就是**启动依赖**，接下来我们探究一下他是如何实现的
-
 ##### 1.2.1.1  探索父工程
 
 从上面的文件中可以看到指定了一个父工程，进入到父工程，发现父工程中又指定了一个父工程
@@ -334,11 +332,9 @@ dependencyManagement 标签是进行依赖版本锁定，但是并没有导入�
 
 ![ ](./assets/springboot08/image-20210918221942453.png =500x)
 
-看完了父工程中 pom.xml 的配置后不难理解我们工程的的依赖为什么都没有配置 version。
-
 ##### 1.2.1.2  探索依赖
 
-在我们创建的工程中的 pom.xml 中配置了如下依赖
+在创建的工程中的 pom.xml 中配置了如下依赖
 
 ![ ](./assets/springboot08/image-20210918222321402.png)
 
@@ -346,13 +342,11 @@ dependencyManagement 标签是进行依赖版本锁定，但是并没有导入�
 
 ![ ](./assets/springboot08/image-20210918222607469.png)
 
-里面的引入了 spring-web 和 spring-webmvc 的依赖，这就是为什么我们的工程中没有依赖这两个包还能正常使用 springMVC 中的注解的原因。
+里面的引入了 spring-web 和 spring-webmvc 的依赖，这就是为什么工程中没有依赖这两个包还能正常使用 springMVC 中的注解的原因。
 
-而依赖 spring-boot-starter-tomcat ，从名字基本能确认内部依赖了 tomcat，所以我们的工程才能正常启动。
+而依赖 spring-boot-starter-tomcat ，从名字基本能确认内部依赖了 tomcat
 
-**结论：以后需要使用技术，只需要引入该技术对应的起步依赖即可**：
-
-##### 1.2.1.3  小结
+::: tip 小结
 
 **starter**:
 
@@ -363,6 +357,8 @@ dependencyManagement 标签是进行依赖版本锁定，但是并没有导入�
 * 所有 SpringBoot 项目要继承的项目，定义了若干个坐标版本号（依赖管理，而非依赖），以达到减少依赖冲突的目的
 
 * spring-boot-starter-parent（2.5.0）与 spring-boot-starter-parent（2.4.6）共计57处坐标版本不同
+
+:::
 
 **实际开发**:
 
@@ -378,7 +374,7 @@ dependencyManagement 标签是进行依赖版本锁定，但是并没有导入�
 
 #### 1.2.2  程序启动
 
-创建的每一个 SpringBoot 程序时都包含一个类似于下面的类，我们将这个类称作引导类
+创建的每一个 SpringBoot 程序时都包含一个类似于下面的类，将这个类称作引导类
 
 ```java
 @SpringBootApplication
@@ -396,11 +392,9 @@ public class Springboot01QuickstartApplication {
 
 * SpringBoot 的引导类是项目的入口，运行 main 方法就可以启动项目
 
-  因为我们在 pom.xml 中配置了 spring-boot-starter-web 依赖，而该依赖通过前面的学习知道它依赖 tomcat ，所以运行 main 方法就可以使用 tomcat 启动咱们的工程。
-
 #### 1.2.3  切换web服务器
 
-现在我们启动工程使用的是 tomcat 服务器，那能不能不使用 tomcat 而使用 jetty 服务器，jetty 在我们 maven 高级时讲 maven 私服使用的服务器。而要切换 web 服务器就需要将默认的 tomcat 服务器给排除掉，怎么排除呢？使用 exclusion 标签
+现在启动工程使用的是 tomcat 服务器，那能不能不使用 tomcat 而使用 jetty 服务器，而要切换 web 服务器就需要将默认的 tomcat 服务器给排除掉，怎么排除呢？使用 exclusion 标签
 
 ```xml
 <dependency>
@@ -415,7 +409,7 @@ public class Springboot01QuickstartApplication {
 </dependency>
 ```
 
-现在我们运行引导类可以吗？运行一下试试，打印的日志信息如下
+运行引导类，打印日志信息如下
 
 ![ ](./assets/springboot08/image-20210918232512707.png)
 
@@ -428,25 +422,21 @@ public class Springboot01QuickstartApplication {
 </dependency>
 ```
 
-接下来再次运行引导类，在日志信息中就可以看到使用的是 jetty 服务器
-
 ![ ](./assets/springboot08/image-20210918232904623.png)
 
-**小结：**
-
-通过切换服务器，我们不难发现在使用 SpringBoot 换技术时只需要导入该技术的起步依赖即可。
+**小结：** 通过切换服务器，不难发现在使用 SpringBoot 换技术时只需要导入该技术的起步依赖即可
 
 ## 2 配置文件
 
 ### 2.1  配置文件格式
 
-我们现在启动服务器默认的端口号是 8080，访问路径可以书写为
+现在启动服务器默认的端口号是 8080，访问路径可以书写为
 
 ```md
 http://localhost:8080/books/1
 ```
 
-在线上环境我们还是希望将端口号改为 80，这样在访问的时候就可以不写端口号了，如下
+在线上环境还是希望将端口号改为 80，这样在访问的时候就可以不写端口号了
 
 ```md
 http://localhost/books/1
@@ -501,7 +491,7 @@ public class BookController {
 
 * **application.properties配置文件**
 
-现在需要进行配置，配合文件必须放在 resources 目录下，而该目录下有一个名为 application.properties 的配置文件，我们就可以在该配置文件中修改端口号，在该配置文件中书写 port ，Idea 就会提示，如下
+配合文件必须放在 resources 目录下，而该目录下有一个名为 application.properties 的配置文件
 
 ![ ](./assets/springboot08/image-20210917161422535.png)
 
@@ -509,9 +499,7 @@ application.properties 配置文件内容如下：
 
 ```properties
 server.port=80
-```
-
-启动服务，会在控制台打印出日志信息，从日志信息中可以看到绑定的端口号已经修改了
+``` 
 
 ![ ](./assets/springboot08/image-20210917161720855.png)
 
@@ -526,7 +514,7 @@ server:
 
 > **注意： 在:后，数据前一定要加空格。**
 
-而在 yml 配置文件中也是有提示功能的，我们也可以在该文件中书写 port ，然后 idea 就会提示并书写成上面的格式
+而在 yml 配置文件中也是有提示功能的，也可以在该文件中书写 port ，然后 idea 就会提示并书写成上面的格式
 
 ![ ](./assets/springboot08/image-20210917162512646.png)
 
@@ -599,7 +587,7 @@ server:
 
 注释掉 application.properties 配置文件内容。再次启动服务，在控制台可以看到使用的端口号是 81，说明 application.yml 配置文件为第二优先级。
 
-从上述的验证结果可以确定三种配置文件的优先级是：
+三种配置文件的优先级是：
 
 **application.properties  >  application.yml   >  application.yaml**
 
@@ -619,9 +607,7 @@ server:
 
 ### 2.2  yaml格式
 
-上面讲了三种不同类型的配置文件，而 properties 类型的配合文件之前我们学习过，接下来我们重点学习 yaml 类型的配置文件。
-
-**YAML（YAML Ain't Markup Language），一种数据序列化格式。**这种格式的配置文件在近些年已经占有主导地位，那么这种配置文件和前期使用的配置文件是有一些优势的，我们先看之前使用的配置文件。
+**YAML（YAML Ain't Markup Language），一种数据序列化格式。**
 
 最开始我们使用的是 xml ，格式如下：
 
@@ -650,7 +636,7 @@ enterprise:
   tel: 4006184000
 ```
 
-**优点：**
+::: tip 优点
 
 * 容易阅读
 
@@ -662,12 +648,12 @@ enterprise:
 
   yaml 更注重数据，而 xml 更注重格式
 
+:::
+
 **YAML 文件扩展名：**
 
 * .yml (主流)
 * .yaml
-
-上面两种后缀名都可以，以后使用更多的还是 yml 的。
 
 #### 2.2.1  语法规则
 
@@ -683,7 +669,7 @@ enterprise:
 
 * \# 表示注释
 
-**核心规则 ：数据前面要加空格与冒号隔开**：
+核心规则 ：**数据前面要加空格与冒号隔开**
 
 数组数据在数据书写位置的下方使用减号作为数据开始符号，每行书写一个数据，减号与数据间空格分隔，例如
 
@@ -760,7 +746,7 @@ enterprise:
 
 使用 @Value("表达式") 注解可以从配合文件中读取数据，注解中用于读取属性名引用方式是：\$\{一级属性名.二级属性名……\}
 
-我们可以在 BookController 中使用 @Value  注解读取配合文件数据，如下
+在 BookController 中使用 @Value  注解读取配合文件数据，如下
 
 ```java
 @RestController
@@ -806,13 +792,13 @@ public class BookController {
 }
 ```
 
-> **注意：这种方式，框架内容大量数据，而在开发中我们很少使用。**
+> **注意：这种方式，框架内容大量数据，而在开发中很少使用**
 
 ##### 2.3.2.3  自定义对象
 
-SpringBoot 还提供了将配置文件中的数据封装到我们自定义的实体类对象中的方式。具体操作如下：
+SpringBoot 还提供了将配置文件中的数据封装到自定义的实体类对象中的方式
 
-* 将实体类 bean 的创建交给 Spring 管理。
+* 将实体类 bean 的创建交给 Spring 管理
 
   在类上添加 @Component 注解
 
@@ -919,9 +905,9 @@ public class BookController {
 
 ### 2.4  多环境配置
 
-以后在工作中，对于开发环境、测试环境、生产环境的配置肯定都不相同，比如我们开发阶段会在自己的电脑上安装 mysql ，连接自己电脑上的 mysql 即可，但是项目开发完毕后要上线就需要该配置，将环境的配置改为线上环境的。
+以后在工作中，对于开发环境、测试环境、生产环境的配置肯定都不相同，比如我们开发阶段会在自己的电脑上安装 mysql ，连接自己电脑上的 mysql 即可，但是项目开发完毕后要上线就需要该配置，将环境的配置改为线上环境的
 
-![ ](./assets/springboot08/image-20210917185253557.png)
+![ ](./assets/springboot08/image-20210917185253557.png =600x)
 
 来回的修改配置会很麻烦，而 SpringBoot 给开发者提供了多环境的快捷配置，需要切换环境时只需要改一个配置即可。不同类型的配置文件多环境开发的配置都不相同，接下来对不同类型的配置文件进行说明
 
@@ -959,7 +945,7 @@ spring:
     active: dev  #表示使用的是开发环境的配置
 ```
 
-综上所述，application.yml 配置文件内容如下
+application.yml 配置文件内容如下
 
 ```yaml
 #设置启用的环境
@@ -988,9 +974,7 @@ server:
 ---
 ```
 
-**注意：**
-
-在上面配置中给不同配置起名字的 spring.profiles 配置项已经过时。最新用来起名字的配置项是
+**注意：** 在上面配置中给不同配置起名字的 spring.profiles 配置项已经过时。最新用来起名字的配置项是
 
 ```yaml
 #开发
@@ -1004,19 +988,19 @@ spring:
 
 properties 类型的配置文件配置多环境需要定义不同的配置文件
 
-* application-dev.properties 是开发环境的配置文件。我们在该文件中配置端口号为 80
+* application-dev.properties 是开发环境的配置文件
 
   ```properties
   server.port=80
   ```
 
-* application-test.properties 是测试环境的配置文件。我们在该文件中配置端口号为 81
+* application-test.properties 是测试环境的配置文件
 
   ```properties
   server.port=81
   ```
 
-* application-pro.properties 是生产环境的配置文件。我们在该文件中配置端口号为 82
+* application-pro.properties 是生产环境的配置文件
 
   ```properties
   server.port=82
@@ -1032,19 +1016,19 @@ spring.profiles.active=pro
 
 使用 SpringBoot 开发的程序以后都是打成 jar 包，通过 java -jar xxx.jar 的方式启动服务的。那么就存在一个问题，如何切换环境呢？因为配置文件打到的jar包中了。
 
-我们知道 jar 包其实就是一个压缩包，可以解压缩，然后修改配置，最后再打成jar包就可以了。这种方式显然有点麻烦，而 SpringBoot 提供了在运行 jar 时设置开启指定的环境的方式，如下
+jar 包其实就是一个压缩包，可以解压缩，然后修改配置，最后再打成jar包就可以了。这种方式显然有点麻烦，而 SpringBoot 提供了在运行 jar 时设置开启指定的环境的方式，如下
 
 ```shell
 java –jar xxx.jar –-spring.profiles.active=test
 ```
 
-那么这种方式能不能临时修改端口号呢？也是可以的，可以通过如下方式
+那么这种方式能不能临时修改端口号呢？
 
 ```shell
 java –jar xxx.jar –-server.port=88
 ```
 
-当然也可以同时设置多个配置，比如即指定启用哪个环境配置，又临时指定端口，如下
+也可以同时设置多个配置，比如即指定启用哪个环境配置，又临时指定端口，如下
 
 ```shell
 java –jar springboot.jar –-server.port=88 –-spring.profiles.active=test
@@ -1060,19 +1044,17 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-featu
 
 ![ ](./assets/springboot08/image-20210917193910191.png)
 
-如果使用了多种方式配合同一个配置项，优先级高的生效。
-
 ### 2.5  配置文件分类
 
 ![ ](./assets/springboot08/image-20210917194941597.png)
 
-有这样的场景，我们开发完毕后需要测试人员进行测试，由于测试环境和开发环境的很多配置都不相同，所以测试人员在运行我们的工程时需要临时修改很多配置，如下
+开发完毕后需要测试人员进行测试，由于测试环境和开发环境的很多配置都不相同，所以测试人员在运行我们的工程时需要临时修改很多配置，如下
 
 ```shell
 java –jar springboot.jar –-spring.profiles.active=test --server.port=85 --server.servlet.context-path=/heima --server.tomcat.connection-timeout=-1 …… …… …… …… ……
 ```
 
-针对这种情况，SpringBoot 定义了配置文件不同的放置的位置；而放在不同位置的优先级时不同的。
+针对这种情况，SpringBoot 定义了配置文件不同的放置的位置；而放在不同位置的优先级时不同的
 
 SpringBoot 中4级配置文件放置位置：
 
@@ -1081,11 +1063,9 @@ SpringBoot 中4级配置文件放置位置：
 * 3级：file ：application.yml
 * 4级：file ：config/application.yml
 
-> **说明：**级别越高优先级越高
+> **说明：** 级别越高优先级越高
 
 #### 2.5.1  代码演示
-
-在这里我们只演示不同级别配置文件放置位置的优先级。
 
 ##### 2.5.1.1  环境准备
 
@@ -1166,11 +1146,15 @@ public class UserServiceTest {
 }
 ```
 
-使用 @RunWith 注解指定运行器，使用 @ContextConfiguration 注解来指定配置类或者配置文件。而 SpringBoot 整合 junit 特别简单，分为以下三步完成
+使用 @RunWith 注解指定运行器，使用 @ContextConfiguration 注解来指定配置类或者配置文件
 
-* 在测试类上添加 SpringBootTest 注解
-* 使用 @Autowired 注入要测试的资源
-* 定义测试方法进行测试
+::: tip SpringBoot 整合 junit
+
+1. 在测试类上添加 SpringBootTest 注解
+1. 使用 @Autowired 注入要测试的资源
+1. 定义测试方法进行测试
+
+:::
 
 ### 3.1  环境准备
 
@@ -1200,7 +1184,7 @@ public class BookServiceImpl implements BookService {
 
 ### 3.2  编写测试类
 
-在 test/java 下创建 com.itheima 包，在该包下创建测试类，将 BookService 注入到该测试类中
+在 test / java 下创建 com.itheima 包，在该包下创建测试类，将 BookService 注入到该测试类中
 
 ```java
 @SpringBootTest
@@ -1216,7 +1200,7 @@ class Springboot07TestApplicationTests {
 }
 ```
 
-> **注意：**这里的引导类所在包必须是测试类所在包及其子包。
+> **注意：** 这里的引导类所在包必须是测试类所在包及其子包
 >
 > 例如：
 >
@@ -1359,7 +1343,7 @@ class Springboot08MybatisApplicationTests {
 
 #### 4.2.5  编写配置
 
-我们代码中并没有指定连接哪儿个数据库，用户名是什么，密码是什么。所以这部分需要在 SpringBoot 的配置文件中进行配合。
+数据库需要在 SpringBoot 的配置文件中进行配合
 
 在 application.yml 配置文件中配置如下内容
 
@@ -1374,13 +1358,13 @@ spring:
 
 #### 4.2.6  测试
 
-运行测试方法，我们会看到如下错误信息
+运行测试方法
 
 ![ ](./assets/springboot08/image-20210917221427930.png)
 
 错误信息显示在 Spring 容器中没有 BookDao 类型的 bean。为什么会出现这种情况呢？
 
-原因是 Mybatis 会扫描接口并创建接口的代码对象交给 Spring 管理，但是现在并没有告诉 Mybatis 哪个是 dao 接口。而我们要解决这个问题需要在BookDao 接口上使用 @Mapper ，BookDao 接口改进为
+原因是 Mybatis 会扫描接口并创建接口的代码对象交给 Spring 管理，但是现在并没有告诉 Mybatis 哪个是 dao 接口。而解决这个问题需要在BookDao 接口上使用 @Mapper ，BookDao 接口改进为
 
 ```java
 @Mapper
@@ -1396,7 +1380,7 @@ public interface BookDao {
 
 #### 4.2.7  使用Druid数据源
 
-现在我们并没有指定数据源，SpringBoot 有默认的数据源，我们也可以指定使用 Druid 数据源，按照以下步骤实现
+现在并没有指定数据源，SpringBoot 有默认的数据源，可以指定使用 Druid 数据源
 
 * 导入 Druid 依赖
 
@@ -1410,7 +1394,7 @@ public interface BookDao {
 
 * 在 application.yml 配置文件配置
 
-  可以通过 spring.datasource.type 来配置使用什么数据源。配置文件内容可以改进为
+  可以通过 spring.datasource.type 来配置使用什么数据源
 
   ```yaml
   spring:
@@ -1424,7 +1408,7 @@ public interface BookDao {
 
 ## 5 案例
 
-SpringBoot 到这就已经学习完毕，接下来我们将学习 SSM 时做的三大框架整合的案例用 SpringBoot 来实现一下。我们完成这个案例基本是将之前做的拷贝过来，修改成 SpringBoot 的即可，主要从以下几部分完成
+SSM 三大框架整合用 SpringBoot 来实现
 
 1. pom.xml
 
@@ -1454,7 +1438,7 @@ SpringBoot 到这就已经学习完毕，接下来我们将学习 SSM 时做的�
 
 ![ ](./assets/springboot08/image-20210917225019868.png)
 
-由于我们工程中使用到了 Druid ，所以需要导入 Druid 的坐标
+导入 Druid 的坐标
 
 ```xml
 <dependency>
