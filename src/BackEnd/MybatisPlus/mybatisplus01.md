@@ -5,27 +5,27 @@ category:
   - MyBatisPlus
 ---
 
-# MybatisPlus01
+# MybatisPlus入门
 
-- [ ] 能够基于MyBatisPlus完成标准Dao开发
-- [ ] 能够掌握MyBatisPlus的条件查询
-- [ ] 能够掌握MyBatisPlus的字段映射与表名映射
-- [ ] 能够掌握id生成策略控制
-- [ ] 能够理解代码生成器的相关配置
+> 1. 能够基于 MyBatisPlus 完成标准Dao开发
+> 1. 能够掌握 MyBatisPlus 的条件查询
+> 1. 能够掌握 MyBatisPlus 的字段映射与表名映射
+> 1. 能够掌握 id 生成策略控制
+> 1. 能够理解代码生成器的相关配置
 
-## 一、MyBatisPlus简介
+## 1 MyBatisPlus简介
 
-### 1. 入门案例
-
-#### 问题导入
+### 1.1 入门案例
 
 MyBatisPlus环境搭建的步骤？
 
-#### 1.1 SpringBoot整合MyBatisPlus入门程序
+#### SpringBoot整合MyBatisPlus入门程序
 
 ##### ①：创建新模块，选择Spring初始化，并配置模块相关基础信息
 
-##### ![ ](./assets/mybatisplus01/image-20210801175555953.png) ②：选择当前模块需要使用的技术集（仅保留JDBC）
+![ ](./assets/mybatisplus01/image-20210801175555953.png)
+
+##### ②：选择当前模块需要使用的技术集（仅保留JDBC）
 
 ![ ](./assets/mybatisplus01/image-20210801175658648.png)
 
@@ -44,9 +44,9 @@ MyBatisPlus环境搭建的步骤？
 </dependency>
 ```
 
-注意事项1：**由于mp并未被收录到idea的系统内置配置，无法直接选择加入**
-
-注意事项2：**如果使用Druid数据源，需要导入对应坐标**
+> 注意事项1：**由于mp并未被收录到idea的系统内置配置，无法直接选择加入**
+>
+> 注意事项2：**如果使用Druid数据源，需要导入对应坐标**
 
 ##### ④：制作实体类与表结构
 
@@ -136,30 +136,9 @@ public class Mybatisplus01QuickstartApplicationTests {
 }
 ```
 
-### 2. MyBatisPlus概述
+## 2 标准数据层开发
 
-#### 问题导入1
-
-通过入门案例制作，MyBatisPlus的优点有哪些？
-
-#### 2.1 MyBatis介绍
-
-- MyBatisPlus（简称MP）是基于MyBatis框架基础上开发的增强型工具，旨在简化开发、提高效率
-
-- 官网：[https://mybatis.plus/](https://mybatis.plus/) [https://mp.baomidou.com/](https://mp.baomidou.com/)
-
-#### 2.2 MyBatisPlus特性
-
-- 无侵入：只做增强不做改变，不会对现有工程产生影响
-- 强大的 CRUD 操作：内置通用 Mapper，少量配置即可实现单表CRUD 操作
-- 支持 Lambda：编写查询条件无需担心字段写错
-- 支持主键自动生成
-- 内置分页插件
-- ……
-
-## 二、标准数据层开发
-
-### 1. MyBatisPlus的CRUD操作
+### 2.1 MyBatisPlus的CRUD操作
 
 ![ ](./assets/mybatisplus01/image-20210815150629727.png)
 
@@ -220,62 +199,15 @@ class Mybatisplus01QuickstartApplicationTests {
 
 ```
 
-### 2. Lombok插件介绍
-
-#### 问题导入2
-
-有什么简单的办法可以自动生成实体类的GET、SET方法？
-
-- Lombok，一个Java类库，提供了一组注解，简化POJO实体类开发。
-
-```xml
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <version>1.18.12</version>
-</dependency>
-```
-
-- 常用注解：==@Data==，为当前实体类在编译期设置对应的get/set方法，无参/无参构造方法，toString方法，hashCode方法，equals方法等
-
-```java
-package com.itheima.domain;
-
-import lombok.*;
-/*
-    1 生成getter和setter方法：@Getter、@Setter
-      生成toString方法：@ToString
-      生成equals和hashcode方法：@EqualsAndHashCode
-
-    2 统一成以上所有：@Data
-
-    3 生成空参构造： @NoArgsConstructor
-      生成全参构造： @AllArgsConstructor
-
-    4 lombok还给我们提供了builder的方式创建对象,好处就是可以链式编程。 @Builder【扩展】
- */
-@Data
-public class User {
-    private Long id;
-    private String name;
-    private String password;
-    private Integer age;
-    private String tel;
-}
-
-```
-
-### 3. MyBatisPlus分页功能
-
-#### 问题导入3
+### 2.2 MyBatisPlus分页功能
 
 思考一下Mybatis分页插件是如何用的？
 
-#### 3.1 分页功能接口
+#### 2.2.1 分页功能接口
 
 ![ ](./assets/mybatisplus01/image-20210801180723261.png)
 
-#### 3.2 MyBatisPlus分页使用
+#### 2.2.2 MyBatisPlus分页使用
 
 ①：**设置分页拦截器作为Spring管理的bean**
 
@@ -320,7 +252,7 @@ void testSelectPage(){
 }
 ```
 
-#### 3.3 开启MyBatisPlus日志
+#### 2.2.3 开启MyBatisPlus日志
 
 ```yml
 spring:
@@ -336,9 +268,9 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 ```
 
-#### 3.4 解决日志打印过多问题
+#### 2.2.4 解决日志打印过多问题
 
-##### 3.4.1 取消初始化spring日志打印
+##### 2.2.4.1 取消初始化spring日志打印
 
 ![ ](./assets/mybatisplus01/image-20210815153626017.png)
 
@@ -353,7 +285,7 @@ mybatis-plus:
 
 关于logback参考播客：[https://www.jianshu.com/p/75f9d11ae011](https://www.jianshu.com/p/75f9d11ae011)
 
-##### 3.4.2 取消SpringBoot启动banner图标
+##### 2.2.4.2 取消SpringBoot启动banner图标
 
 ![ ](./assets/mybatisplus01/image-20210815153930073.png)
 
@@ -363,7 +295,7 @@ spring:
     banner-mode: off # 关闭SpringBoot启动图标(banner)
 ```
 
-##### 3.4.3 取消MybatisPlus启动banner图标
+##### 2.2.4.3 取消MybatisPlus启动banner图标
 
 ![ ](./assets/mybatisplus01/image-20210815154115368.png)
 
@@ -376,17 +308,17 @@ mybatis-plus:
     banner: off # 关闭mybatisplus启动图标
 ```
 
-## 三、DQL编程控制
+## 3 DQL编程控制
 
-### 1. 条件查询方式
+### 3.1 条件查询方式
 
 - MyBatisPlus将书写复杂的SQL查询条件进行了封装，使用编程的形式完成查询条件的组合
 
-![ ](./assets/mybatisplus01/image-20210801181232962.png)
+![ ](./assets/mybatisplus01/image-20210801181232962.png =500x)
 
-#### 1.1 条件查询
+#### 3.1.1 条件查询
 
-##### 1.1.1 方式一：按条件查询
+##### 3.1.1.1 方式一：按条件查询
 
 ```java
 //方式一：按条件查询
@@ -396,7 +328,7 @@ List<User> userList = userDao.selectList(qw);
 System.out.println(userList);
 ```
 
-##### 1.1.2 方式二：lambda格式按条件查询
+##### 3.1.1.2 方式二：lambda格式按条件查询
 
 ```java
 //方式二：lambda格式按条件查询
@@ -406,7 +338,7 @@ List<User> userList = userDao.selectList(qw);
 System.out.println(userList);
 ```
 
-##### 1.1.3 方式三：lambda格式按条件查询（推荐）
+##### 3.1.1.3 方式三：lambda格式按条件查询（推荐）
 
 ```java
 //方式三：lambda格式按条件查询
@@ -416,9 +348,9 @@ List<User> userList = userDao.selectList(lqw);
 System.out.println(userList);
 ```
 
-#### 1.2 组合条件
+#### 3.1.2 组合条件
 
-##### 1.2.1 并且关系（and）
+##### 3.1.2.1 并且关系（and）
 
 ```java
 //并且关系
@@ -429,7 +361,7 @@ List<User> userList = userDao.selectList(lqw);
 System.out.println(userList);
 ```
 
-##### 1.2.2 或者关系（or）
+##### 3.1.2.2 或者关系（or）
 
 ```java
 //或者关系
@@ -440,15 +372,13 @@ List<User> userList = userDao.selectList(lqw);
 System.out.println(userList);
 ```
 
-#### 1.3 NULL值处理
-
-##### 问题导入4
+#### 3.1.3 NULL值处理
 
 如下搜索场景，在多条件查询中，有条件的值为空应该怎么解决？
 
 ![ ](./assets/mybatisplus01/image-20210801182004226.png)
 
-##### 1.3.1 if语句控制条件追加
+##### 3.1.3.1 if语句控制条件追加
 
 ```java
 Integer minAge=10;  //将来有用户传递进来,此处简化成直接定义变量了
@@ -464,7 +394,7 @@ List<User> userList = userDao.selectList(lqw);
 userList.forEach(System.out::println);
 ```
 
-##### 1.3.2 条件参数控制
+##### 3.1.3.2 条件参数控制
 
 ```java
 Integer minAge=10;  //将来有用户传递进来,此处简化成直接定义变量了
@@ -477,7 +407,7 @@ List<User> userList = userDao.selectList(lqw);
 userList.forEach(System.out::println);
 ```
 
-##### 1.3.3 条件参数控制（链式编程）
+##### 3.1.3.3 条件参数控制（链式编程）
 
 ```java
 Integer minAge=10;  //将来有用户传递进来,此处简化成直接定义变量了
@@ -490,9 +420,9 @@ List<User> userList = userDao.selectList(lqw);
 userList.forEach(System.out::println);
 ```
 
-### 2. 查询投影-设置【查询字段、分组、分页】
+### 3.2 查询投影-设置【查询字段、分组、分页】
 
-### 2.1 查询结果包含模型类中部分属性
+#### 3.2.1 查询结果包含模型类中部分属性
 
 ```java
 /*LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
@@ -504,7 +434,7 @@ List<User> userList = userDao.selectList(lqw);
 System.out.println(userList);
 ```
 
-#### 2.2 查询结果包含模型类中未定义的属性
+#### 3.2.2 查询结果包含模型类中未定义的属性
 
 ```java
 QueryWrapper<User> lqw = new QueryWrapper<User>();
@@ -514,11 +444,9 @@ List<Map<String, Object>> userList = userDao.selectMaps(lqw);
 System.out.println(userList);
 ```
 
-### 3. 查询条件设定
+### 3.3 查询条件设定
 
-#### 问题导入5
-
-多条件查询有哪些组合？
+::: tip 多条件查询有哪些组合？
 
 - 范围匹配（> 、 = 、between）
 - 模糊匹配（like）
@@ -528,7 +456,9 @@ System.out.println(userList);
 - 排序（order）
 - ……
 
-#### 3.1 查询条件
+:::
+
+#### 3.3.1 查询条件
 
 - 用户登录（eq匹配）
 
@@ -570,11 +500,7 @@ List<Map<String, Object>> maps = userDao.selectMaps(qw);
 System.out.println(maps);
 ```
 
-#### 3.2 查询API
-
-- 更多查询条件设置参看 [https://mybatis.plus/guide/wrapper.html](https://mybatis.plus/guide/wrapper.html)
-
-#### 3.3 练习：MyBatisPlus练习
+#### 3.3.2 MyBatisPlus练习
 
 题目：基于MyBatisPlus_Ex1模块，完成Top5功能的开发。
 
@@ -584,33 +510,31 @@ System.out.println(maps);
 
     ②：Top5是仅获取前5条数据（提示：使用分页功能控制数据显示数量）
 
-### 4. 字段映射与表名映射
-
-#### 问题导入6
+### 3.4 字段映射与表名映射
 
 思考表的字段和实体类的属性不对应，查询会怎么样？
 
-#### 4.1 问题一：表字段与编码属性设计不同步
+#### 3.4.1 问题一：表字段与编码属性设计不同步
 
-- 在模型类属性上方，使用**@TableField**属性注解，通过==**value**==属性，设置当前属性对应的数据库表中的字段关系。
+- 在模型类属性上方，使用 **@TableField** 属性注解，通过 **value** 属性，设置当前属性对应的数据库表中的字段关系。
 
 ![ ](./assets/mybatisplus01/image-20210801182722773.png)
 
-#### 4.2 问题二：编码中添加了数据库中未定义的属性
+#### 3.4.2 问题二：编码中添加了数据库中未定义的属性
 
-- 在模型类属性上方，使用**@TableField**注解，通过**==exist==**属性，设置属性在数据库表字段中是否存在，默认为true。此属性无法与value合并使用。
+- 在模型类属性上方，使用 **@TableField** 注解，通过 **exist**属性，设置属性在数据库表字段中是否存在，默认为true。此属性无法与value合并使用。
 
 ![ ](./assets/mybatisplus01/image-20210801182809131.png)
 
-#### 4.3 问题三：采用默认查询开放了更多的字段查看权限
+#### 3.4.3 问题三：采用默认查询开放了更多的字段查看权限
 
-- 在模型类属性上方，使用**@TableField**注解，通过**==select==**属性：设置该属性是否参与查询。此属性与select()映射配置不冲突。
+- 在模型类属性上方，使用 **@TableField** 注解，通过 **select** 属性：设置该属性是否参与查询。此属性与select()映射配置不冲突。
 
 ![ ](./assets/mybatisplus01/image-20210801220534494.png)
 
-#### 4.4 问题四：表名与编码开发设计不同步
+#### 3.4.4 问题四：表名与编码开发设计不同步
 
-- 在\<\u\>**模型类**\<\/u\>上方，使用**@TableName**注解，通过**==value==**属性，设置当前类对应的数据库表名称。
+- 在 **模型类** 上方，使用 **@TableName** 注解，通过 **value** 属性，设置当前类对应的数据库表名称
 
 ![ ](./assets/mybatisplus01/image-20210801220807882.png)
 
@@ -633,13 +557,11 @@ public class User {
 }
 ```
 
-## 四、DML编程控制
+## 4 DML编程控制
 
-### 1. id生成策略控制（Insert）
+### 4.1 id生成策略控制（Insert）
 
-#### 问题导入7
-
-主键生成的策略有哪几种方式？
+::: tip 主键生成的策略有哪几种方式？
 
 不同的表应用不同的id生成策略
 
@@ -649,7 +571,9 @@ public class User {
 - 关系表：可省略id
 - ……
 
-#### 1.1 id生成策略控制（@TableId注解）
+:::
+
+#### 4.1.1 id生成策略控制（@TableId注解）
 
 - 名称：@TableId
 
@@ -665,7 +589,7 @@ public class User {
 
     ![ ](./assets/mybatisplus01/image-20210801192449901.png)
 
-#### 1.2 全局策略配置
+#### 4.1.2 全局策略配置
 
 ```yml
 mybatis-plus:
@@ -683,15 +607,13 @@ mybatis-plus:
 
 ![ ](./assets/mybatisplus01/image-20210801183157694.png)
 
-### 2. 多记录操作（批量Delete/Select）
-
-#### 问题导入8
+### 4.2 多记录操作（批量Delete/Select）
 
 MyBatisPlus是否支持批量操作？
 
 ![ ](./assets/mybatisplus01/image-20210801183334584.png)
 
-#### 2.1 按照主键删除多条记录
+#### 4.2.1 按照主键删除多条记录
 
 ```java
 //删除指定多条数据
@@ -703,7 +625,7 @@ list.add(1402553619611430913L);
 userDao.deleteBatchIds(list);
 ```
 
-#### 2.2 根据主键查询多条记录
+#### 4.2.2 根据主键查询多条记录
 
 ```java
 //查询指定多条数据
@@ -714,9 +636,7 @@ list.add(4L);
 userDao.selectBatchIds(list);
 ```
 
-### 3. 逻辑删除（Delete/Update）
-
-#### 问题导入9
+### 4.3 逻辑删除（Delete/Update）
 
 在实际环境中，如果想删除一条数据，是否会真的从数据库中删除该条数据？
 
@@ -726,7 +646,7 @@ userDao.selectBatchIds(list);
 
 ![ ](./assets/mybatisplus01/image-20210801183459750.png)
 
-#### 3.1 逻辑删除案例
+#### 4.3.1 逻辑删除案例
 
 ##### ①：数据库表中添加逻辑删除标记字段
 
@@ -772,9 +692,7 @@ mybatis-plus:
 
 ![ ](./assets/mybatisplus01/image-20210801223228871.png)
 
-### 4. 乐观锁（Update）
-
-#### 问题导入10
+### 4.4 乐观锁（Update）
 
 乐观锁主张的思想是什么？
 
@@ -782,7 +700,7 @@ mybatis-plus:
 
 ![ ](./assets/mybatisplus01/image-20210801183851887.png)
 
-#### 4.1 乐观锁案例
+#### 4.4.1 乐观锁案例
 
 ##### ①：数据库表中添加锁标记字段
 
@@ -864,110 +782,3 @@ public void testUpdate() {
 ```
 
 ![ ](./assets/mybatisplus01/image-20210801223855681.png)
-
-## 五、快速开发-代码生成器
-
-### 问题导入11
-
-如果只给一张表的字段信息，能够推演出Domain、Dao层的代码？
-
-### 1. MyBatisPlus提供模板
-
-- Mapper接口模板
-
-![ ](./assets/mybatisplus01/image-20210801224114650.png)
-
-- 实体对象类模板
-
-![ ](./assets/mybatisplus01/image-20210801184632944.png)
-
-### 2. 工程搭建和基本代码编写
-
-- 第一步：创建SpringBoot工程，添加代码生成器相关依赖，其他依赖自行添加
-
-```xml
-<!--代码生成器-->
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>mybatis-plus-generator</artifactId>
-    <version>3.4.1</version>
-</dependency>
-
-<!--velocity模板引擎-->
-<dependency>
-    <groupId>org.apache.velocity</groupId>
-    <artifactId>velocity-engine-core</artifactId>
-    <version>2.3</version>
-</dependency>
-```
-
-- 第二步：编写代码生成器类
-
-```java
-package com.itheima;
-
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-
-public class Generator {
-    public static void main(String[] args) {
-        //1. 创建代码生成器对象，执行生成代码操作
-        AutoGenerator autoGenerator = new AutoGenerator();
-
-        //2. 数据源相关配置：读取数据库中的信息，根据数据库表结构生成代码
-        DataSourceConfig dataSource = new DataSourceConfig();
-        dataSource.setDriverName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/mybatisplus_db?serverTimezone=UTC");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
-        autoGenerator.setDataSource(dataSource);
-
-         //3. 执行生成操作
-        autoGenerator.execute();
-    }
-}
-
-```
-
-### 3. 开发者自定义配置
-
-- 设置全局配置
-
-```java
-//设置全局配置
-GlobalConfig globalConfig = new GlobalConfig();
-globalConfig.setOutputDir(System.getProperty("user.dir")+"/mybatisplus_04_generator/src/main/java");    //设置代码生成位置
-globalConfig.setOpen(false);    //设置生成完毕后是否打开生成代码所在的目录
-globalConfig.setAuthor("黑马程序员");    //设置作者
-globalConfig.setFileOverride(true);     //设置是否覆盖原始生成的文件
-globalConfig.setMapperName("%sDao");    //设置数据层接口名，%s为占位符，指代模块名称
-globalConfig.setIdType(IdType.ASSIGN_ID);   //设置Id生成策略
-autoGenerator.setGlobalConfig(globalConfig);
-```
-
-- 设置包名相关配置
-
-```java
-//设置包名相关配置
-PackageConfig packageInfo = new PackageConfig();
-packageInfo.setParent("com.aaa");   //设置生成的包名，与代码所在位置不冲突，二者叠加组成完整路径
-packageInfo.setEntity("domain");    //设置实体类包名
-packageInfo.setMapper("dao");   //设置数据层包名
-autoGenerator.setPackageInfo(packageInfo);
-```
-
-- 策略设置
-
-```java
-//策略设置
-StrategyConfig strategyConfig = new StrategyConfig();
-strategyConfig.setInclude("tbl_user");  //设置当前参与生成的表名，参数为可变参数
-strategyConfig.setTablePrefix("tbl_");  //设置数据库表的前缀名称，模块名 = 数据库表名 - 前缀名  例如： User = tbl_user - tbl_
-strategyConfig.setRestControllerStyle(true);    //设置是否启用Rest风格
-strategyConfig.setVersionFieldName("version");  //设置乐观锁字段名
-strategyConfig.setLogicDeleteFieldName("deleted");  //设置逻辑删除字段名
-strategyConfig.setEntityLombokModel(true);  //设置是否启用lombok
-autoGenerator.setStrategy(strategyConfig);
-```
-
-> 说明：在资料中也提供了CodeGenerator代码生成器类，根据实际情况修改后可以直接使用。
