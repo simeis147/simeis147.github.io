@@ -19,9 +19,9 @@ category:
 
 ![ ](./assets/day01/image-20210726123903694.png)
 
-注意: 本项目数据库的字符串，选择 utf8mb4
+> 注意: 本项目数据库的字符串，选择 utf8mb4
 
-**2命令行**:
+**2.命令行**:
 
 ![ ](./assets/day01/image-20210726123942443.png)
 
@@ -39,7 +39,7 @@ category:
 
 #### 1.1.3 数据库表介绍
 
-项目中所涉及到的表结构:
+项目中所涉及到的表结构
 
 | **序号** | **表名**      | **说明**         |
 | -------- | ------------- | ---------------- |
@@ -198,9 +198,7 @@ public class ReggieApplication {
 }
 ```
 
-> @Slf4j :
->
-> 是lombok中提供的注解，用来通过slf4j记录日志  
+> @Slf4j : 是lombok中提供的注解，用来通过slf4j记录日志  
 
 #### 1.2.3 前端静态资源导入
 
@@ -350,7 +348,7 @@ public interface EmployeeMapper extends BaseMapper<Employee>{
 }
 ```
 
-**3.Service接口**:
+**3. Service接口**:
 
 本项目的Service接口，在定义时需要继承自MybatisPlus提供的Service层接口 IService，这样就可以直接调用 父接口的方法直接执行业务操作，简化业务层代码实现  
 
@@ -541,7 +539,7 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 ![ ](./assets/day01/image-20210727005437531.png)
 
-**2.前端页面分析**:
+**2. 前端页面分析**:
 
 ![ ](./assets/day01/image-20210727010054851.png)
 
