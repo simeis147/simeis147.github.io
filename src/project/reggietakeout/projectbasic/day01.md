@@ -15,31 +15,29 @@ category:
 
 通过以下两种方式中的任意一种，创建项目的数据库:
 
-**1.图形界面**:
+1.**图形界面**
 
 ![ ](./assets/day01/image-20210726123903694.png)
 
 > 注意: 本项目数据库的字符串，选择 utf8mb4
 
-**2.命令行**:
+2.**命令行**
 
 ![ ](./assets/day01/image-20210726123942443.png)
 
 #### 1.1.2 数据库表导入
 
-直接将 `db_reggie.sql` 直接导入到数据库中，也可以通过两种方式实现:
+直接将 `db_reggie.sql` 导入到数据库中:
 
-**1.图形界面**:
+1.**图形界面**
 
 ![ ](./assets/day01/image-20210726124752975.png)
 
-**2.命令行**：
+2.**命令行**
 
 ![ ](./assets/day01/image-20210726124818880.png)
 
 #### 1.1.3 数据库表介绍
-
-项目中所涉及到的表结构
 
 | **序号** | **表名**      | **说明**         |
 | -------- | ------------- | ---------------- |
@@ -59,19 +57,20 @@ category:
 
 #### 1.2.1 创建maven项目
 
-**1. 在idea中创建maven project，项目名称 reggie_take_out** :
+1. **在idea中创建maven project，项目名称 reggie_take_out**
 
-![ ](./assets/day01/image-20210726172842675.png)
-**2. 检查项目编码**:
+    ![ ](./assets/day01/image-20210726172842675.png)
+2. **检查项目编码**
 
-![ ](./assets/day01/image-20210726173036263.png)
+    ![ ](./assets/day01/image-20210726173036263.png)
 
-**3. 检查maven配置**:
+3. **检查maven配置**
 
-![ ](./assets/day01/image-20210726173116359.png)
-**4. 检查JDK版本**:
+    ![ ](./assets/day01/image-20210726173116359.png)
 
-![ ](./assets/day01/image-20210726173237154.png)
+4. **检查JDK版本**
+
+    ![ ](./assets/day01/image-20210726173237154.png)
 
 #### 1.2.2 搭建基础环境
 
@@ -198,19 +197,19 @@ public class ReggieApplication {
 }
 ```
 
-> @Slf4j : 是lombok中提供的注解，用来通过slf4j记录日志  
+> @Slf4j : 是lombok中提供的注解，通过slf4j记录日志  
 
 #### 1.2.3 前端静态资源导入
 
-**1. 导入静态资源**:
+1.**导入静态资源**
 
-将 资料/前端资源 两个目录中的静态资源文件，导入到项目的resources目录下:
+将 资料/前端资源 两个目录中的静态资源文件，导入到项目的resources目录下
 
 ![ ](./assets/day01/image-20210726230327313.png)
 
-**2. 创建配置类WebMvcConfig，设置静态资源映射**:
+2.**创建配置类WebMvcConfig，设置静态资源映射**
 
-默认静态资源的存放目录为 : "classpath:/resources/"，"classpath:/static/"，"classpath:/public/" ; 而在项目中静态资源存放在 backend，front 目录中，这个时候要想访问到静态资源，就需要设置**静态资源映射**  
+默认静态资源的存放目录为: "classpath:/resources/"，"classpath:/static/"，"classpath:/public/",而在项目中静态资源存放在 backend，front 目录中，这个时候要想访问到静态资源，就需要设置**静态资源映射**  
 
 ```java
 import lombok.extern.slf4j.Slf4j;
@@ -234,7 +233,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 }
 ```
 
-**3 . 访问测试**:
+3.**访问测试**
 
 [http://localhost:8080/backend/index.html](http://localhost:8080/backend/index.html)
 
@@ -244,34 +243,37 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ### 2.1 需求分析
 
-**1. 页面原型展示**:
+1.**页面原型展示**
 
 ![ ](./assets/day01/image-20210726233540703.png)
 
-**2. 登录页面成品展示**:
+2.**登录页面成品展示**
 
-登录页面存放目录 /resources/backend/page/login/login.html
+登录页面存放目录 `/resources/backend/page/login/login.html`
 
 ![ ](./assets/day01/image-20210726233631409.png)
 
-**3. 查看登录请求**:
+3.**查看登录请求**
 
-通过浏览器调试工具（F12），可以发现，点击登录按钮时，页面会发送请求（请求地址为[http://localhost:8080/employee/login](http://localhost:8080/employee/login)）并提交参数 username和password，请求参数为json格式数据 \{"username":"admin","password":"123456"\}  
+通过浏览器调试工具（F12），可以发现，点击登录按钮时，页面会发送请求  
+请求地址为 [http://localhost:8080/employee/login](http://localhost:8080/employee/login)  
+并提交参数 username 和 password  
+请求参数为 json 格式数据 \{"username":"admin","password":"123456"\}  
 
 ![ ](./assets/day01/image-20210726234439684.png)
 
-> 此时报404，因为后台系统还没有响应此请求的处理器，所以需要创建相关类来处理登录请求 ；
+> 此时报404，因为后台系统还没有响应此请求的处理器
 > ![ ](./assets/day01/image-20210726234548093.png)
 
-**4. 数据模型(employee表)**:
+4.**数据模型(employee表)**
 
 ![ ](./assets/day01/image-20210726234915737.png)
 
-**5. 前端页面分析**:
+5.**前端页面分析**
 
 ![ ](./assets/day01/image-20210727000040403.png)
 
-当点击 "登录" 按钮，会触发Vue中定义的 handleLogin 方法:
+当点击 "登录" 按钮，会触发Vue中定义的 handleLogin 方法
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
@@ -291,7 +293,7 @@ localStorage.setItem('userInfo',JSON.stringify(res.data))
 
 ![ ](./assets/day01/image-20210727001117783.png)
 
-**1. 创建实体类Employee**:
+1.**创建实体类Employee**
 
 该实体类主要用于员工表 employee 进行映射  
 
@@ -336,7 +338,7 @@ public class Employee implements Serializable {
 }
 ```
 
-**2. 定义Mapper接口**:
+2.**定义Mapper接口**
 
 在MybatisPlus中，自定义的Mapper接口，需要继承自 BaseMapper  
 
@@ -348,9 +350,9 @@ public interface EmployeeMapper extends BaseMapper<Employee>{
 }
 ```
 
-**3. Service接口**:
+3.**Service接口**
 
-本项目的Service接口，在定义时需要继承自MybatisPlus提供的Service层接口 IService，这样就可以直接调用 父接口的方法直接执行业务操作，简化业务层代码实现  
+本项目的Service接口，在定义时需要继承自MybatisPlus提供的Service层接口 IService，这样就可以直接调用父接口的方法直接执行业务操作，简化业务层代码实现  
 
 所属包: com.itheima.reggie.service
 
@@ -359,7 +361,7 @@ public interface EmployeeService extends IService<Employee> {
 }
 ```
 
-**4. Service实现类**:
+4.**Service实现类**
 
 所属包: com.itheima.reggie.service.impl
 
@@ -375,7 +377,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper,Employee> im
 }
 ```
 
-**5. Controller基础代码**:
+5.**Controller基础代码**
 
 所属包: com.itheima.reggie.controller
 
@@ -396,7 +398,7 @@ public class EmployeeController {
 }    
 ```
 
-**6. 导入通用结果类R**:
+6.**导入通用结果类R**
 
 此类是一个通用结果类，服务端响应的所有结果最终都会包装成此种类型返回给前端页面  
 
@@ -437,27 +439,29 @@ public class R<T> {
 }
 ```
 
-A. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法; 如果需要返回数据传递 object 参数，如果无需返回，可以直接传递null  
-
-B. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
+> A. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法; 如果需要返回数据传递 object 参数，如果无需返回，可以直接传递null  
+>
+> B. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
 
 #### 2.2.2 登录逻辑分析
 
 ![ ](./assets/day01/image-20210727003101031.png =400x)
 
-处理逻辑如下：
+::: tip 处理逻辑如下
 
-①. 将页面提交的密码password进行md5加密处理，得到加密后的字符串
+1. 将页面提交的密码password进行md5加密处理，得到加密后的字符串
 
-②. 根据页面提交的用户名username查询数据库中员工数据信息
+1. 根据页面提交的用户名username查询数据库中员工数据信息
 
-③. 如果没有查询到，则返回登录失败结果
+1. 如果没有查询到，则返回登录失败结果
 
-④. 密码比对，如果不一致，则返回登录失败结果
+1. 密码比对，如果不一致，则返回登录失败结果
 
-⑤. 查看员工状态，如果为已禁用状态，则返回员工已禁用结果
+1. 查看员工状态，如果为已禁用状态，则返回员工已禁用结果
 
-⑥. 登录成功，将员工id存入Session，并返回登录成功结果
+1. 登录成功，将员工id存入Session，并返回登录成功结果
+
+:::
 
 #### 2.2.3 代码实现
 
@@ -513,19 +517,19 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 在测试过程中，可以通过debug断点调试的方式来跟踪程序的执行过程，并且可以查看程序运行时各个对象的具体赋值情况  而且需要注意，在测试过程中，需要将所有的情况都覆盖到  
 
-**1. 问题说明**:
+1.**问题说明**
 
-进行debug端点调试时，前端可能会出现如下问题: 前端页面的控制台报出错误-超时;
+进行debug端点调试时，前端可能会出现如下问题: 前 端页面的控制台报出错误-超时;
 
 ![ ](./assets/day01/image-20210727004455855.png)
 
-**2. 解决方案**:
+2.**解决方案**
 
 前端进行异步请求时，默认超时10000ms ，可以将该值调大一些  
 
 ![ ](./assets/day01/image-20210727004706639.png)
 
-**由于修改了JS文件，需要手动清理一下浏览器缓存，避免缓存影响，JS不能及时生效**
+> **由于修改了JS文件，需要手动清理一下浏览器缓存，避免缓存影响，JS不能及时生效**
 
 ## 3. 后台系统退出功能
 
@@ -535,11 +539,11 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 如果员工需要退出系统，直接点击右侧的退出按钮即可退出系统，退出系统后页面应跳转回登录页面  
 
-**1. 退出页面展示**:
+1.**退出页面展示**
 
 ![ ](./assets/day01/image-20210727005437531.png)
 
-**2. 前端页面分析**:
+2.**前端页面分析**
 
 ![ ](./assets/day01/image-20210727010054851.png)
 
