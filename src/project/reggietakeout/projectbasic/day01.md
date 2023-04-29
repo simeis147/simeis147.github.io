@@ -13,7 +13,7 @@ category:
 
 #### 1.1.1 创建数据库
 
-通过以下两种方式中的任意一种，创建项目的数据库:
+通过以下两种方式中的任意一种，创建项目的数据库
 
 1.**图形界面**
 
@@ -27,7 +27,7 @@ category:
 
 #### 1.1.2 数据库表导入
 
-直接将 `db_reggie.sql` 导入到数据库中:
+直接将 `db_reggie.sql` 导入到数据库中
 
 1.**图形界面**
 
@@ -57,20 +57,21 @@ category:
 
 #### 1.2.1 创建maven项目
 
-1. **在idea中创建maven project，项目名称 reggie_take_out**
+1.**在idea中创建maven project，项目名称 reggie_take_out**
 
-    ![ ](./assets/day01/image-20210726172842675.png)
-2. **检查项目编码**
+![ ](./assets/day01/image-20210726172842675.png)
 
-    ![ ](./assets/day01/image-20210726173036263.png)
+2.**检查项目编码**
 
-3. **检查maven配置**
+![ ](./assets/day01/image-20210726173036263.png)
 
-    ![ ](./assets/day01/image-20210726173116359.png)
+3.**检查maven配置**
 
-4. **检查JDK版本**
+![ ](./assets/day01/image-20210726173116359.png)
 
-    ![ ](./assets/day01/image-20210726173237154.png)
+4.**检查JDK版本**
+
+![ ](./assets/day01/image-20210726173237154.png)
 
 #### 1.2.2 搭建基础环境
 
