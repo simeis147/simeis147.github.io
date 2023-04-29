@@ -11,13 +11,13 @@ category:
 
 ### 1.1 问题分析
 
-**1. 目前现状**：
+1.**目前现状**
 
-用户如果不登录，直接访问系统首页面，照样可以正常访问  
+用户如果不登录直接访问系统首页面，照样可以正常访问  
 
 ![ ](./assets/day02/image-20210727232226862.png)
 
-**2. 理想效果**：
+2.**理想效果**
 
 上述这种设计并不合理，只有登录成功后才可以访问系统中的页面，如果没有登录，访问系统中的任何界面都直接跳转到登录页面  
 
@@ -29,13 +29,13 @@ category:
 
 ### 1.2 思路分析
 
-![ ](./assets/day02/image-20210727233554707.png)
+![ ](./assets/day02/image-20210727233554707.png =350x)
 
-**过滤器具体的处理逻辑如下：**
+::: tip 过滤器具体的处理逻辑
 
 1. 获取本次请求的URI
 
-1. 判断本次请求，是否需要登录，才可以访问
+1. 判断本次请求，是否需要登录，登录才可以访问
 
 1. 如果不需要，则直接放行
 
@@ -43,13 +43,15 @@ category:
 
 1. 如果未登录，则返回未登录结果
 
+:::
+
 如果未登录，需要给前端返回什么样的结果呢?
 
 ![ ](./assets/day02/image-20210728001324901.png)
 
 ### 1.3 代码实现
 
-**1. 定义登录校验过滤器**:
+1.**定义登录校验过滤器**
 
 自定义一个过滤器 LoginCheckFilter 并实现 Filter 接口，在doFilter方法中完成校验的逻辑
 
@@ -136,21 +138,18 @@ public class LoginCheckFilter implements Filter{
 }
 ```
 
-> AntPathMatcher 拓展:
+> AntPathMatcher：Spring中提供的路径匹配器
 >
-> **介绍:** Spring中提供的路径匹配器 ;
->
-> **通配符规则:**
->
+> **通配符规则：**
 > | 符号 | 含义                   |
 > | ---- | ---------------------- |
 > | ?    | 匹配一个字符           |
 > | *    | 匹配0个或多个字符      |
 > | **   | 匹配0个或多个目录/字符 |
 
-**2. 开启组件扫描**:
+2.**开启组件扫描**
 
-需要在引导类上，加上Servlet组件扫描的注解，来扫描过滤器配置的@WebFilter注解，扫描上之后，过滤器在运行时就生效了  
+需要在引导类加上Servlet组件扫描的注解，来扫描过滤器配置的@WebFilter注解，扫描上之后，过滤器在运行时就生效了  
 
 ```java
 @Slf4j
@@ -164,18 +163,16 @@ public class ReggieApplication {
 }
 ```
 
-> @ServletComponentScan 的作用:
+> @ServletComponentScan 的作用:  
 > ​在SpringBoot项目中，在引导类/配置类上加了该注解后，会自动扫描项目中(当前包及其子包下)的@WebServlet ，@WebFilter ，@WebListener 注解，自动注册Servlet的相关组件
 
 ### 1.4 功能测试
 
-代码编写完毕之后，重启工程，在浏览器地址栏直接输入系统管理后台首页，看看是否可以跳转到登录页面即可，也可以通过debug的形式来跟踪一下代码执行的过程  
+重启工程，在浏览器地址栏直接输入系统管理后台首页，看看是否可以跳转到登录页面即可，也可以通过debug的形式来跟踪一下代码执行的过程  
 
 ![ ](./assets/day02/image-20210728000838992.png)
 
-对于前端的代码，也可以进行debug调试  
-
-F12打开浏览器的调试工具，找到前面提到的request.js，在request.js的响应拦截器位置打上断点  
+前端也可以进行debug调试，F12打开浏览器调试工具，找到request.js，在request.js的响应拦截器位置打上断点  
 
 ![ ](./assets/day02/image-20210728001929657.png)
 
@@ -183,7 +180,7 @@ F12打开浏览器的调试工具，找到前面提到的request.js，在request
 
 ### 2.1 需求分析
 
-后台系统中可以管理员工信息，通过新增员工来添加后台系统用户  点击[添加员工]按钮跳转到新增页面，如下：
+后台系统中可以管理员工信息，通过新增员工来添加后台系统用户，点击`添加员工`按钮跳转到新增页面
 
 ![ ](./assets/day02/image-20210728002442334.png)
 
@@ -191,7 +188,8 @@ F12打开浏览器的调试工具，找到前面提到的request.js，在request
 
 ### 2.2 数据模型
 
-新增员工，其实就是将新增页面录入的员工数据插入到employee表  employee表中的status字段已经设置了默认值1，表示状态正常  
+新增员工，其实就是将新增页面录入的员工数据插入到employee表  
+employee表中的status字段已经设置了默认值1，表示状态正常  
 
 ![ ](./assets/day02/image-20210728004144521.png)
 
@@ -201,23 +199,20 @@ F12打开浏览器的调试工具，找到前面提到的request.js，在request
 
 ### 2.3 程序执行流程
 
-在开发代码之前，需要结合着前端页面发起的请求，梳理一下整个程序的执行过程：
+在开发代码之前，需要结合着前端页面发起的请求，梳理一下整个程序的执行过程
 
 ![ ](./assets/day02/image-20210728005638224.png)
 
-A. 点击"保存"按钮，页面发送ajax请求，将新增员工页面中输入的数据以json的形式提交到服务端，请求方式POST，请求路径 /employee
-
-B. 服务端Controller接收页面提交的数据并调用Service将数据进行保存
-
-C. Service调用Mapper操作数据库，保存数据
+> 1. 点击"保存"按钮，页面发送ajax请求，将新增员工页面中输入的数据以json的形式提交到服务端，请求方式POST，请求路径 /employee
+> 1. 服务端Controller接收页面提交的数据并调用Service将数据进行保存
+> 1. Service调用Mapper操作数据库，保存数据
 
 ### 2.4 代码实现
 
-在EmployeeController中增加save方法，用于保存用户员工信息  
+在Controller中增加save方法，用于保存用户员工信息  
 
-A. 在新增员工时，按钮页面原型中的需求描述，需要给员工设置初始默认密码 123456，并对密码进行MD5加密  
-
-B. 在组装员工信息时，还需要封装创建时间、修改时间，创建人、修改人信息(从session中获取当前登录用户)  
+> 1. 在新增员工时，按钮页面原型中的需求描述，需要给员工设置初始默认密码 123456，并对密码进行MD5加密  
+> 1. 在组装员工信息时，还需要封装创建时间、修改时间，创建人、修改人信息(从session中获取当前登录用户)  
 
 ``` java
 /**
@@ -248,23 +243,24 @@ public R<String> save(HttpServletRequest request,@RequestBody Employee employee)
 
 ### 2.5 功能测试
 
-代码编写完毕之后，需要将工程重启，完毕之后直接访问管理系统首页，点击 "员工管理" 页面中的 "添加员工" 按钮，输入员工基本信息，然后点击 "保存" 进行数据保存，保存完毕后，检查数据库中是否录入员工数据  
+重启工程，点击 "员工管理" 页面中的 "添加员工" 按钮，输入员工基本信息，然后点击 "保存" 进行数据保存，保存完毕后，检查数据库中是否录入员工数据  
 
-当在测试中，添加用户时，输入了一个已存在的用户名时，前端界面出现错误提示信息：
+当在测试中，添加用户时输入了一个已存在的用户名时，前端界面出现错误提示信息
 
 ![ ](./assets/day02/image-20210728010841569.png)
 
-而此时，服务端已经报错了，报错信息如下：
+此时，服务端报错信息
 
 ![ ](./assets/day02/image-20210728010938086.png)
 
-出现上述的错误，主要就是因为在 employee 表结构中，针对于username字段，建立了唯一索引，添加重复的username数据时，违背该约束，就会报错  但是此时前端提示的信息并不具体，用户并不知道是因为什么原因造成的该异常，需要给用户提示详细的错误信息  
+出现上述的错误，主要就是因为在 employee 表结构中，针对于username字段，建立了唯一索引，添加重复的username数据时，违背该约束，就会报错  
+但是此时前端提示的信息并不具体，用户并不知道是因为什么原因造成的该异常，需要给用户提示详细的错误信息  
 
 ### 2.6 全局异常处理
 
 #### 2.6.1 思路分析
 
-要想解决上述测试中存在的问题，需要对程序中可能出现的异常进行捕获，通常有两种处理方式：
+想解决上述测试中存在的问题，需要对程序中可能出现的异常进行捕获，通常有两种处理方式：
 
 1. **在Controller方法中加入 try...catch 进行异常捕获**
 
@@ -324,20 +320,17 @@ public class  GlobalExceptionHandler {
 }
 ```
 
-> 注解说明:
+> 注解说明: ​上述的全局异常处理器上使用了的两个注解 @ControllerAdvice ，@ResponseBody
 >
-> ​上述的全局异常处理器上使用了的两个注解 @ControllerAdvice ，@ResponseBody ，他们的作用分别为:
->
-> ​@ControllerAdvice : 指定拦截那些类型的控制器;
->
-> ​@ResponseBody: 将方法的返回值 R 对象转换为json格式的数据，响应给页面;
+> ​@ControllerAdvice : 指定拦截那些类型的控制器  
+> ​@ResponseBody: 将方法的返回值 R 对象转换为json格式的数据，响应给页面  
 >
 > ​上述使用的两个注解，也可以合并成为一个注解 @RestControllerAdvice
 >![ ](./assets/day02/image-20210729100052940.png)
 
 #### 2.6.3 测试
 
-输入一个已存在的用户名时，前端界面出现如下错误提示信息：
+输入一个已存在的用户名时，前端界面出现如下错误提示信息
 
 ![ ](./assets/day02/image-20210729102220135.png)
 
@@ -403,7 +396,7 @@ B. 搜索栏输入员工姓名，回车，执行查询:
 
     ![ ](./assets/day02/image-20210729232036767.png)
 
-**最终发送给服务端的请求为**:  
+**最终发送给服务端的请求为**  
 GET请求，请求链接 /employee/page?page=1&pageSize=10&name=xxx
 
 ### 3.3 代码实现
@@ -437,24 +430,22 @@ public class MybatisPlusConfig {
 
 #### 3.3.2 分页查询实现
 
-分页查询具体的请求信息如下:
-
 | 请求     | 说明                   |
 | -------- | ---------------------- |
 | 请求方式 | GET                    |
 | 请求路径 | /employee/page         |
 | 请求参数 | page ，pageSize ，name |
 
-那么查询完毕后需要给前端返回什么样的结果呢?
+::: tip 查询完毕后需要给前端返回什么样的结果呢?
 
-::: tip 查询返回的结果数据data中应该封装两项信息，分别为  
+查询返回的结果数据data中应该封装两项信息，分别为  
 
-records 封装分页列表数据  
-total 封装符合条件的总记录数  
-
-在定义controller方法的返回值类型R时，可以直接将 MybatisPlus 分页查询的结果 Page 直接封装返回，因为Page中的属性如下:
+1. records 封装分页列表数据  
+1. total 封装符合条件的总记录数  
 
 :::
+
+在定义controller方法的返回值类型R时，可以直接将 MybatisPlus 分页查询的结果 Page 直接封装返回，因为Page中的属性如下:
 
 ![ ](./assets/day02/image-20210729235403154.png)
 
@@ -501,7 +492,7 @@ public R<Page> page(int page,int pageSize,String name){
 
 ### 3.4 功能测试
 
-进行测试时，可以使用浏览器的监控工具查看页面和服务端的数据交互细节，并借助于debug的形式，根据服务端参数接收及逻辑执行情况  
+进行测试时，可以使用浏览器的监控工具查看页面和服务端的数据交互细节
 
 ![ ](./assets/day02/image-20210730000855072.png)
 
@@ -513,17 +504,19 @@ public R<Page> page(int page,int pageSize,String name){
 
 ### 4.1 需求分析
 
-1. 在员工管理列表页面，可以对某个员工账号进行启用或者禁用操作  
-1. 账号禁用的员工不能登录系统，启用后的员工可以正常登录  
-1. 如果某个员工账号状态为正常，则按钮显示为 "禁用"，如果员工账号状态为已禁用，则按钮显示为"启用"  
-
+> 1. 在员工管理列表页面，可以对某个员工账号进行启用或者禁用操作  
+>
+> 1. 账号禁用的员工不能登录系统，启用后的员工可以正常登录  
+>
+> 1. 如果某个员工账号状态为正常，则按钮显示为 "禁用"，如果员工账号状态为已禁用，则按钮显示为"启用"  
+>
 > 需要注意，只有管理员（admin用户）可以对其他普通用户进行启用、禁用操作  
 
-**A. admin 管理员登录**:
+A.**admin 管理员登录**
 
 ![ ](./assets/day02/image-20210730010858705.png)
 
-**B. 普通用户登录**:
+B.**普通用户登录**
 
 ![ ](./assets/day02/image-20210730010941399.png)
 
@@ -547,7 +540,7 @@ public R<Page> page(int page,int pageSize,String name){
 
     ![ ](./assets/day02/image-20210730012723560.png)
 
-    > scope.row : 获取到的是这一行的数据信息 ;
+    > scope.row : 获取到的是这一行的数据信息
 
 2. statusHandle方法中进行二次确认，然后发起ajax请求，传递id、status参数
 
@@ -567,15 +560,15 @@ public R<Page> page(int page,int pageSize,String name){
 
 ### 4.3 代码实现
 
-梳理一下整个程序的执行过程：
+梳理一下整个程序的执行过程
 
-1. 页面发送ajax请求，将参数(id、status)提交到服务端
+> 1. 页面发送ajax请求，将参数(id、status)提交到服务端
+>
+> 2. 服务端Controller接收页面提交的数据并调用Service更新数据
+>
+> 3. Service调用Mapper操作数据库
 
-2. 服务端Controller接收页面提交的数据并调用Service更新数据
-
-3. Service调用Mapper操作数据库
-
-启用、禁用员工账号，本质上就是一个更新操作，也就是对status状态字段进行操作  在Controller中创建update方法，此方法是一个通用的修改员工信息的方法  
+启用、禁用员工账号，本质上是一个更新操作，也就是对status状态字段进行操作，在Controller中创建update方法，此方法是一个通用的修改员工信息的方法  
 
 ```java
 /**
@@ -615,7 +608,7 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 
 ![ ](./assets/day02/image-20210730123833129.png)
 
-通过观察控制台输出的SQL发现页面传递过来的员工id的值和数据库中的id值不一致，这是怎么回事呢？
+通过观察控制台输出的SQL发现页面传递过来的员工id的值和数据库中的id值不一致，怎么回事？
 
 在分页查询时，服务端会将返回的R对象进行json序列化，转换为json格式的数据，而员工的ID是一个Long类型的数据，而且是一个长度为 19 位的长整型数据，该数据返回给前端是没有问题的  
 
@@ -623,7 +616,7 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 
 **那么具体的问题出现在哪儿呢？**
 
-问题实际上，就出现在前端JS中，js在对长度较长的长整型数据进行处理时，会损失精度，从而导致提交的id和数据库中的id不一致   这里，也可以做一个简单的测试，代码如下：
+问题实际上，就出现在前端JS中，js在对长度较长的长整型数据进行处理时，会损失精度，从而导致提交的id和数据库中的id不一致
 
 ```html
 <!DOCTYPE html>
@@ -642,7 +635,7 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 
 #### 4.5.2 解决方案
 
-要想解决这个问题，也很简单，只需要让js处理的ID数据类型为字符串类型即可，这样就不会损失精度了。同样，也可以做一个测试：
+只需要让js处理的ID数据类型为字符串类型即可
 
 ```html
 <!DOCTYPE html>
@@ -659,7 +652,7 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 </html>
 ```
 
-那么在的业务中，只需要让分页查询返回的json格式数据库中，long类型的属性，不直接转换为数字类型，转换为字符串类型就可以解决这个问题了 ，最终返回的结果为 :
+那么在的业务中，只需要让分页查询返回的json格式数据库中，long类型的属性，不直接转换为数字类型，转换为字符串类型就可以解决这个问题了
 
 ![ ](./assets/day02/image-20210730125138652.png)
 
@@ -669,11 +662,11 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 
 **具体实现步骤：**
 
-1. 提供对象转换器JacksonObjectMapper，基于Jackson进行Java对象到json数据的转换（直接复制到项目中使用）
+> 1. 提供对象转换器JacksonObjectMapper，基于Jackson进行Java对象到json数据的转换（直接复制到项目中使用）
+>
+> 2. 在WebMvcConfig配置类中扩展Spring mvc的消息转换器，在此消息转换器中使用提供的对象转换器进行Java对象到json数据的转换
 
-2. 在WebMvcConfig配置类中扩展Spring mvc的消息转换器，在此消息转换器中使用提供的对象转换器进行Java对象到json数据的转换
-
-**1. 引入JacksonObjectMapper**:
+1.**引入JacksonObjectMapper**
 
 ```java
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -728,7 +721,7 @@ public class JacksonObjectMapper extends ObjectMapper {
 
 该自定义的对象转换器，主要指定了，在进行json数据序列化及反序列化时，LocalDateTime、LocalDate、LocalTime的处理方式，以及BigInteger及Long类型数据，直接转换为字符串  
 
-**2. 在WebMvcConfig中重写方法extendMessageConverters**:
+2.**在WebMvcConfig中重写方法extendMessageConverters**
 
 ```java
 /**
@@ -755,9 +748,9 @@ protected void extendMessageConverters(List<HttpMessageConverter<?>> converters)
 
 需要实现两个方法:
 
-A. 根据ID查询，用于页面数据回显
-
-B. 保存修改
+> 1. 根据ID查询，用于页面数据回显
+>
+> 1. 保存修改
 
 ### 5.2 程序执行流程
 
@@ -789,14 +782,10 @@ B. 保存修改
 
 #### 5.3.1 根据ID查询
 
-经过上述的分析，在根据ID查询员工信息时，请求信息如下:
-
 | 请求     | 说明           |
 | -------- | -------------- |
 | 请求方式 | GET            |
 | 请求路径 | /employee/{id} |
-
-**代码实现**:
 
 在EmployeeController中增加方法，根据ID查询员工信息  
 
@@ -819,15 +808,11 @@ public R<Employee> getById(@PathVariable Long id){
 
 #### 5.3.2 修改员工
 
-经过上述的分析，在修改员工信息时，请求信息如下:
-
 | 请求     | 说明                   |
 | -------- | ---------------------- |
 | 请求方式 | PUT                    |
 | 请求路径 | /employee              |
 | 请求参数 | {.......} json格式数据 |
-
-**代码实现:**
 
 在EmployeeController中增加方法，根据ID更新员工信息  
 
@@ -853,4 +838,4 @@ public R<String> update(HttpServletRequest request,@RequestBody Employee employe
 
 ### 5.4 功能测试
 
-代码编写完毕之后，需要将工程重启   然后访问前端页面，按照前面分析的操作流程进行测试，查看数据是否正常修改即可  
+重启工程，访问前端页面，按照前面分析的操作流程进行测试，查看数据是否正常修改即可  
