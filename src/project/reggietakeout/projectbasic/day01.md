@@ -198,7 +198,7 @@ public class ReggieApplication {
 }
 ```
 
-> @Slf4j : 是lombok中提供的注解，通过slf4j记录日志  
+> @Slf4j：是lombok中提供的注解，通过slf4j记录日志  
 
 #### 1.2.3 前端静态资源导入
 
@@ -210,7 +210,17 @@ public class ReggieApplication {
 
 2.**创建配置类WebMvcConfig，设置静态资源映射**
 
-默认静态资源的存放目录为: "classpath:/resources/"，"classpath:/static/"，"classpath:/public/",而在项目中静态资源存放在 backend，front 目录中，这个时候要想访问到静态资源，就需要设置**静态资源映射**  
+::: tip 默认静态资源的存放目录为
+
+"classpath:/resources/"
+
+"classpath:/static/"
+
+"classpath:/public/"
+
+:::
+
+该项目静态资源存放在`backend`，`front`目录中，想要访问到静态资源就需要设置**静态资源映射**  
 
 ```java
 import lombok.extern.slf4j.Slf4j;
@@ -256,10 +266,11 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 3.**查看登录请求**
 
-通过浏览器调试工具（F12），可以发现，点击登录按钮时，页面会发送请求  
-请求地址为 [http://localhost:8080/employee/login](http://localhost:8080/employee/login)  
-并提交参数 username 和 password  
-请求参数为 json 格式数据 \{"username":"admin","password":"123456"\}  
+通过浏览器调试工具(F12)，点击登录按钮时，页面会发送请求  
+
+* 请求地址为 [http://localhost:8080/employee/login](http://localhost:8080/employee/login)  
+* 并提交参数 username 和 password  
+* 请求参数为 json 格式数据 \{"username":"admin","password":"123456"\}  
 
 ![ ](./assets/day01/image-20210726234439684.png)
 
@@ -274,13 +285,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ![ ](./assets/day01/image-20210727000040403.png)
 
-当点击 "登录" 按钮，会触发Vue中定义的 handleLogin 方法
+点击 "登录" 按钮，会触发Vue中定义的 handleLogin 方法
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
-发送登录的异步请求之后， 获取到响应结果，在响应结果中至少包含三个属性: code、data、msg  
+发送登录的异步请求之后， 获取到响应结果，响应结果中至少包含三个属性: code、data、msg  
 
-用户登录成功之后，服务端会返回用户信息，而前端是将这些用户信息，存储在客户端的 localStorage 中了  
+用户登录成功之后，服务端会返回用户信息，前端将这些用户信息存储在客户端的 localStorage 中了  
 
 ```js
 localStorage.setItem('userInfo',JSON.stringify(res.data))
@@ -440,13 +451,14 @@ public class R<T> {
 }
 ```
 
-> A. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法; 如果需要返回数据传递 object 参数，如果无需返回，可以直接传递null  
+> 1. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法  
+>    如果需要返回数据，传递 object 参数；   如果无需返回，可以直接传递null  
 >
-> B. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
+> 2. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
 
 #### 2.2.2 登录逻辑分析
 
-![ ](./assets/day01/image-20210727003101031.png =400x)
+![ ](./assets/day01/image-20210727003101031.png =350x)
 
 ::: tip 处理逻辑如下
 
@@ -470,7 +482,7 @@ public class R<T> {
 
 A. 前端发起的请求为post请求，所以服务端需要使用注解 @PostMapping
 
-B. 由于前端传递的请求参数为json格式的数据，这里使用Employee对象接收，但是将json格式数据封装到实体类中，在形参前需要加注解@RequestBody
+B. 前端传递的请求参数为json格式的数据，这里使用Employee对象接收，但是将json格式数据封装到实体类中，在形参前需要加注解@RequestBody
 
 ```java
 /**
@@ -516,17 +528,17 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 启动项目，访问url: [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html)
 
-在测试过程中，可以通过debug断点调试的方式来跟踪程序的执行过程，并且可以查看程序运行时各个对象的具体赋值情况  而且需要注意，在测试过程中，需要将所有的情况都覆盖到  
+在测试过程中，可以通过debug断点调试的方式来跟踪程序的执行过程，并且可以查看程序运行时各个对象的具体赋值情况，而且需要注意，在测试过程中，需要将所有的情况都覆盖到  
 
 1.**问题说明**
 
-进行debug端点调试时，前端可能会出现如下问题: 前 端页面的控制台报出错误-超时;
+进行debug断点调试时，前端可能会出现如下问题: 前端页面的控制台报出错误-超时
 
 ![ ](./assets/day01/image-20210727004455855.png)
 
 2.**解决方案**
 
-前端进行异步请求时，默认超时10000ms ，可以将该值调大一些  
+前端进行异步请求时，默认超时10000ms，可以调大一些  
 
 ![ ](./assets/day01/image-20210727004706639.png)
 
@@ -536,9 +548,7 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 ### 3.1 需求分析
 
-在后台管理系统中，管理员或者员工，登录进入系统之后，页面跳转到后台系统首页面(backend/index.html)，此时会在系统的右上角显示当前登录用户的姓名  
-
-如果员工需要退出系统，直接点击右侧的退出按钮即可退出系统，退出系统后页面应跳转回登录页面  
+页面跳转到后台系统首页面(backend/index.html)，此时会在系统的右上角显示当前登录用户的姓名  
 
 1.**退出页面展示**
 
@@ -548,21 +558,19 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 ![ ](./assets/day01/image-20210727010054851.png)
 
-点击 ![ ](./assets/day01/image-20210727010150207.png) 将会调用一个js方法logout，在logout的方法中执行如下逻辑:
+点击 ![ ](./assets/day01/image-20210727010150207.png) 将会调用一个js方法logout，在logout的方法中执行如下逻辑
 
 ![ ](./assets/day01/image-20210727010422199.png)
 
-A. 发起post请求，调用服务端接口 /employee/logout 执行退出操作 ;
-
-B. 删除客户端 localStorage 中存储的用户登录信息，跳转至登录页面 ;
+> 1. 发起post请求，调用服务端接口 /employee/logout 执行退出操作
+> 2. 删除客户端 localStorage 中存储的用户登录信息，跳转至登录页面
 
 ### 3.2 代码实现
 
-需要在Controller中创建对应的处理方法 ，接收页面发送的POST请求 /employee/logout ，具体的处理逻辑：
+Controller中接收页面发送的POST请求 /employee/logout，具体的处理逻辑：
 
-A. 清理Session中的用户id
-
-B. 返回结果
+> 1. 清理Session中的用户id  
+> 1. 返回结果
 
 ```java
 /**
@@ -581,8 +589,7 @@ public R<String> logout(HttpServletRequest request){
 ### 3.3 功能测试
 
 1. 重启服务，访问登录界面 [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html) ;
-
-2. 登录完成之后，进入到系统首页 backend/index.html，点击右上角 ![ ](./assets/day01/image-20210727011020244.png) 按钮 执行退出操作，完成后看看是否可以跳转到登录页面 ，并检查localStorage  
+2. 登录完成之后，进入到系统首页 backend/index.html，点击右上角 ![ ](./assets/day01/image-20210727011020244.png) 按钮执行退出操作，完成后看看是否可以跳转到登录页面 ，并检查localStorage  
 
 ![ ](./assets/day01/image-20210727011215186.png)
 
