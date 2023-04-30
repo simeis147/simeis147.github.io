@@ -289,7 +289,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
-发送登录的异步请求之后， 获取到响应结果，响应结果中至少包含三个属性: code、data、msg  
+发送登录的异步请求之后，获取到响应结果，响应结果中至少包含三个属性: code、data、msg  
 
 用户登录成功之后，服务端会返回用户信息，前端将这些用户信息存储在客户端的 localStorage 中了  
 
@@ -454,13 +454,13 @@ public class R<T> {
 > 1. 如果业务执行结果为成功，构建R对象时，只需要调用 success 方法  
 >    如果需要返回数据，传递 object 参数；   如果无需返回，可以直接传递null  
 >
-> 2. 如果业务执行结果为失败，构建R对象时，只需要调用error 方法，传递错误提示信息即可  
+> 2. 如果业务执行结果为失败，构建R对象时，只需要调用 error 方法，传递错误提示信息即可  
 
 #### 2.2.2 登录逻辑分析
 
 ![ ](./assets/day01/image-20210727003101031.png =350x)
 
-::: tip 处理逻辑如下
+::: tip 处理逻辑
 
 1. 将页面提交的密码password进行md5加密处理，得到加密后的字符串
 
@@ -567,7 +567,7 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 
 ### 3.2 代码实现
 
-Controller中接收页面发送的POST请求 /employee/logout，具体的处理逻辑：
+Controller中接收页面发送的POST请求 /employee/logout，具体的处理逻辑
 
 > 1. 清理Session中的用户id  
 > 1. 返回结果
@@ -588,7 +588,7 @@ public R<String> logout(HttpServletRequest request){
 
 ### 3.3 功能测试
 
-1. 重启服务，访问登录界面 [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html) ;
+1. 重启服务，访问登录界面 [http://localhost:8080/backend/page/login/login.html](http://localhost:8080/backend/page/login/login.html)
 2. 登录完成之后，进入到系统首页 backend/index.html，点击右上角 ![ ](./assets/day01/image-20210727011020244.png) 按钮执行退出操作，完成后看看是否可以跳转到登录页面 ，并检查localStorage  
 
 ![ ](./assets/day01/image-20210727011215186.png)
