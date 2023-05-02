@@ -164,7 +164,7 @@ public class ReggieApplication {
 }
 ```
 
-> @ServletComponentScan 的作用:  
+> @ServletComponentScan 的作用:
 > ​在SpringBoot项目中，在引导类/配置类上加了该注解后，会自动扫描项目中(当前包及其子包下)的@WebServlet ，@WebFilter ，@WebListener 注解，自动注册Servlet的相关组件
 
 ### 1.4 功能测试
