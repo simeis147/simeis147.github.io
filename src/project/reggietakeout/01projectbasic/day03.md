@@ -15,8 +15,8 @@ category:
 
 ![ ](./assets/day03/image-20210801085103062.png)
 
-> 1. 在新增数据时，将createTime、updateTime 设置为当前时间，createUser、updateUser设置为当前登录用户ID
-> 1. 在更新数据时，将updateTime 设置为当前时间，updateUser设置为当前登录用户ID
+> 1. 在新增数据时，将 createTime、updateTime 设置为当前时间，createUser、updateUser设置为当前登录用户ID
+> 1. 在更新数据时，将 updateTime 设置为当前时间，updateUser 设置为当前登录用户ID
 
 目前项目中处理这些字段都是在每一个业务方法中进行赋值操作
 
@@ -120,17 +120,17 @@ public class MyMetaObjecthandler implements MetaObjectHandler {
 
 自动填充createUser和updateUser时设置的用户id是固定值，现在需要改成动态获取当前登录用户的id  
 
-大家可能想到，用户登录成功后  将用户id存入了HttpSession中，从HttpSession中获取不就行了？
+大家可能想到，用户登录成功后，将用户id存入了HttpSession中，从HttpSession中获取不就行了？
 
 ![ ](./assets/day03/image-20210801131449863.png)
 
 > 注意，MyMetaObjectHandler类中是不能直接获得HttpSession对象的
 
-当  在修改员工信息时，业务的执行流程
+在修改员工信息时，业务的执行流程
 
 ![ ](./assets/day03/image-20210801133531663.png)
 
-客户端发送的每次http请求，对应的在服务端都会分配一个新的线程来处理，在处理过程中涉及到下面类中的方法都属于相同的一个线程：
+客户端发送的每次http请求，对应的在服务端都会分配一个新的线程来处理，在处理过程中涉及到下面类中的方法都属于相同的一个线程
 
 > 1. LoginCheckFilter的 doFilter 方法
 >
