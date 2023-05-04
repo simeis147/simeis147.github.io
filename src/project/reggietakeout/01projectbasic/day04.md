@@ -85,7 +85,9 @@ public R<String> upload(MultipartFile file){
 
 #### 1.3.1 前端代码
 
-作为服务端工程师，主要关注服务端代码实现  对于前端页面，可以使用ElementUI提供的上传组件  可以直接使用资料中提供的上传页面，位置：资料/文件上传下载页面/upload.html，将其拷贝到项目的目录(resources/backend/page/demo\)下，启动项目，访问上传页面
+作为服务端工程师，主要关注服务端代码实现  
+对于前端页面，可以使用ElementUI提供的上传组件  
+可以直接使用资料中提供的上传页面，位置：资料/文件上传下载页面/upload.html，将其拷贝到项目的目录(resources/backend/page/demo\)下，启动项目，访问上传页面
 
 [http://localhost:8080/backend/page/demo/upload.html](http://localhost:8080/backend/page/demo/upload.html)
 
