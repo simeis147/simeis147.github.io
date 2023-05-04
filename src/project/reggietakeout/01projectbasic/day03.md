@@ -170,8 +170,6 @@ ThreadLocal并不是一个Thread，而是Thread的局部变量
 
 #### 1.3.3 操作步骤
 
-实现步骤：
-
 1. 编写BaseContext工具类，基于ThreadLocal封装的工具类
 2. 在LoginCheckFilter的doFilter方法中调用BaseContext来设置当前登录用户的id
 3. 在MyMetaObjectHandler的方法中调用BaseContext获取登录用户的id
@@ -233,7 +231,7 @@ BaseContext.setCurrentId(empId);
 ### 2.1 需求分析
 
 后台系统中可以管理分类信息，分类包括两种类型，分别是 **菜品分类** 和 **套餐分类**  
-在后台系统中添加菜品时需要选择一个菜品分类，当  在后台系统中添加一个套餐时需要选择一个套餐分类，在移动端也会按照菜品分类和套餐分类来展示对应的菜品和套餐  
+在后台系统中添加菜品时需要选择一个菜品分类，移动端会按照菜品分类和套餐分类来展示对应的菜品和套餐  
 
 ![ ](./assets/day03/image-20210801163745391.png)
 

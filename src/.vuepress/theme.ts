@@ -7,7 +7,6 @@ export default hopeTheme({
   author: {
     name: "Dongcp",
     url: "https://github.com/simeis147",
-    
   },
  
   pageInfo: ['Author', 'Date', 'Original',  'Word', 'ReadingTime', 'PageView', 'Category', 'Tag'],
