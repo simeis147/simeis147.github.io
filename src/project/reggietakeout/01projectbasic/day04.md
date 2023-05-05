@@ -85,9 +85,7 @@ public R<String> upload(MultipartFile file){
 
 #### 1.3.1 前端代码
 
-作为服务端工程师，主要关注服务端代码实现  
-对于前端页面，可以使用ElementUI提供的上传组件  
-可以直接使用资料中提供的上传页面，位置：资料/文件上传下载页面/upload.html，将其拷贝到项目的目录(resources/backend/page/demo\)下，启动项目，访问上传页面
+使用资料中提供的上传页面，位置：资料/文件上传下载页面/upload.html，将其拷贝到项目的目录(resources/backend/page/demo\)下，启动项目，访问上传页面
 
 [http://localhost:8080/backend/page/demo/upload.html](http://localhost:8080/backend/page/demo/upload.html)
 
@@ -109,7 +107,7 @@ public R<String> upload(MultipartFile file){
 
     ```yml
     reggie:
-    path: D:\img\
+        path: D:\img\
     ```
 
 2. **CommonController**
@@ -122,7 +120,7 @@ public R<String> upload(MultipartFile file){
 
 1. 获取文件的原始文件名，通过原始文件名获取文件后缀
 
-2. 通过UUID重新声明文件名，文件名称重复造成文件覆盖
+2. 通过UUID重新声明文件名，防止文件名称重复造成文件覆盖
 
 3. 创建文件存放目录
 
@@ -674,7 +672,7 @@ debug跟踪数据的封装情况:
 
 在菜品列表展示时，除了菜品的基本信息(名称、售价、售卖状态、更新时间)外，还有两个字段略微特殊  
 
-第一个是图片字段 ，从数据库查询出来的仅仅是图片的名字，图片要想在表格中回显展示出来，就需要下载这个图片  
+第一个是图片字段，从数据库查询出来的仅仅是图片的名字，图片要想在表格中回显展示出来，就需要下载这个图片  
 第二个是菜品分类，这里展示的是分类名称，而不是分类ID，此时就需要根据菜品的分类ID，去分类表中查询分类信息，然后在页面展示  
 
 ### 3.2 前端页面分析
