@@ -1,1 +1,0 @@
-import{q as e}from"./app-b221d8d9.js";import"./framework-adf91b4c.js";const a=()=>e({serverURL:"https://test-commit-six.vercel.app/"});export{a as updatePageview};
