@@ -39,11 +39,11 @@ category:
 
 ![ ](./assets/day05/image-20210805233807009.png)
 
-在该表中，菜品的名称name，菜品的原价price 实际上都是冗余字段，因为在这张表中存储了菜品的ID(dish_id)，根据该ID就可以查询出name，price的数据信息，而这里又存储了name，price，这样的话，在后续的查询展示操作中，就不需要再去查询数据库获取菜品名称和原价了，这样可以简化的操作  
+在该表中，菜品的名称name，菜品的原价price 实际上都是冗余字段，因为在这张表中存储了菜品的ID(dish_id)，根据该ID就可以查询出name，price的数据信息，而这里又存储了name，price，这样的话，在后续的查询展示操作中，就不需要再去查询数据库获取菜品名称和原价了，这样可以简化操作  
 
 ### 1.3 准备工作
 
-在开发业务功能前，先将需要用到的类和接口基本结构创建好，在做这一块儿的准备工作时，无需准备Setmeal的相关实体类、Mapper接口、Service接口及实现，因为之前在做分类管理的时候，已经引入了Setmeal的相关基础代码   接下来，就来完成以下的几步准备工作：
+在开发业务功能前，先将需要用到的类和接口基本结构创建好，在做这一块儿的准备工作时，无需准备Setmeal的相关实体类、Mapper接口、Service接口及实现，因为之前在做分类管理的时候，已经引入了Setmeal的相关基础代码
 
 1.**实体类 SetmealDish**
 
@@ -103,7 +103,7 @@ public class SetmealDish implements Serializable {
 
 2.**DTO SetmealDto**
 
-该数据传输对象DTO，主要用于封装页面在新增套餐时传递过来的json格式的数据，其中包含套餐的基本信息，还包含套餐关联的菜品集合  直接从课程资料中导入即可  
+该数据传输对象DTO，主要用于封装页面在新增套餐时传递过来的json格式的数据，其中包含套餐的基本信息，还包含套餐关联的菜品集合
 
 所属包： com.itheima.reggie.dto
 
@@ -124,7 +124,7 @@ public class SetmealDto extends Setmeal {
 
 3.**Mapper接口 SetmealDishMapper**
 
-所属包: com.itheima.reggie.mapper
+所属包： com.itheima.reggie.mapper
 
 ```java
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -170,7 +170,7 @@ public class SetmealDishServiceImpl extends ServiceImpl<SetmealDishMapper,Setmea
 
 套餐管理的相关业务，都统一在 SetmealController 中进行统一处理操作  
 
-所属包: com.itheima.reggie.service.impl
+所属包： com.itheima.reggie.service.impl
 
 ```java
 import com.itheima.reggie.service.SetmealDishService;
@@ -207,11 +207,13 @@ public class SetmealController {
 
     ![ ](./assets/day05/image-20210806002730820.png)
 
-    本次查询分类列表，传递的type为1，表示需要查询的是菜品的分类  查询菜品分类的目的，是添加套餐关联的菜品时，需要根据菜品分类，来过滤查询菜品信息  查询菜品分类列表的代码已经实现， 具体展示效果如下：
+    本次查询分类列表，传递的type为1，表示需要查询的是菜品的分类  
+    查询菜品分类的目的，是添加套餐关联的菜品时，需要根据菜品分类，来过滤查询菜品信息  
+    查询菜品分类列表的代码已经实现， 具体展示效果如下：
 
     ![ ](./assets/day05/image-20210806003318531.png)  
 
-3. 当点击添加菜品窗口左侧菜单的某一个分类， 页面发送ajax请求，请求服务端，根据菜品分类查询对应的**菜品**数据并展示到添加菜品窗口中
+3. 当点击添加菜品窗口左侧菜单的某一个分类，页面发送ajax请求，请求服务端，根据菜品分类查询对应的**菜品**数据并展示到添加菜品窗口中
 
     ![ ](./assets/day05/image-20210806004116496.png)
 
@@ -341,7 +343,7 @@ public R<String> save(@RequestBody SetmealDto setmealDto){
 
     return R.success("新增套餐成功");
 }
-``
+```
 
 2.SetmealService中定义方法saveWithDish
 
@@ -435,8 +437,6 @@ debug跟踪数据封装:
 ### 2.3 代码开发
 
 #### 2.3.1 基本信息查询
-
-上述已经分析列表分页查询功能的请求信息，接下来就在SetmealController中创建套餐分页查询方法  
 
 该方法的逻辑如下：
 
@@ -553,7 +553,8 @@ public R<Page> page(int page,int pageSize,String name){
 
 ### 3.1 需求分析
 
-在套餐管理列表页面，点击删除按钮，可以删除对应的套餐信息  也可以通过复选框选择多个套餐，点击批量删除按钮一次删除多个套餐  注意，对于状态为售卖中的套餐不能删除，需要先停售，然后才能删除  
+在套餐管理列表页面，点击删除按钮，可以删除对应的套餐信息，也可以通过复选框选择多个套餐，点击批量删除按钮一次删除多个套餐  
+注意，对于状态为售卖中的套餐不能删除，需要先停售，然后才能删除  
 
 ![ ](./assets/day05/image-20210806214443507.png)
 
@@ -569,7 +570,7 @@ public R<Page> page(int page,int pageSize,String name){
 
 ![ ](./assets/day05/image-20210806220406587.png)
 
-开发删除套餐功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可，一次请求为根据ID删除，一次请求为根据ID批量删除  
+开发删除套餐功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可，**一次请求为根据ID删除，一次请求为根据ID批量删除**  
 
 观察删除单个套餐和批量删除套餐的请求信息可以发现，两种请求的**地址**和**请求方式**都是相同的，不同的则是传递的id个数，所以在服务端可以提供一个方法来统一处理  
 
@@ -583,7 +584,7 @@ public R<Page> page(int page,int pageSize,String name){
 
 ### 3.3 代码开发
 
-删除套餐的流程及请求信息，分析完毕之后，就来完成服务端的逻辑开发  在服务端的逻辑中， 删除套餐时， 不仅要删除套餐， 还要删除套餐与菜品的关联关系  
+在服务端的逻辑中，删除套餐时，不仅要删除套餐，还要删除套餐与菜品的关联关系  
 
 1.**在SetmealController中创建delete方法**
 
@@ -620,11 +621,9 @@ public void removeWithDish(List<Long> ids);
 
 该业务层方法具体的逻辑为:
 
-A. 查询该批次套餐中是否存在售卖中的套餐， 如果存在， 不允许删除
-
-B. 删除套餐数据
-
-C. 删除套餐关联的菜品数据
+1. 查询该批次套餐中是否存在售卖中的套餐，如果存在，不允许删除
+1. 删除套餐数据
+1. 删除套餐关联的菜品数据
 
 代码实现为:
 
@@ -696,47 +695,45 @@ public R<String> delete(@RequestParam List<Long> ids){
 
 ## 4. 短信发送
 
-![ ](./assets/day05/image-20210806225505074.png)
-
-在接下来要实现的移动端的业务开发中，第一块儿需要开发的功能就是移动端的登录功能，而移动端的登录功能，比较流行的方式就是基于短信验证码进行登录，那么这里涉及到了短信发送的知识，所以本章节，就来讲解，在项目开发中，如何发送短信  
+![ ](./assets/day05/image-20210806225505074.png =600x)
 
 ### 4.1 短信服务介绍
 
-在项目中，如果要实现短信发送功能，无需自己实现，也无需和运营商直接对接，只需要调用第三方提供的短信服务即可  目前市面上有很多第三方提供的短信服务，这些第三方短信服务会和各个运营商（移动、联通、电信）对接，只需要注册成为会员，并且按照提供的开发文档进行调用就可以发送短信  需要说明的是，这些短信服务一般都是收费服务  
+在项目中，如果要实现短信发送功能，无需自己实现，也无需和运营商直接对接，只需要调用第三方提供的短信服务即可  
+目前市面上有很多第三方提供短信服务，这些第三方短信服务会和各个运营商（移动、联通、电信）对接，只需要注册成为会员，并且按照提供的开发文档进行调用就可以发送短信
 
-常用短信服务：
+> 这些短信服务一般都是收费服务  
+
+::: tip 常用短信服务
 
 - 阿里云
-
 - 华为云
-
 - 腾讯云
-
 - 京东
-
 - 梦网
-
 - 乐信
 
-本项目在选择短信服务的第三方服务提供商时，选择的是阿里云短信服务  
+:::
 
 ### 4.2 阿里云短信服务介绍
 
-阿里云短信服务（Short Message Service）是广大企业客户快速触达手机用户所优选使用的通信能力  调用API或用群发助手，即可发送验证码、通知类和营销类短信；国内验证短信秒级触达，到达率最高可达99%；国际/港澳台短信覆盖200多个国家和地区，安全稳定，广受出海企业选用  
+阿里云短信服务（Short Message Service）是广大企业客户快速触达手机用户所优选使用的通信能力，调用API或用群发助手，即可发送验证码、通知类和营销类短信  
 
-应用场景：
+> 国内验证短信秒级触达，到达率最高可达99%  
+> 国际/港澳台短信覆盖200多个国家和地区，安全稳定，广受出海企业选用  
+
+应用场景
 
 | 场景     | 案例                                                         |
 | -------- | ------------------------------------------------------------ |
 | 验证码   | APP、网站注册账号，向手机下发验证码； 登录账户、异地登录时的安全提醒； 找回密码时的安全验证； 支付认证、身份校验、手机绑定等   |
 | 短信通知 | 向注册用户下发系统相关信息，包括： 升级或维护、服务开通、价格调整、 订单确认、物流动态、消费确认、 支付通知等普通通知短信   |
-| 推广短信 | 向注册用户和潜在客户发送通知和推广信息，包括促销活动通知、业务推广等商品与活动的推广信息  增加企业产品曝光率、提高产品的知名度   |
+| 推广短信 | 向注册用户和潜在客户发送通知和推广信息，包括促销活动通知、业务推广等商品与活动的推广信息，增加企业产品曝光率、提高产品的知名度   |
 
 ![ ](./assets/day05/image-20210806231422923.png)
 
-阿里云短信服务官方网站： [https://www.aliyun.com/product/sms?spm=5176.19720258.J_8058803260.52.5c432c4a11Dcwf](https://www.aliyun.com/product/sms?spm=5176.19720258.J_8058803260.52.5c432c4a11Dcwf)
-
-可以访问官网，熟悉一下短信服务：
+阿里云短信服务官方网站：  
+[https://www.aliyun.com/product/sms?spm=5176.19720258.J_8058803260.52.5c432c4a11Dcwf](https://www.aliyun.com/product/sms?spm=5176.19720258.J_8058803260.52.5c432c4a11Dcwf)
 
 ![ ](./assets/day05/image-20210806231821334.png)  
 
@@ -748,15 +745,11 @@ public R<String> delete(@RequestParam List<Long> ids){
 
 ![ ](./assets/day05/image-20210807074911618.png)
 
-点击官网首页注册按钮，跳转到如下注册页面：
-
 ![ ](./assets/day05/image-20210807074934251.png)
-
-当把账号注册完毕之后，就可以登录到阿里云系统控制台  
 
 #### 4.3.2 开通短信服务
 
-注册成功后，点击登录按钮进行登录  登录后进入控制台， 在左上角的菜单栏中搜索短信服务  第一次使用，需要点击，并开通短信服务  
+登录后进入控制台，在左上角的菜单栏中搜索短信服务，第一次使用，需要点击并开通短信服务  
 
 ![ ](./assets/day05/image-20210807075321250.png)
 
@@ -768,41 +761,37 @@ public R<String> delete(@RequestParam List<Long> ids){
 
 ![ ](./assets/day05/image-20210807080406104.png)
 
-**那么什么是短信签名呢?**
+**什么是短信签名呢?**
 
-短信签名是短信发送者的署名，表示发送方的身份  要调用阿里云短信服务发送短信，签名是比不可少的部分  
+短信签名是短信发送者的署名，表示发送方的身份，要调用阿里云短信服务发送短信，签名是比不可少的部分  
 
 ![ ](./assets/day05/image-20210807080659337.png)
 
-那么接下来，就需要来添加短信签名  
+接下来添加短信签名  
 
 ![ ](./assets/day05/image-20210807081839908.png)
 
-> 注意：
->
->目前，阿里云短信服务申请签名主要针对企业开发，个人申请时有一定难度的，在审核时，会审核资质，需要上传营业执照 ；
->
-> 所以，课程中，主要是演示一下短信验证码如何发送，大家只需要学习这块儿的开发流程、实现方式即可，无需真正的发送短信  如果以后在企业中做项目，需要发送短信，会以公司的资质去申请对应的签名  
+> 注意：目前，阿里云短信服务申请签名主要针对企业开发，个人申请时有一定难度，审核时会审核资质，需要上传营业执照
 
 #### 4.3.4 设置短信模板
 
-切换到【模板管理】标签页：
+切换到【模板管理】标签页
 
 ![ ](./assets/day05/image-20210807082453655.png)
 
-**那么什么是模板呢?**
+**什么是模板呢?**
 
-短信模板包含短信发送内容、场景、变量信息  模板的详情如下:
+短信模板包含短信发送内容、场景、变量信息
 
-![ ](./assets/day05/image-20210807082639900.png)
+![ ](./assets/day05/image-20210807082639900.png =600x)
 
-最终，给用户发送的短信中，具体的短信内容，就是上面配置的这个模板内容，将${code}占位符替换成对应的验证码数据即可  如下:
+将${code}占位符替换成对应的验证码数据即可
 
 ```md
 【xxxxx】您好，您的验证码为173822，5分钟之内有效，不要泄露给他人!
 ```
 
-可以点击右上角的按钮，添加模板，然后填写模板的基本信息及设置的模板内容:
+可以点击右上角的按钮，添加模板，然后填写模板的基本信息及设置的模板内容
 
 ![ ](./assets/day05/image-20210807083306928.png)
 
@@ -812,49 +801,51 @@ public R<String> delete(@RequestParam List<Long> ids){
 
 AccessKey 是访问阿里云 API 的密钥，具有账户的完全权限，要想在后面通过API调用阿里云短信服务的接口发送短信，那么就必须要设置AccessKey  
 
-点击右上角的用户头像，选择"AccessKey管理"，这时就可以进入到AccessKey的管理界面  
+点击右上角的用户头像，选择"AccessKey管理"
 
 ![ ](./assets/day05/image-20210807130218414.png)
 
-进入到AccessKey的管理界面之后，提示两个选项 "继续使用AccessKey" 和 "开始使用子用户AccessKey"，两个区别如下:
+进入到AccessKey的管理界面之后，提示两个选项 "继续使用AccessKey" 和 "开始使用子用户AccessKey"
 
-1.**继续使用AccessKey**
+1. **继续使用AccessKey**
 
-如果选择的是该选项，创建的是阿里云账号的AccessKey，是具有账户的完全权限，有了这个AccessKey以后，就可以通过API调用阿里云的服务，不仅是短信服务，其他服务(OSS，语音服务，内容安全服务，视频点播服务...等)也可以调用   相对来说，并不安全，当前的AccessKey泄露，会影响到我当前账户的其他云服务  
+    如果选择的是该选项，创建的是阿里云账号的AccessKey，是具有账户的完全权限，有了这个AccessKey以后，就可以通过API调用阿里云的服务，不仅是短信服务，其他服务(OSS，语音服务，内容安全服务，视频点播服务等...)也可以调用  
+    相对来说，并不安全，当前的AccessKey泄露，会影响到当前账户的其他云服务  
 
-2.**开始使用子用户AccessKey**
+2. **开始使用子用户AccessKey**
 
-可以创建一个子用户，这个子用户可以分配比较低的权限，比如仅分配短信发送的权限，不具备操作其他的服务的权限，即使这个AccessKey泄漏了，也不会影响其他的云服务， 相对安全  
+    可以创建一个子用户，这个子用户可以分配比较低的权限，比如仅分配短信发送的权限，不具备操作其他的服务的权限，即使这个AccessKey泄漏了，也不会影响其他的云服务， 相对安全  
 
-接下来就来演示一下，如何创建子用户AccessKey  
+如何创建子用户AccessKey  
 
 ![ ](./assets/day05/image-20210807131340003.png)
 
 #### 4.3.6 配置权限
 
-上述已经创建了子用户， 但是这个子用户，目前没有任何权限，接下来，需要为创建的这个用户来分配权限  
+上述已经创建了子用户，但是这个子用户，目前没有任何权限，接下来，需要为创建的这个用户来分配权限  
 
 ![ ](./assets/day05/image-20210807183735533.png)
 
-经过上述的权限配置之后，那么新创建的这个 reggie 用户，仅有短信服务操作的权限，不具备别的权限，即使当前的AccessKey泄漏了，也只会影响短信服务，其他服务是不受影响的  
+经过上述的权限配置之后，那么新创建的这个 reggie 用户，仅有短信服务操作的权限，不具备别的权限
 
-#### 4.3.7 禁用/删除AccessKey
+#### 4.3.7 禁用 / 删除AccessKey
 
-如果在使用的过程中 AccessKey 不小心泄漏了，可以在阿里云控制台中， 禁用或者删除该AccessKey  
+如果在使用的过程中 AccessKey 不小心泄漏了，可以在阿里云控制台中，禁用或者删除该AccessKey  
 
 ![ ](./assets/day05/image-20210807190005367.png)
 
-然后再创建一个新的AccessKey， 保存好AccessKeyId和AccessKeySecret  
+然后再创建一个新的AccessKey，保存好AccessKeyId和AccessKeySecret  
 
 ![ ](./assets/day05/image-20210807190304136.png)
 
-注意： 创建好了AccessKey后，请及时保存AccessKeyId 和 AccessKeySecret ，弹窗关闭后将无法再次获取该信息，但您可以随时创建新的 AccessKey
+> 注意：创建好了AccessKey后，请及时保存AccessKeyId 和 AccessKeySecret ，弹窗关闭后将无法再次获取该信息，但您可以随时创建新的 AccessKey
 
 ### 4.4 代码开发
 
 使用阿里云短信服务发送短信，可以参照官方提供的文档即可  
 
-官方文档: [https://help.aliyun.com/product/44282.html?spm=5176.12212571.help.dexternal.57a91cbewHHjKq](https://help.aliyun.com/product/44282.html?spm=5176.12212571.help.dexternal.57a91cbewHHjKq)
+官方文档:  
+[https://help.aliyun.com/product/44282.html?spm=5176.12212571.help.dexternal.57a91cbewHHjKq](https://help.aliyun.com/product/44282.html?spm=5176.12212571.help.dexternal.57a91cbewHHjKq)
 
 ![ ](./assets/day05/image-20210807193047220.png)
 
@@ -862,7 +853,8 @@ AccessKey 是访问阿里云 API 的密钥，具有账户的完全权限，要�
 
 ![ ](./assets/day05/image-20210807193829131.png)
 
-> SDK : SDK 就是 Software Development Kit 的缩写，翻译过来——软件开发工具包，辅助开发某一类软件的相关文档、范例和工具的集合都可以叫做SDK  在与第三方接口相互时， 一般都会提供对应的SDK，来简化的开发  
+> SDK : Software Development Kit 的缩写，翻译过来——软件开发工具包，辅助开发某一类软件的相关文档、范例和工具的集合都可以叫做SDK  
+> 在与第三方接口相互时， 一般都会提供对应的SDK，来简化的开发  
 
 **具体实现：**
 
@@ -929,13 +921,13 @@ public class SMSUtils {
 
 ### 5.1 需求分析
 
-为了方便用户登录，移动端通常都会提供通过手机验证码登录的功能  手机验证码登录有如下优点：
+::: tip 手机验证码登录有如下优点
 
 1. 方便快捷，无需注册，直接登录
-
 2. 使用短信验证码作为登录凭证，无需记忆密码
-
 3. 安全
+
+:::
 
 ![ ](./assets/day05/image-20210807232653592.png)
 
@@ -947,7 +939,7 @@ public class SMSUtils {
 
 ### 5.2 数据模型
 
-通过手机验证码登录时，涉及的表为user表，即用户表  结构如下:
+通过手机验证码登录时，涉及的表为user表，即用户表
 
 ![ ](./assets/day05/image-20210807231948412.png)
 
@@ -963,9 +955,9 @@ public class SMSUtils {
 
 ![ ](./assets/day05/image-20210807233336029.png)
 
-如果服务端返回的登录成功，页面将会把当前登录用户的手机号存储在sessionStorage中，并跳转到移动的首页页面  
+> 如果服务端返回的登录成功，页面将会把当前登录用户的手机号存储在sessionStorage中，并跳转到移动的首页页面  
 
-开发手机验证码登录功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可，分别是获取短信验证码 和 登录请求，具体的请求信息如下：
+开发手机验证码登录功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可，分别是 获取短信验证码 和 登录请求
 
 1.获取短信验证码
 
@@ -989,9 +981,9 @@ public class SMSUtils {
 
 在开发业务功能前，先将需要用到的类和接口基本结构创建好：
 
-1.实体类 User（直接从课程资料中导入即可）
+1.实体类 User
 
-所属包: com.itheima.reggie.entity
+所属包： com.itheima.reggie.entity
 
 ```java
 import lombok.Data;
@@ -1027,7 +1019,7 @@ public class User implements Serializable {
 
 2.Mapper接口 UserMapper
 
-所属包: com.itheima.reggie.mapper
+所属包： com.itheima.reggie.mapper
 
 ```java
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -1041,7 +1033,7 @@ public interface UserMapper extends BaseMapper<User>{
 
 3.业务层接口 UserService
 
-所属包: com.itheima.reggie.service
+所属包： com.itheima.reggie.service
 
 ```java
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -1053,7 +1045,7 @@ public interface UserService extends IService<User> {
 
 4.业务层实现类 UserServiceImpl
 
-所属包: com.itheima.reggie.service.impl
+所属包： com.itheima.reggie.service.impl
 
 ```java
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -1069,7 +1061,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
 5.控制层 UserController
 
-所属包: com.itheima.reggie.controller
+所属包： com.itheima.reggie.controller
 
 ```java
 import com.itheima.reggie.service.UserService;
@@ -1089,25 +1081,22 @@ public class UserController {
 
 6.工具类SMSUtils、ValidateCodeUtils（直接从课程资料中导入即可）
 
-所属包: com.itheima.reggie.utils
+所属包： com.itheima.reggie.utils
 
 ![ ](./assets/day05/image-20210807234828051.png)
 
-SMSUtils : 是上面改造的阿里云短信发送的工具类 ;
-
-ValidateCodeUtils : 是验证码生成的工具类 ;
+> SMSUtils : 是上面改造的阿里云短信发送的工具类  
+> ValidateCodeUtils : 是验证码生成的工具类
 
 #### 5.4.2 功能实现
 
 ##### 5.4.2.1 修改LoginCheckFilter
 
-前面已经完成了LoginCheckFilter过滤器的开发，此过滤器用于检查用户的登录状态  在进行手机验证码登录时，发送的两个请求(获取验证码和登录)需要在此过滤器处理时直接放行  
+在进行手机验证码登录时，发送的两个请求(获取验证码和登录)需要在此过滤器处理时直接放行  
 
 ![ ](./assets/day05/image-20210807235349089.png)
 
-对于移动的端的页面，也是用户登录之后，才可以访问的，那么这个时候就需要在 LoginCheckFilter 中进行判定，如果移动端用户已登录，获取到用户登录信息，存入ThreadLocal中(在后续的业务处理中，如果需要获取当前登录用户ID，直接从ThreadLocal中获取)，然后放行  
-
-增加如下逻辑:
+对于移动的端的页面，也是用户登录之后才可以访问，这个时候就需要在 LoginCheckFilter 中进行判定，如果移动端用户已登录，获取到用户登录信息，存入ThreadLocal中(在后续的业务处理中，如果需要获取当前登录用户ID，直接从ThreadLocal中获取)，然后放行 
 
 ```java
 //4-2、判断登录状态，如果已登录，则直接放行
@@ -1161,13 +1150,9 @@ public R<String> sendMsg(@RequestBody User user, HttpSession session){
 在UserController中增加登录的方法 login，该方法的具体逻辑为：
 
 1. 获取前端传递的手机号和验证码
-
 2. 从Session中获取到手机号对应的正确的验证码
-
-3. 进行验证码的比对 ， 如果比对失败， 直接返回错误信息
-
-4. 如果比对成功， 需要根据手机号查询当前用户， 如果用户不存在， 则自动注册一个新用户
-
+3. 进行验证码的比对，如果比对失败，直接返回错误信息
+4. 如果比对成功， 需要根据手机号查询当前用户，如果用户不存在，则自动注册一个新用户
 5. 将登录用户的ID存储Session中
 
 具体代码实现:
@@ -1213,7 +1198,7 @@ public R<User> login(@RequestBody Map map, HttpSession session){
 
 ### 5.5 功能测试
 
-代码完成后，重启服务，测试短信验证码的发送及登录功能  
+重启服务，测试短信验证码的发送及登录功能  
 
 1.测试错误验证码的情况
 
@@ -1223,6 +1208,6 @@ public R<User> login(@RequestBody Map map, HttpSession session){
 
 ![ ](./assets/day05/image-20210808002356092.png)
 
-检查user表，用户的数据也插入进来了：
+检查user表
 
 ![ ](./assets/day05/image-20210808002501618.png)
