@@ -288,8 +288,6 @@ public interface EmpMapper {
 
 ![ ](./assets/springboot04/image-20221216215320623.png)
 
-![ ](./assets/springboot04/image-20221216215041710.png)
-
 知道了前端程序中需要设置上传文件页面三要素，那后端程序又是如何实现的呢？
 
 - 首先在服务端定义一个controller，用来进行文件上传，然后在controller当中定义一个方法来处理`/upload` 请求
