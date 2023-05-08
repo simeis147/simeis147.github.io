@@ -9,7 +9,7 @@ category:
 
 ![ ](./assets/springboot01/image-20220826161735076.png)
 
-SpringBoot进行web程序开发时，内置了一个核心的Servlet程序 DispatcherServlet ，称之为`核心控制器`  
+SpringBoot进行web程序开发时，内置了一个核心的Servlet程序 DispatcherServlet，称之为`核心控制器`  
 DispatcherServlet 负责接收页面发送的请求，然后根据执行的规则，将请求再转发给后面的请求处理器Controller，请求处理器处理完请求之后，最终再由DispatcherServlet给浏览器响应数据。
 
 ![ ](./assets/springboot01/image-20220826165340157.png)
