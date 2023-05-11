@@ -15,11 +15,11 @@ category:
 
 - 盒子模型组成：内容区域（content）、内边距区域（padding）、边框区域（border）、外边距区域（margin）
 
-![image-20230310092820616](./assets/image-20230310092820616.png =500x)
+![ ](./assets/image-20230310092820616.png =500x)
 
 CSS盒子模型，其实和日常生活中的包装盒是非常类似的，就比如：
 
-![image-20230310093247265](./assets/image-20230310093247265.png =500x)
+![ ](./assets/image-20230310093247265.png =500x)
 
 盒子的大小，其实就包括三个部分： border、padding、content，而**margin外边距是不包括在盒子之内的**。
 
