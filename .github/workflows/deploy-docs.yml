@@ -48,7 +48,7 @@ jobs:
 
       # 3、同步到 gitee 的仓库
       - name: Sync to Gitee
-        uses: wearerequired/git-mirror-action@main
+        uses: wearerequired/git-mirror-action@master
         env:
           # 注意在 Settings->Secrets 配置 GITEE_RSA_PRIVATE_KEY
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
