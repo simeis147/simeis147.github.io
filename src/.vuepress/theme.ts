@@ -28,6 +28,7 @@ export default hopeTheme({
   // pure: true, //纯净模式！
 
   darkmode : "toggle", //在深色模式和浅色模式之间切换 
+ 
   themeColor: {
     red: "#f26d6d",
     blue: "#2196f3",
