@@ -24,4 +24,6 @@ export const zhSidebar = sidebar({
   
   "/project/reggietakeout/": "structure",
   "/project/reggietakeout/*": "structure",
+
+  "/ComputerBasics/ComputerNetwork/": "structure",
 });

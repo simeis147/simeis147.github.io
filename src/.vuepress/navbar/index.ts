@@ -22,7 +22,18 @@ export const zhNavbar = navbar([
         }
       ]
   },
-
+  { 
+    text: '计算机基础',
+    link: '/ComputerBasics/',
+    children: [
+      {
+        text: '计算机网络',
+        children: [
+          { text: "计算机网络", icon: 'change',link: "/ComputerBasics/ComputerNetwork/" },
+        ]
+      },
+    ]
+  },
   { 
     text: '数据库',
     link: '/Database/',
