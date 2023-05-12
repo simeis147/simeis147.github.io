@@ -1,1 +1,0 @@
-import{_ as a,X as t,Y as n,a1 as e,a3 as c}from"./framework-6f8524c4.js";const r={},s=e("h1",{id:"linux-day02",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#linux-day02","aria-hidden":"true"},"#"),c(" Linux-Day02")],-1),d=[s];function o(_,i){return t(),n("div",null,d)}const h=a(r,[["render",o],["__file","day02.html.vue"]]);export{h as default};
