@@ -49,7 +49,7 @@ tag:
     </div>
 </div> -->
 
-<div style="text-align:center;color:#f0f0f0; background-image: url('star.jpg'); opacity: 1; background-size: 400px">
+<div style="text-align:center;color:#f0f0f0; background-image: url('assets/intro/star.jpg'); opacity: 1; background-size: 400px">
 
 地球这样的行星，是产生不了重元素的，你身体里的铁，来自璀璨的超新星爆炸。
 

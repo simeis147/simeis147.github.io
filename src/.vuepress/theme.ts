@@ -47,7 +47,7 @@ export default hopeTheme({
   blog: {
     description: "Master's degree in reading",
     intro: "/intro.html",
-    avatar: "/logo.png", //博客头像
+    avatar: "assets/theme/logo.png", //博客头像
     roundAvatar: true, //圆形
     medias: {
       Gmail: "mailto:cpdong@gmail.com",
