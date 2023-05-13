@@ -107,6 +107,25 @@ export const zhNavbar = navbar([
   },
 
   { text: 'Project', icon: 'code', link: '/project/' },
+
+  // { 
+  //   text: 'Others',
+  //   link: '/Others/',
+  //   children: [
+  //     {
+  //       text: '外设',
+  //       children: [
+  //         { text: "键盘", icon: 'keyborad',link: "/Others/Keyborad/" },
+  //       ]
+  //     },
+  //     {
+  //       text: '生活',
+  //       children: [
+  //         { text: "电影", icon: 'Flim',link: "/Others/Flim/" },
+  //       ]
+  //     },
+  //   ],
+  // },
   
   // {
   //   text: 'Others',
