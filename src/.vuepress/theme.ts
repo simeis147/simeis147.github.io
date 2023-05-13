@@ -33,7 +33,7 @@ export default hopeTheme({
     red: "#f26d6d",
     blue: "#2196f3",
     orange: "#fb9b5f",
-    green: "#7f8c8d",
+    gary: "#7f8c8d",
   },
   // fullscreen: true,
 
