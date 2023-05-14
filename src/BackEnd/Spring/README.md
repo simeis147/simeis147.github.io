@@ -48,11 +48,11 @@ Spring开发生态圈提供了若干个项目，每个项目用于完成特定�
 
 ![ ](./assets/readme/1629714811435.png)
 
-* **Spring Framework**: Spring框架，是Spring中最早最核心的技术，也是所有其他技术的基础  
+* **Spring Framework**：Spring框架，是Spring中最早最核心的技术，也是所有其他技术的基础  
 
-* **SpringBoot**: Spring是来简化开发，而SpringBoot是来帮助Spring在简化的基础上快速开发  
+* **SpringBoot**：Spring是来简化开发，而SpringBoot是来帮助Spring在简化的基础上快速开发  
 
-* **SpringCloud**: 用来做分布式微服务架构的相关开发  
+* **SpringCloud**：用来做分布式微服务架构的相关开发  
 
 > 除了上面的这三个技术外，还有很多其他的技术也比较流行，如SpringData、SpringSecurity等
   
@@ -88,18 +88,18 @@ Spring Framework的发展也经历了很多版本的变更，每个版本都有�
 
 1. 核心层
 
-   * Core Container: 核心容器，这个模块是Spring最核心的模块，其他的都需要依赖该模块
+   * Core Container：核心容器，这个模块是Spring最核心的模块，其他的都需要依赖该模块
 
 2. AOP层
 
-   * AOP: 面向切面编程，它依赖核心层容器，目的是**在不改变原有代码的前提下对其进行功能增强**
-   * Aspects: AOP是思想，Aspects是对AOP思想的具体实现
+   * AOP：面向切面编程，它依赖核心层容器，目的是**在不改变原有代码的前提下对其进行功能增强**
+   * Aspects：AOP是思想，Aspects是对AOP思想的具体实现
 
 3. 数据层
 
-   * Data Access: 数据访问，Spring全家桶中有对数据访问的具体实现技术
-   * Data Integration: 数据集成，Spring支持整合其他的数据层解决方案，比如Mybatis
-   * Transactions: 事务，Spring中事务管理是Spring AOP的一个具体实现
+   * Data Access：数据访问，Spring全家桶中有对数据访问的具体实现技术
+   * Data Integration：数据集成，Spring支持整合其他的数据层解决方案，比如Mybatis
+   * Transactions：事务，Spring中事务管理是Spring AOP的一个具体实现
 
 4. Web层
 

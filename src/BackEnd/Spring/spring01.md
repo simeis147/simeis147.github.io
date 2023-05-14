@@ -18,7 +18,7 @@ category:
 
 ![ ](./assets/spring01/1629723232339.png)
 
-::: warning 代码在编写过程中遇到的问题:
+::: warning 代码在编写过程中遇到的问题
 
 1. 业务层需要调用数据层的方法，就需要在业务层new数据层的对象 <Badge text="耦合度偏高" color="#242378" />
 
@@ -97,7 +97,7 @@ category:
 
 * 使用IoC容器管理bean（IOC）
 * 在IoC容器内将有依赖关系的bean进行关系绑定（DI）
-* 最终结果为:  使用对象时不仅可以直接从IOC容器中获取，并且获取到的bean已经绑定了所有的依赖关系
+* 最终结果：使用对象时不仅可以直接从IOC容器中获取，并且获取到的bean已经绑定了所有的依赖关系
 
 :::
 
@@ -273,7 +273,7 @@ public class App {
 
 ![ ](./assets/spring01/image-20210729184337603.png)
 
-Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然存在`BookDaoImpl`对象的new操作，它们之间的耦合度还是比较高，需要用到下面的`DI:依赖注入`
+但是在`BookServiceImpl`的类中依然存在`BookDaoImpl`对象的new操作，它们之间的耦合度还是比较高，需要用到下面的`DI:依赖注入`
 
 ### 2.2 DI入门案例
 
@@ -480,7 +480,7 @@ public class AppForName {
 
 ##### 验证思路
 
-同一个bean获取两次，将对象打印到控制台，看打印出的地址值是否一致。
+同一个bean获取两次，将对象打印到控制台，看打印出的地址值是否一致
 
 ##### 具体实现
 
@@ -660,7 +660,7 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-运行程序，能执行成功，说明内部走的依然是构造函数，能访问到类中的私有构造方法，显而易见Spring底层用的是反射
+运行程序，能执行成功，说明内部走的依然是构造函数，能访问到类中的私有构造方法，显而易见Spring底层用的是**Reflection**
 
 ![ ](./assets/spring01/1629775972507.png)
 
@@ -737,9 +737,9 @@ public class AppForInstanceOrder {
 <bean id="orderDao" class="com.itheima.factory.OrderDaoFactory" factory-method="getOrderDao"/>
 ```
 
-class：工厂类的类全名
+**class**：工厂类的类全名
 
-factory-mehod：具体工厂类中创建对象的方法名
+**factory-mehod**：具体工厂类中创建对象的方法名
 
 对应关系如下图:
 
