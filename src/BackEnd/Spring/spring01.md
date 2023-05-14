@@ -536,9 +536,9 @@ public class AppForScope {
 2. bean在容器中是单例的，会不会产生线程安全问题?
 
     * 如果对象是有状态对象，即该对象有成员变量可以用来存储数据的，
-        因为所有请求线程共用一个bean对象，所以会存在线程安全问题。
+        因为所有请求线程共用一个bean对象，所以会存在线程安全问题
     * 如果对象是无状态对象，即该对象没有成员变量没有进行数据存储的，
-        因方法中的局部变量在方法调用完成后就会被销毁，所以不会存在线程安全问题。
+        因方法中的局部变量在方法调用完成后就会被销毁，所以不会存在线程安全问题
 
 3. 哪些bean对象适合交给容器进行管理?
 
@@ -979,11 +979,11 @@ public class UserDaoFactoryBean implements FactoryBean<UserDao> {
 
 1. bean生命周期是什么?  
 
-   bean对象从创建到销毁的整体过程。
+   bean对象从创建到销毁的整体过程
 
 2. bean的生命周期控制是什么?  
 
-   在bean创建后到销毁前做一些事情。
+   在bean创建后到销毁前做一些事情
 
 #### 3.3.1 环境准备
 
@@ -1141,7 +1141,7 @@ main方法执行完后，JVM退出，这个时候IOC容器中的bean还没有来
 
 相同点：这两种都能用来关闭容器
 
-不同点：close()是在调用的时候关闭，registerShutdownHook()是在JVM退出后关闭。
+不同点：close()是在调用的时候关闭，registerShutdownHook()是在JVM退出后关闭
 
 ---
 
@@ -1172,7 +1172,7 @@ public class BookServiceImpl implements BookService， InitializingBean， Dispo
 
 ::: tip 细节
 
-* 对于InitializingBean接口中的afterPropertiesSet方法，翻译过来为`属性设置之后`。
+* 对于InitializingBean接口中的afterPropertiesSet方法，翻译过来为`属性设置之后`
 
 * 对于BookServiceImpl来说，bookDao是它的一个属性
 
@@ -1198,7 +1198,7 @@ afterPropertiesSet和setBookDao谁先执行?
 
     ![ ](./assets/spring01/1629794928636.png)
 
-    > 初始化方法会在类中属性设置之后执行。
+    > 初始化方法会在类中属性设置之后执行
 
 #### 3.3.5 bean生命周期小结
 
@@ -1400,7 +1400,7 @@ public class BookServiceImpl implements BookService{
 
 ##### 步骤3  运行程序
 
-运行AppForDISet类，查看结果，说明userDao已经成功注入。
+运行AppForDISet类，查看结果，说明userDao已经成功注入
 
 ![ ](./assets/spring01/1629799873386.png)
 
@@ -1476,11 +1476,11 @@ value:后面跟的是简单数据类型，对于参数类型，Spring在注入�
 <property name="connectionNum" value="abc"/>
 ```
 
-这样的话，spring在将`abc`转换成int类型的时候就会报错。
+这样的话，spring在将`abc`转换成int类型的时候就会报错
 
 ##### 步骤3: 运行程序
 
-运行AppForDISet类，查看结果，说明userDao已经成功注入。
+运行AppForDISet类，查看结果，说明userDao已经成功注入
 
 ![ ](./assets/spring01/1629800324721.png)
 
@@ -1619,9 +1619,9 @@ public class BookServiceImpl implements BookService{
 
 标签\<constructor-arg>中
 
-* name属性对应的值为构造函数中方法形参的参数名，必须要保持一致。
+* name属性对应的值为构造函数中方法形参的参数名，必须要保持一致
 
-* ref属性指向的是spring的IOC容器中其他bean对象。
+* ref属性指向的是spring的IOC容器中其他bean对象
 
 :::
 
@@ -1686,13 +1686,13 @@ public class BookServiceImpl implements BookService{
 
 步骤3:运行程序
 
-运行AppForDIConstructor类，查看结果，说明userDao已经成功注入。
+运行AppForDIConstructor类，查看结果，说明userDao已经成功注入
 
 ![ ](./assets/spring01/1629802697318.png)
 
 #### 4.2.4 构造器注入多个简单数据类型
 
-> 需求:在BookDaoImpl中，使用构造函数注入databaseName和connectionNum两个参数。
+> 需求:在BookDaoImpl中，使用构造函数注入databaseName和connectionNum两个参数
 >
 > 参考引用数据类型的注入，可以推出具体的步骤为:
 >
