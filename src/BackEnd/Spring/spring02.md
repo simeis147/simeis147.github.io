@@ -17,7 +17,7 @@ category:
 
 ## 1 IOC/DI 配置管理第三方bean
 
-### 1.1 案例:数据源对象管理
+### 1.1 案例：数据源对象管理
 
 通过数据源`Druid(德鲁伊)`和`C3P0`来配置学习
 
@@ -138,6 +138,8 @@ public class App {
 
 ![ ](./assets/spring02/1629887733081.png)
 
+::: note 说明
+
 * 第三方的类指的是什么?
 
   DruidDataSource
@@ -145,6 +147,8 @@ public class App {
 * 如何注入数据库连接四要素?
 
   setter注入
+
+:::
 
 #### 1.1.4 实现C3P0管理
 
@@ -313,7 +317,7 @@ jdbc.password=root
 
 ##### 1.2.2.1 实现思路
 
-对于上面的案例，效果不是很明显，我们可以换个案例来演示下:
+对于上面的案例，效果不是很明显，换个案例来演示下:
 
 > 需求：从properties配置文件中读取key为name的值，并将其注入到BookDao中并在save方法中进行打印  
 >
@@ -450,7 +454,7 @@ public class App {
   </beans>
   ```
 
-  > system-properties-mode:设置为NEVER，表示不加载系统属性
+  > system-properties-mode：设置为NEVER，表示不加载系统属性
 
 * 问题二:当有多个properties配置文件需要被加载，该如何配置?
 
@@ -849,7 +853,7 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-**注意:@Component注解不可以添加在接口上，因为接口是无法创建对象的  **
+**注意**：@Component注解不可以添加在接口上，因为接口是无法创建对象的
 
 XML与注解配置的对应关系:
 
@@ -1827,7 +1831,7 @@ public class SpringConfig {
 
 ##### 4.4.1.1 需求分析
 
-对于下面代码关于数据库的四要素不应该写死在代码中，应该是从properties配置文件中读取  如何来优化下面的代码?
+对于下面代码关于数据库的四要素不应该写死在代码中，应该是从properties配置文件中读取，如何来优化下面的代码?
 
 ```java
 public class JdbcConfig {
@@ -1938,7 +1942,7 @@ public DataSource dataSource(BookDao bookDao){
 }
 ```
 
-**引用类型注入只需要为bean定义方法设置形参即可，容器会根据类型自动装配对象  **
+引用类型注入只需要为bean定义方法设置形参即可，容器会根据类型自动装配对象
 
 ###### 步骤3:    运行程序
 
