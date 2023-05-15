@@ -79,35 +79,35 @@ $ tree
 
 经典的 Git 工作流程是通过操纵这三个区域来以更加连续的状态记录项目快照的。
 
-<!-- ![reset workflow](https://git-scm.com/book/en/v2/images/reset-workflow.png) -->
+![reset workflow](https://git-scm.com/book/en/v2/images/reset-workflow.png)
 
 让我们来可视化这个过程：假设我们进入到一个新目录，其中有一个文件。 我们称其为该文件的 **v1** 版本，将它标记为蓝色。 现在运行 `git init`，这会创建一个 Git 仓库，其中的 HEAD 引用指向未创建的 `master` 分支。
 
-<!-- ![reset ex1](https://git-scm.com/book/en/v2/images/reset-ex1.png) -->
+![reset ex1](https://git-scm.com/book/en/v2/images/reset-ex1.png)
 
 此时，只有工作目录有内容。
 
 现在我们想要提交这个文件，所以用 `git add` 来获取工作目录中的内容，并将其复制到索引中。
 
-<!-- ![reset ex2](https://git-scm.com/book/en/v2/images/reset-ex2.png) -->
+![reset ex2](https://git-scm.com/book/en/v2/images/reset-ex2.png)
 
 接着运行 `git commit`，它会取得索引中的内容并将它保存为一个永久的快照， 然后创建一个指向该快照的提交对象，最后更新 `master` 来指向本次提交。
 
-<!-- ![reset ex3](https://git-scm.com/book/en/v2/images/reset-ex3.png) -->
+![reset ex3](https://git-scm.com/book/en/v2/images/reset-ex3.png)
 
 此时如果我们运行 `git status`，会发现没有任何改动，因为现在三棵树完全相同。
 
 现在我们想要对文件进行修改然后提交它。 我们将会经历同样的过程；首先在工作目录中修改文件。 我们称其为该文件的 **v2** 版本，并将它标记为红色。
 
-<!-- ![reset ex4](https://git-scm.com/book/en/v2/images/reset-ex4.png) -->
+![reset ex4](https://git-scm.com/book/en/v2/images/reset-ex4.png)
 
 如果现在运行 `git status`，我们会看到文件显示在 “Changes not staged for commit” 下面并被标记为红色，因为该条目在索引与工作目录之间存在不同。 接着我们运行 `git add` 来将它暂存到索引中。
-<!-- 
-![reset ex5](https://git-scm.com/book/en/v2/images/reset-ex5.png) -->
+
+![reset ex5](https://git-scm.com/book/en/v2/images/reset-ex5.png)
 
 此时，由于索引和 HEAD 不同，若运行 `git status` 的话就会看到 “Changes to be committed” 下的该文件变为绿色 ——也就是说，现在预期的下一次提交与上一次提交不同。 最后，我们运行 `git commit` 来完成提交。
-<!-- 
-![reset ex6](https://git-scm.com/book/en/v2/images/reset-ex6.png) -->
+
+![reset ex6](https://git-scm.com/book/en/v2/images/reset-ex6.png)
 
 现在运行 `git status` 会没有输出，因为三棵树又变得相同了。
 
@@ -119,7 +119,7 @@ $ tree
 
 为了演示这些例子，假设我们再次修改了 `file.txt` 文件并第三次提交它。 现在的历史看起来是这样的：
 
-<!-- ![reset start](https://git-scm.com/book/en/v2/images/reset-start.png) -->
+![reset start](https://git-scm.com/book/en/v2/images/reset-start.png)
 
 让我们跟着 `reset` 看看它都做了什么。 它以一种简单可预见的方式直接操纵这三棵树。 它做了三个基本操作。
 
@@ -127,7 +127,7 @@ $ tree
 
 `reset` 做的第一件事是移动 HEAD 的指向。 这与改变 HEAD 自身不同（`checkout` 所做的）；`reset` 移动 HEAD 指向的分支。 这意味着如果 HEAD 设置为 `master` 分支（例如，你正在 `master` 分支上）， 运行 `git reset 9e5e6a4` 将会使 `master` 指向 `9e5e6a4`。
 
-<!-- ![reset soft](https://git-scm.com/book/en/v2/images/reset-soft.png) -->
+![reset soft](https://git-scm.com/book/en/v2/images/reset-soft.png)
 
 无论你调用了何种形式的带有一个提交的 `reset`，它首先都会尝试这样做。 使用 `reset --soft`，它将仅仅停在那儿。
 
@@ -139,7 +139,7 @@ $ tree
 
 接下来，`reset` 会用 HEAD 指向的当前快照的内容来更新索引。
 
-<!-- ![reset mixed](https://git-scm.com/book/en/v2/images/reset-mixed.png) -->
+![reset mixed](https://git-scm.com/book/en/v2/images/reset-mixed.png)
 
 如果指定 `--mixed` 选项，`reset` 将会在这时停止。 这也是默认行为，所以如果没有指定任何选项（在本例中只是 `git reset HEAD~`），这就是命令将会停止的地方。
 
@@ -149,7 +149,7 @@ $ tree
 
 `reset` 要做的的第三件事情就是让工作目录看起来像索引。 如果使用 `--hard` 选项，它将会继续这一步。
 
-<!-- ![reset hard](https://git-scm.com/book/en/v2/images/reset-hard.png) -->
+![reset hard](https://git-scm.com/book/en/v2/images/reset-hard.png)
 
 现在让我们回想一下刚才发生的事情。 你撤销了最后的提交、`git add` 和 `git commit` 命令 **以及** 工作目录中的所有工作。
 
@@ -174,17 +174,17 @@ $ tree
 
 所以它本质上只是将 `file.txt` 从 HEAD 复制到索引中。
 
-<!-- ![reset path1](https://git-scm.com/book/en/v2/images/reset-path1.png) -->
+![reset path1](https://git-scm.com/book/en/v2/images/reset-path1.png)
 
 它还有 *取消暂存文件* 的实际效果。 如果我们查看该命令的示意图，然后再想想 `git add` 所做的事，就会发现它们正好相反。
 
-<!-- ![reset path2](https://git-scm.com/book/en/v2/images/reset-path2.png) -->
+![reset path2](https://git-scm.com/book/en/v2/images/reset-path2.png)
 
 这就是为什么 `git status` 命令的输出会建议运行此命令来取消暂存一个文件。 （查看 [取消暂存的文件](https://git-scm.com/book/zh/v2/ch00/_unstaging) 来了解更多。）
 
 我们可以不让 Git 从 HEAD 拉取数据，而是通过具体指定一个提交来拉取该文件的对应版本。 我们只需运行类似于 `git reset eb43bf file.txt` 的命令即可。
 
-<!-- ![reset path3](https://git-scm.com/book/en/v2/images/reset-path3.png) -->
+![reset path3](https://git-scm.com/book/en/v2/images/reset-path3.png)
 
 它其实做了同样的事情，也就是把工作目录中的文件恢复到 **v1** 版本，运行 `git add` 添加它， 然后再将它恢复到 **v3** 版本（只是不用真的过一遍这些步骤）。 如果我们现在运行 `git commit`，它就会记录一条“将该文件恢复到 **v1** 版本”的更改， 尽管我们并未在工作目录中真正地再次拥有它。
 
@@ -198,15 +198,15 @@ $ tree
 
 假设你有一个项目，第一次提交中有一个文件，第二次提交增加了一个新的文件并修改了第一个文件，第三次提交再次修改了第一个文件。 由于第二次提交是一个未完成的工作，因此你想要压缩它。
 
-<!-- ![reset squash r1](https://git-scm.com/book/en/v2/images/reset-squash-r1.png) -->
+![reset squash r1](https://git-scm.com/book/en/v2/images/reset-squash-r1.png)
 
 那么可以运行 `git reset --soft HEAD~2` 来将 HEAD 分支移动到一个旧一点的提交上（即你想要保留的最近的提交）：
 
-<!-- ![reset squash r2](https://git-scm.com/book/en/v2/images/reset-squash-r2.png) -->
+![reset squash r2](https://git-scm.com/book/en/v2/images/reset-squash-r2.png)
 
 然后只需再次运行 `git commit`：
 
-<!-- ![reset squash r3](https://git-scm.com/book/en/v2/images/reset-squash-r3.png) -->
+![reset squash r3](https://git-scm.com/book/en/v2/images/reset-squash-r3.png)
 
 现在你可以查看可到达的历史，即将会推送的历史，现在看起来有个 v1 版 `file-a.txt` 的提交， 接着第二个提交将 `file-a.txt` 修改成了 v3 版并增加了 `file-b.txt`。 包含 v2 版本的文件已经不在历史中了。
 
@@ -226,7 +226,7 @@ $ tree
 
 所以，虽然在这两种情况下我们都移动 HEAD 使其指向了提交 A，但_做法_是非常不同的。 `reset` 会移动 HEAD 分支的指向，而 `checkout` 则移动 HEAD 自身。
 
-<!-- ![reset checkout](https://git-scm.com/book/en/v2/images/reset-checkout.png) -->
+![reset checkout](https://git-scm.com/book/en/v2/images/reset-checkout.png)
 
 ### 带路径
 

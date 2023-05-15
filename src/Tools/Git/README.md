@@ -12,9 +12,13 @@ category:
 
 ## Git是什么
 
-Git是一个开源的分布式版本控制系统，可以有效、高速的处理从很小到非常大的项目版本管理。Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件
+Git 是一个开源的分布式版本控制系统，可以有效、高速的处理从很小到非常大的项目版本 
 
-官网地址为：[https://git-scm.com/](https://git-scm.com/) [![ ](./01Manual/assets/f7246b600c338744a9591cd7530fd9f9d62aa0f8.png =50x)](https://git-scm.com/)
+Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件
+
+官网地址为：[https://git-scm.com/](https://git-scm.com/)
+
+[![ ](./01Manual/assets/f7246b600c338744a9591cd7530fd9f9d62aa0f8.png =100x)](https://git-scm.com/)
 
 ## Git特点
 

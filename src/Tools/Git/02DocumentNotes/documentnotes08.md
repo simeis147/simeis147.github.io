@@ -230,7 +230,7 @@ Date:   Fri Nov 7 13:47:59 2008 -0500
 
 最常用的指明提交区间语法是双点。 这种语法可以让 Git 选出在一个分支中而不在另一个分支中的提交。 例如，你有如下的提交历史 [Example history for range selection.](https://git-scm.com/book/zh/v2/ch00/double_dot)
 
-<!-- ![Example history for range selection.](https://git-scm.com/book/en/v2/images/double-dot.png) -->
+![Example history for range selection.](https://git-scm.com/book/en/v2/images/double-dot.png)
 
 Figure 137. Example history for range selection.
 

@@ -13,11 +13,11 @@ category:
 
 请回顾之前在 [分支的合并](https://git-scm.com/book/zh/v2/ch00/_basic_merging) 中的一个例子，你会看到开发任务分叉到两个不同分支，又各自提交了更新。
 
-<!-- ![分叉的提交历史。](https://git-scm.com/book/en/v2/images/basic-rebase-1.png) -->
+![分叉的提交历史。](https://git-scm.com/book/en/v2/images/basic-rebase-1.png)
 
 之前介绍过，整合分支最容易的方法是 `merge` 命令。 它会把两个分支的最新快照（`C3` 和 `C4`）以及二者最近的共同祖先（`C2`）进行**三方合并**，合并的结果是生成一个新的快照（并提交）。
 
-<!-- ![通过合并操作来整合分叉了的历史。](https://git-scm.com/book/en/v2/images/basic-rebase-2.png) -->
+![通过合并操作来整合分叉了的历史。](https://git-scm.com/book/en/v2/images/basic-rebase-2.png)
 
 ### 概念
 
@@ -45,7 +45,7 @@ Applying: added staged command
 4. **将当前分支指向目标分支**
 5. **将之前临时文件的修改依序应用**
 
-<!-- ![将 `C4` 中的修改变基到 `C3` 上。](https://git-scm.com/book/en/v2/images/basic-rebase-3.png) -->
+![将 `C4` 中的修改变基到 `C3` 上。](https://git-scm.com/book/en/v2/images/basic-rebase-3.png)
 
 现在回到 `master` 分支，进行一次快进合并。
 
@@ -54,7 +54,7 @@ git checkout master
 git merge experiment
 ```
 
-<!-- ![`master` 分支的快进合并。](https://git-scm.com/book/en/v2/images/basic-rebase-4.png) -->
+![`master` 分支的快进合并。](https://git-scm.com/book/en/v2/images/basic-rebase-4.png)
 
 ### 步骤
 
@@ -86,7 +86,7 @@ git merge <源分支>
 
 在对两个分支进行变基时，所生成的“重放”并不一定要在目标分支上应用，你也可以指定另外的一个分支进行应用。 就像 [从一个主题分支里再分出一个主题分支的提交历史](https://git-scm.com/book/zh/v2/ch00/bdiag_e) 中的例子那样。 你创建了一个主题分支 `server`，为服务端添加了一些功能，提交了 `C3` 和 `C4`。 然后从 `C3` 上创建了主题分支 `client`，为客户端添加了一些功能，提交了 `C8` 和 `C9`。 最后，你回到 `server` 分支，又提交了 `C10`。
 
-<!-- ![从一个主题分支里再分出一个主题分支的提交历史。](https://git-scm.com/book/en/v2/images/interesting-rebase-1.png) -->
+![从一个主题分支里再分出一个主题分支的提交历史。](https://git-scm.com/book/en/v2/images/interesting-rebase-1.png)
 
 假设你希望将 `client` 中的修改合并到主分支并发布，但暂时并不想合并 `server` 中的修改， 因为它们还需要经过更全面的测试。这时，你就可以使用 `git rebase` 命令的 **`--onto` 选项， 选中在 `client` 分支里但不在 `server` 分支里的修改（即 `C8` 和 `C9`），将它们在 `master` 分支上重放**：
 
@@ -100,7 +100,7 @@ git rebase --onto master server client
 
 **选中C分支中的但不在B分支里的修改，应用到A分支。**
 
-<!-- ![截取主题分支上的另一个主题分支，然后变基到其他分支。](https://git-scm.com/book/en/v2/images/interesting-rebase-2.png) -->
+![截取主题分支上的另一个主题分支，然后变基到其他分支。](https://git-scm.com/book/en/v2/images/interesting-rebase-2.png)
 
 现在可以快进合并 `master` 分支了。（如图 [快进合并 `master` 分支，使之包含来自 `client` 分支的修改](https://git-scm.com/book/zh/v2/ch00/bdiag_g)）：
 
@@ -109,7 +109,7 @@ git checkout master
 git merge client
 ```
 
-<!-- ![快进合并 `master` 分支，使之包含来自 `client` 分支的修改。](https://git-scm.com/book/en/v2/images/interesting-rebase-3.png) -->
+![快进合并 `master` 分支，使之包含来自 `client` 分支的修改。](https://git-scm.com/book/en/v2/images/interesting-rebase-3.png)
 
 ### 省去先切换到源分支的步骤
 
@@ -129,7 +129,7 @@ git rebase master server
 
 如图 [将 `server` 中的修改变基到 `master` 上](https://git-scm.com/book/zh/v2/ch00/bdiag_h) 所示，`server` 中的代码被“续”到了 `master` 后面。
 
-<!-- ![将 `server` 中的修改变基到 `master` 上。](https://git-scm.com/book/en/v2/images/interesting-rebase-4.png) -->
+![将 `server` 中的修改变基到 `master` 上。](https://git-scm.com/book/en/v2/images/interesting-rebase-4.png)
 
 然后就可以快进合并主分支 `master` 了：
 
@@ -145,7 +145,7 @@ git merge server
  git branch -d server
 ```
 
-<!-- ![最终的提交历史。](https://git-scm.com/book/en/v2/images/interesting-rebase-5.png) -->
+![最终的提交历史。](https://git-scm.com/book/en/v2/images/interesting-rebase-5.png)
 
 ## 变基的风险
 
@@ -169,19 +169,19 @@ git merge server
 
 让我们来看一个在公开的仓库上执行变基操作所带来的问题。 假设你从一个中央服务器克隆然后在它的基础上进行了一些开发。 你的提交历史如图所示：
 
-<!-- ![克隆一个仓库，然后在它的基础上进行了一些开发。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-1.png) -->
+![克隆一个仓库，然后在它的基础上进行了一些开发。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-1.png)
 
 然后，某人又向中央服务器提交了一些修改，其中还包括一次合并。 你抓取了这些在远程分支上的修改，并将其合并到你本地的开发分支，然后你的提交历史就会变成这样：
 
-<!-- ![抓取别人的提交，合并到自己的开发分支。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-2.png) -->
+![抓取别人的提交，合并到自己的开发分支。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-2.png)
 
 接下来，这个人又决定把合并操作回滚，改用变基；继而又用 `git push --force` 命令覆盖了服务器上的提交历史。 之后你从服务器抓取更新，会发现多出来一些新的提交。
 
-<!-- ![有人推送了经过变基的提交，并丢弃了你的本地开发所基于的一些提交。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-3.png) -->
+![有人推送了经过变基的提交，并丢弃了你的本地开发所基于的一些提交。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-3.png)
 
 结果就是你们两人的处境都十分尴尬。 如果你执行 `git pull` 命令，你将合并来自两条提交历史的内容，生成一个新的合并提交，最终仓库会如图所示：
 
-<!-- ![你将相同的内容又合并了一次，生成了一个新的提交。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-4.png) -->
+![你将相同的内容又合并了一次，生成了一个新的提交。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-4.png)
 
 此时如果你执行 `git log` 命令，你会发现有两个提交的作者、日期、日志居然是一样的，这会令人感到混乱。 此外，如果你将这一堆又推送到服务器上，你实际上是将那些已经被变基抛弃的提交又找了回来，这会令人感到更加混乱。 很明显对方并不想在提交历史中看到 `C4` 和 `C6`，因为之前就是他把这两个提交通过变基丢弃的。
 
@@ -202,7 +202,7 @@ git merge server
 
 从而我们将得到与 [你将相同的内容又合并了一次，生成了一个新的提交](https://git-scm.com/book/zh/v2/ch00/_merge_rebase_work) 中不同的结果，如图 [在一个被变基然后强制推送的分支上再次执行变基](https://git-scm.com/book/zh/v2/ch00/_rebase_rebase_work) 所示。
 
-<!-- ![在一个被变基然后强制推送的分支上再次执行变基。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-5.png) -->
+![在一个被变基然后强制推送的分支上再次执行变基。](https://git-scm.com/book/en/v2/images/perils-of-rebasing-5.png)
 
 要想上述方案有效，还需要对方在变基时确保 `C4'` 和 `C4` 是几乎一样的。 否则变基操作将无法识别，并新建另一个类似 `C4` 的补丁（而这个补丁很可能无法整洁的整合入历史，因为补丁中的修改已经存在于某个地方了）。
 

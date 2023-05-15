@@ -5,20 +5,20 @@ category:
   - Git
 ---
 
-# 常用Git命令清单
+# 1. 常用Git命令清单
 
 一般来说，日常使用只要记住下图6个命令，就可以了。但是熟练使用，恐怕要记住60～100个命令。
 
 ![ ](./assets/bg2015120901.png)
 
-下面是我整理的常用 Git 命令清单。几个专用名词的译名如下。
+几个专用名词的译名
 
 > - Workspace：工作区
 > - Index / Stage：暂存区
 > - Repository：仓库区（或本地仓库）
 > - Remote：远程仓库
 
-## 一、新建代码库
+## 1 新建代码库
 
 ```bash
 # 在当前目录新建一个Git代码库
@@ -31,7 +31,7 @@ $ git init [project-name]
 $ git clone [url]
 ```
 
-## 二、配置
+## 2 配置
 
 Git的设置文件为`.gitconfig`，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。
 
@@ -47,7 +47,7 @@ $ git config [--global] user.name "[name]"
 $ git config [--global] user.email "[email address]"
 ```
 
-## 三、增加/删除文件
+## 3 增加/删除文件
 
 ```bash
 # 添加指定文件到暂存区
@@ -73,7 +73,7 @@ $ git rm --cached [file]
 $ git mv [file-original] [file-renamed]
 ```
 
-## 四、代码提交
+## 4 代码提交
 
 ```bash
 # 提交暂存区到仓库区
@@ -96,7 +96,7 @@ $ git commit --amend -m [message]
 $ git commit --amend [file1] [file2] ...
 ```
 
-## 五、分支
+## 5 分支
 
 ```bash
 # 列出所有本地分支
@@ -143,7 +143,7 @@ $ git push origin --delete [branch-name]
 $ git branch -dr [remote/branch]
 ```
 
-## 六、标签
+## 6 标签
 
 ```bash
 # 列出所有tag
@@ -174,7 +174,7 @@ $ git push [remote] --tags
 $ git checkout -b [branch] [tag]
 ```
 
-## 七、查看信息
+## 7 查看信息
 
 ```bash
 # 显示有变更的文件
@@ -239,7 +239,7 @@ $ git show [commit]:[filename]
 $ git reflog
 ```
 
-## 八、远程同步
+## 8 远程同步
 
 ```bash
 # 下载远程仓库的所有变动
@@ -267,7 +267,7 @@ $ git push [remote] --force
 $ git push [remote] --all
 ```
 
-## 九、撤销
+## 9 撤销
 
 ```bash
 # 恢复暂存区的指定文件到工作区
@@ -303,9 +303,9 @@ $ git stash
 $ git stash pop
 ```
 
-## 十、常用操作组合
+## 10 常用操作组合
 
-### 1. 修改本地分支名和远程分支名
+**修改本地分支名和远程分支名：**
 
 ```sh
 git branch -m old_branch new_branch # 重命名本地分支

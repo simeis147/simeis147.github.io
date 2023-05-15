@@ -20,7 +20,7 @@ git remote show <remote> # 远程分支的更多信息
 
 上面两行命令比较少用，更常见的做法是利用远程跟踪分支。
 
-### 远程跟踪分支
+## 远程跟踪分支
 
 **远程跟踪分支是远程分支状态的引用**。它们是你无法移动的本地引用。一旦你进行了网络通信， Git 就会为你移动它们以**精确反映远程仓库的状态**。请将它们**看做书签**， 这样可以提醒你该分支在远程仓库中的位置就是你最后一次连接到它们的位置。
 
@@ -32,27 +32,27 @@ git remote show <remote> # 远程分支的更多信息
 
 > 笔记：“origin” 并无特殊含义远程仓库名字 “origin” 与分支名字 “master” 一样，在 Git 中并没有任何特别的含义一样。 同时 “master” 是当你运行 `git init` 时默认的起始分支名字，原因仅仅是它的广泛使用， “origin” 是当你运行 `git clone` 时默认的远程仓库名字。 如果你运行 `git clone -o booyah`，那么你默认的远程分支名字将会是 `booyah/master`。
 
-<!-- ![克隆之后的服务器与本地仓库。](https://git-scm.com/book/en/v2/images/remote-branches-1.png) -->
+![克隆之后的服务器与本地仓库。](https://git-scm.com/book/en/v2/images/remote-branches-1.png)
 
 如果你在本地的 `master` 分支做了一些工作，在同一段时间内有其他人推送提交到 `git.ourcompany.com` 并且更新了它的 `master` 分支，这就是说你们的提交历史已走向不同的方向。 即便这样，只要你保持不与 `origin` 服务器连接（并拉取数据），你的 `origin/master` 指针就不会移动。
 
-<!-- ![本地与远程的工作可以分叉。](https://git-scm.com/book/en/v2/images/remote-branches-2.png) -->
+![本地与远程的工作可以分叉。](https://git-scm.com/book/en/v2/images/remote-branches-2.png)
 
 如果要与给定的远程仓库同步数据，运行 `git fetch <remote>` 命令（在本例中为 `git fetch origin`）。 这个命令查找 “origin” 是哪一个服务器（在本例中，它是 `git.ourcompany.com`）， 从中抓取本地没有的数据，并且更新本地数据库，移动 `origin/master` 指针到更新之后的位置。
 
-<!-- ![`git fetch` 更新你的远程仓库引用。](https://git-scm.com/book/en/v2/images/remote-branches-3.png) -->
+![`git fetch` 更新你的远程仓库引用。](https://git-scm.com/book/en/v2/images/remote-branches-3.png)
 
 笔记: 本地的 master 分支 可能 和 远程跟踪分支 origin/master 分叉
 
 为了演示有多个远程仓库与远程分支的情况，我们假定你有另一个内部 Git 服务器，仅服务于你的某个敏捷开发团队。 这个服务器位于 `git.team1.ourcompany.com`。 你可以运行 `git remote add` 命令添加一个新的远程仓库引用到当前的项目，这个命令我们会在 [Git 基础](https://git-scm.com/book/zh/v2/ch00/ch02-git-basics-chapter) 中详细说明。 将这个远程仓库**命名为 `teamone`，将其作为完整 URL 的缩写**。远程仓库名本质上是远程URL的缩写
 
-<!-- ![添加另一个远程仓库。](https://git-scm.com/book/en/v2/images/remote-branches-4.png) -->
+![添加另一个远程仓库。](https://git-scm.com/book/en/v2/images/remote-branches-4.png)
 
 现在，可以运行 `git fetch teamone` 来抓取远程仓库 `teamone` 有而本地没有的数据。 因为那台服务器上现有的数据是 `origin` 服务器上的一个子集， 所以 Git 并不会抓取数据而是会设置远程跟踪分支 `teamone/master` 指向 `teamone` 的 `master` 分支。
 
-<!-- ![远程跟踪分支 `teamone/master`。](https://git-scm.com/book/en/v2/images/remote-branches-5.png) -->
+![远程跟踪分支 `teamone/master`。](https://git-scm.com/book/en/v2/images/remote-branches-5.png)
 
-### 推送
+## 推送
 
 当你想要公开分享一个分支时，需要将其推送到有写入权限的远程仓库上。 本地的分支并不会自动与远程仓库同步——你必须显式地推送想要分享的分支。 这样，你就可以把不愿意分享的内容放到私人分支上，而将需要和别人协作的内容推送到公开分支。
 
@@ -71,7 +71,7 @@ To https://github.com/schacon/simplegit
 
 这里有些工作被简化了。 **Git 自动将 `serverfix` 分支名字展开为 `refs/heads/serverfix:refs/heads/serverfix`，** 那意味着，“推送本地的 `serverfix` 分支来更新远程仓库上的 `serverfix` 分支。” 我们将会详细学习 [Git 内部原理](https://git-scm.com/book/zh/v2/ch00/ch10-git-internals) 的 `refs/heads/` 部分， 但是现在可以先把它放在儿。你也可以运行 `git push origin serverfix:serverfix`， 它会做同样的事——也就是说“**推送本地的 `serverfix` 分支，将其作为远程仓库的 `serverfix` 分支**” 可以通过这种格式来推送本地分支到一个命名不相同的远程分支。
 
-#### 重命名远程仓库上的分支名
+### 重命名远程仓库上的分支名
 
 如果并不想让远程仓库上的分支叫做 `serverfix`，可以运行 `git push origin serverfix:awesomebranch` 来将本地的 `serverfix` 分支推送到远程仓库上的 `awesomebranch` 分支。
 
@@ -103,7 +103,7 @@ Switched to a new branch 'serverfix'
 
 这会给你一个用于工作的本地分支，并且起点位于 `origin/serverfix`。
 
-### 跟踪分支
+## 跟踪分支
 
 **从一个远程跟踪分支检出一个本地分支会自动创建所谓的“跟踪分支”（它跟踪的分支叫做“上游分支”）**。 **跟踪分支是与远程分支有直接关系的本地分支**。 如果在一个跟踪分支上输入 `git pull`，Git 能自动地识别去哪个服务器上抓取、合并到哪个分支。
 
@@ -144,7 +144,7 @@ Branch serverfix set up to track remote branch serverfix from origin.
 | ---- | ------------------------------------------------------------ |
 |      |                                                              |
 
-### 查看跟踪分支
+## 查看跟踪分支
 
 如果想要查看设置的所有跟踪分支，可以使用 `git branch` 的 `-vv` 选项。 这会将所有的本地分支列出来并且包含更多的信息，如每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有。
 
@@ -164,13 +164,13 @@ $ git branch -vv
 git fetch --all; git branch -vv
 ```
 
-### 拉取
+## 拉取
 
 当 `git fetch` 命令从服务器上抓取本地没有的数据时，它并不会修改工作目录中的内容。 它只会获取数据然后让你自己合并。 然而，有一个命令叫作 `git pull` 在大多数情况下它的含义是一个 `git fetch` 紧接着一个 `git merge` 命令。 如果有一个像之前章节中演示的设置好的跟踪分支，不管它是显式地设置还是通过 `clone` 或 `checkout` 命令为你创建的，`git pull` 都会查找当前分支所跟踪的服务器与分支， 从服务器上抓取数据然后尝试合并入那个远程分支。
 
 由于 `git pull` 的魔法经常令人困惑所以通常单独显式地使用 `fetch` 与 `merge` 命令会更好一些。
 
-### 删除远程分支
+## 删除远程分支
 
 假设你已经通过远程分支做完所有的工作了——也就是说你和你的协作者已经完成了一个特性， 并且将其合并到了远程仓库的 `master` 分支（或任何其他稳定代码分支）。 可以运行带有 `--delete` 选项的 `git push` 命令来删除一个远程分支。 如果想要从服务器上删除 `serverfix` 分支，运行下面的命令：
 

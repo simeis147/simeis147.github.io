@@ -9,8 +9,6 @@ category:
 
 官方文档（中文）：[https://git-scm.com/book/zh/v2](https://git-scm.com/book/zh/v2)
 
-> 本文档是根据官方文档来编写的，以官方文档为准。
-
 ## Git基础
 
 ### 全局配置
@@ -19,8 +17,6 @@ category:
 git config --global user.name 'your name'
 git config --global user.email 'xxx@xx.com'
 ```
-
-自报家门
 
 ### 检查配置信息
 

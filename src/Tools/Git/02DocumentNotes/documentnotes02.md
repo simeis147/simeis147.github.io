@@ -24,7 +24,7 @@ git commit -m 'The initial commit of my project'
 
 现在，Git 仓库中有五个对象：三个 ***blob* 对象**（保存着文件快照）、一个 **树对象** （记录着目录结构和 blob 对象索引）以及一个 **提交对象**（包含着指向前述树对象的指针和所有提交信息）。
 
-<!-- ![图1. 首次提交对象及其树结构 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906145443.jpg) -->
+![图1. 首次提交对象及其树结构 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906145443.jpg)
 
 小结：
 
@@ -32,13 +32,13 @@ git commit -m 'The initial commit of my project'
 
 2. `git commit` 提交操作，计算子目录或跟目录的校验和 保存为**树对象**。随后，创建一个**提交对象**，包含着指向树对象的指针和所有提交信息。
 
-### 再次提交
+## 再次提交
 
 做些修改后再次提交，那么这次产生的提交对象会包含一个指向上次提交对象（父对象）的指针。
 
 <!-- ![图2. 提交对象及其父对象 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906152315.jpg) -->
 
-### Git 的分支
+## Git 的分支
 
 **Git 的分支，其实本质上仅仅是指向提交对象的可变指针**。 Git 的默认分支名字是 `master`。 在多次提交操作之后，你其实已经有一个指向最后那个提交对象的 `master` 分支。 **`master` 分支指针会在每次提交时自动向前移动**。
 
@@ -46,7 +46,7 @@ git commit -m 'The initial commit of my project'
 
 <!-- ![图3. 分支及其提交历史 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906154109.jpg) -->
 
-### 创建分支
+## 创建分支
 
 Git 是怎么创建新分支的呢？ 很简单，它**只是为你创建了一个可以移动的新的指针**。 比如，创建一个 testing 分支， 你需要使用 `git branch` 命令：
 
@@ -58,13 +58,13 @@ git branch testing
 
 <!-- ![图4. 两个指向相同提交历史的分支 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906154330.png) -->
 
-### 当前分支的指针
+## 当前分支的指针
 
 Git 是怎么知道当前在哪一个分支上呢？ 很简单，它有一个**名为 `HEAD` 的特殊指针**，**指向当前所在的本地分支**（译注：**将 `HEAD` 想象为当前分支的别名**）。 在本例中，你仍然在 `master` 分支上。 因为 `git branch` 命令仅仅 **创建** 一个新分支，并不会自动切换到新分支中去。
 
 <!-- ![图5. HEAD 指向当前所在的分支 ▲](https://cdn.staticaly.com/gh/xugaoyi/image_store/blog/20200906205325.png) -->
 
-### 查看当前所在分支
+## 查看当前所在分支
 
 你可以简单地使用 `git log` 命令查看各个分支当前所指的对象。 提供这一功能的参数是 `--decorate`。
 
@@ -77,7 +77,7 @@ f30ab (HEAD -> master, testing) add feature # f30ab提交对象 (HEAD当前所�
 
 正如你所见，当前 `master` 和 `testing` 分支均指向校验和以 `f30ab` 开头的提交对象。
 
-### 分支切换
+## 分支切换
 
 ```sh
 git checkout testing  # git checkout <分支名>
@@ -133,7 +133,7 @@ $ git log --oneline --decorate --graph --all
 
 这与过去大多数版本控制系统形成了鲜明的对比，它们在创建分支时，将所有的项目文件都复制一遍，并保存到一个特定的目录。 完成这样繁琐的过程通常需要好几秒钟，有时甚至需要好几分钟。所需时间的长短，完全取决于项目的规模。 而在 Git 中，任何规模的项目都能在瞬间创建新分支。 同时，由于每次提交都会记录父对象，所以寻找恰当的合并基础（译注：即共同祖先）也是同样的简单和高效。 这些高效的特性使得 Git 鼓励开发人员频繁地创建和使用分支。
 
-### 创建分支同时切换
+## 创建分支同时切换
 
 通常我们会在创建一个新分支后立即切换过去，可以使用如下命令：
 
