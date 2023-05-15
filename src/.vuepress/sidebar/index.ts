@@ -15,6 +15,7 @@ export const zhSidebar = sidebar({
   "/FrontEnd/Vue/": "structure",
 
   "/Tools/Git/": "structure",
+  "/Tools/Git/*": "structure",
   "/Tools/MarkDown/": "structure",
   
   "/Database/Basic/Language/": "structure",
