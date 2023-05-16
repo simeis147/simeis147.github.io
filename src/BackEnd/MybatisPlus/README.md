@@ -12,7 +12,7 @@ category:
 
 ## 框架结构
 
-![ ](./assets/readme/mybatis-plus-framework.jpg)
+![ ](./assets/readme/mybatis-plus-framework.jpg =600x)
 
 ## 优点 | Advantages
 
