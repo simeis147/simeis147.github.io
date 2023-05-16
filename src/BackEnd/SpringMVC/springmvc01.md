@@ -322,10 +322,10 @@ SpringMVC入门程序开发总结(1+N)
 2. web容器发现所有请求都经过SpringMVC，将请求交给SpringMVC处理
    * 因为符合上面第六步设置的请求路径，所以该请求会交给SpringMVC来处理
 3. 解析请求路径/save
-4. 由/save匹配执行对应的方法save(）
+4. 由/save匹配执行对应的方法save()
    * 上面的第五步已经将请求路径和方法建立了对应关系，通过/save就能找到对应的save方法
 5. 执行save()
-6. 检测到有@ResponseBody直接将save()方法的返回值作为响应求体返回给请求方
+6. 检测到有@ResponseBody直接将save()方法的返回值作为响应体返回给请求方
 
 ### 1.5 bean加载控制
 
