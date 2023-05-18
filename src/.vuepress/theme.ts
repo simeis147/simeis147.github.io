@@ -55,7 +55,7 @@ export default hopeTheme({
       Email: "mailto:24726259408@qq.com",
       GitHub: "https://github.com/simeis147",
       Gitee: "https://gitee.com/dong-chengpeng",
-      Gitlab: "https://gitlab.cn/",
+      // Gitlab: "https://gitlab.cn/",
     },
   },
 
