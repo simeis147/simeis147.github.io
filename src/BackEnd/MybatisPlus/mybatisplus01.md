@@ -470,7 +470,7 @@ User loginUser = userDao.selectOne(lqw);
 System.out.println(loginUser);
 ```
 
-- 购物设定价格区间、户籍设定年龄区间（le ge匹配 或 between匹配）
+- 购物设定价格区间、户籍设定年龄区间（lt gt匹配 或 between匹配）
 
 ```java
 LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
