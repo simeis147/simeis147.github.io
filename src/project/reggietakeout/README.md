@@ -14,9 +14,11 @@ category:
 
 # 瑞吉外卖
 
-## 项目地址
+## 0. 地址
 
-[https://github.com/simeis147/reggie_take_out/tree/main](https://github.com/simeis147/reggie_take_out/tree/main)
+### [视频地址](https://www.bilibili.com/video/BV13a411q753/?spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click&vd_source=8a1412d04d200fa33278d2b150f9b8df)
+
+### [仓库地址](https://github.com/simeis147/reggie_take_out/tree/main)
 
 ## 1. 角色分工
 
