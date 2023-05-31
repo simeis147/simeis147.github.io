@@ -141,7 +141,8 @@ public class LoginCheckFilter implements Filter{
 > AntPathMatcher：Spring中提供的路径匹配器
 >
 >
-> 通配符规则
+> 通配符规则:
+> 
 > | 符号 | 含义                   |
 > | ---- | ---------------------- |
 > | ?    | 匹配一个字符           |
@@ -164,7 +165,7 @@ public class ReggieApplication {
 }
 ```
 
-> @ServletComponentScan 的作用:
+> @ServletComponentScan 的作用:  
 > ​在SpringBoot项目中，在引导类/配置类上加了该注解后，会自动扫描项目中(当前包及其子包下)的@WebServlet ，@WebFilter ，@WebListener 注解，自动注册Servlet的相关组件
 
 ### 1.4 功能测试
@@ -200,7 +201,7 @@ employee表中的status字段已经设置了默认值1，表示状态正常
 
 ### 2.3 程序执行流程
 
-在开发代码之前，需要结合着前端页面发起的请求，梳理一下整个程序的执行过程
+在开发代码之前，需要结合前端页面发起的请求，梳理一下整个程序的执行过程
 
 ![ ](./assets/day02/image-20210728005638224.png)
 
