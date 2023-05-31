@@ -322,7 +322,7 @@ public class  GlobalExceptionHandler {
 
 > 注解说明: ​上述的全局异常处理器上使用了的两个注解 @ControllerAdvice ，@ResponseBody
 >
-> ​@ControllerAdvice : 指定拦截那些类型的控制器  
+> ​@ControllerAdvice : 指定拦截哪些类型的控制器  
 > ​@ResponseBody: 将方法的返回值 R 对象转换为json格式的数据，响应给页面  
 >
 > ​上述使用的两个注解，也可以合并成为一个注解 @RestControllerAdvice
