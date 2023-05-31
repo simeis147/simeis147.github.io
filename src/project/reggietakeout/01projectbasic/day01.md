@@ -287,7 +287,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
-发送登录的异步请求之后，获取到响应结果，响应结果中至少包含三个属性: `code`、`data`、`msg` 
+发送登录的异步请求之后，获取到响应结果，响应结果中至少包含三个属性: `code`、`data`、`msg`
 
 用户登录成功之后，服务端会返回用户信息，前端将这些用户信息存储在客户端的 localStorage 中了  
 
