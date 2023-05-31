@@ -287,7 +287,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 ![ ](./assets/day01/image-20210727000329958.png)
 
-发送登录的异步请求之后，获取到响应结果，响应结果中至少包含三个属性: code、data、msg  
+发送登录的异步请求之后，获取到响应结果，响应结果中至少包含三个属性: `code`、`data`、`msg` 
 
 用户登录成功之后，服务端会返回用户信息，前端将这些用户信息存储在客户端的 localStorage 中了  
 
@@ -545,8 +545,6 @@ public R<Employee> login(HttpServletRequest request,@RequestBody Employee employ
 ## 3. 后台系统退出功能
 
 ### 3.1 需求分析
-
-页面跳转到后台系统首页面(backend/index.html)，此时会在系统的右上角显示当前登录用户的姓名  
 
 1.**退出页面展示**
 
