@@ -102,10 +102,11 @@
 //   opacity: 0.5 !important;
 // }
 
-// body {
-//   @media (min-width: 1440px) {
-//     font-size: 17px;
-//   }
+body {
+  @media (min-width: 1440px) {
+    font-size: 17.25px;
+  }
+}
 //   // 引用样式修改
 //   blockquote {
 //     border-inline-start: 0.3rem solid;
