@@ -28,6 +28,9 @@ export const zhSidebar = sidebar({
 
   "/ComputerBasics/ComputerNetwork/": "structure",
 
+  "/Algorithm/": "structure",
+  "/Algorithm/*": "structure",
+  
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",
 });
