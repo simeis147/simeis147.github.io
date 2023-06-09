@@ -23,32 +23,21 @@ export const zhNavbar = navbar([
       ]
   },
   { 
-    text: '算法',
-    link: '/Algorithm/',
-    children: [
-      { text: '数组', link: "/Algorithm/01Arrays/" },
-      { text: '链表', link: "/Algorithm/02LinkedList/"}, 
-      { text: '哈希表', link: "/Algorithm/03HashTable/"},
-      { text: '字符串', link: "/Algorithm/04.String/"},
-      { text: '双指针法', link: "/Algorithm/05DoublePointer/"},
-      { text: '栈与队列', link: "/Algorithm/06StacksAndQueues/"},
-      { text: '二叉树', link: "/Algorithm/07BinaryTree/"},
-      { text: '回溯算法', link: "/Algorithm/08BacktrackingAlgorithm/"},
-      { text: '贪心算法', link: "/Algorithm/09GreedyAlgorithm/"},
-      { text: '动态规划', link: "/Algorithm/10DynamicProgramming/"},
-      { text: '单调栈', link: "/Algorithm/11MonotonicStack/"},
-    ] 
-  },
-  { 
     text: '计算机基础',
     link: '/ComputerBasics/',
     children: [
       {
         text: '计算机网络',
         children: [
-          { text: "计算机网络", icon: 'change',link: "/ComputerBasics/ComputerNetwork/" },
+          { text: "计算机网络", icon: 'change', link: "/ComputerBasics/ComputerNetwork/" },
         ]
       },
+      {
+        text: '算法',
+        children: [
+          { text: '算法', icon: 'strong', link: "/ComputerBasics/Algorithm" },
+        ],
+      }
     ]
   },
   { 

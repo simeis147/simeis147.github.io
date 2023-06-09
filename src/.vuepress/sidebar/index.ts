@@ -27,9 +27,10 @@ export const zhSidebar = sidebar({
   "/project/reggietakeout/*": "structure",
 
   "/ComputerBasics/ComputerNetwork/": "structure",
+  "/ComputerBasics/Algorithm/": "structure",
+  "/ComputerBasics/Algorithm/*": "structure",
+  
 
-  "/Algorithm/": "structure",
-  "/Algorithm/*": "structure",
   
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",
