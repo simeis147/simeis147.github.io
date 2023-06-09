@@ -11,3 +11,5 @@ category:
 # 路径导航
 # breadcrumb: false
 ---
+
+算法，启动！
