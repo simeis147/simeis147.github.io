@@ -30,8 +30,6 @@ export const zhSidebar = sidebar({
   "/ComputerBasics/Algorithm/": "structure",
   "/ComputerBasics/Algorithm/*": "structure",
   
-
-  
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",
 });
