@@ -1,6 +1,19 @@
 import { sidebar } from "vuepress-theme-hope";
 
 export const zhSidebar = sidebar({
+  "/Tools/Git/": "structure",
+  "/Tools/Git/*": "structure",
+  "/Tools/MarkDown/": "structure",
+
+  "/ComputerBasics/ComputerNetwork/": "structure",
+  "/ComputerBasics/Algorithm/": "structure",
+  "/ComputerBasics/Algorithm/*": "structure",
+
+  "/Database/Basic/Language/": "structure",
+  "/Database/Basic/Principle/": "structure",
+  "/Database/NoSQL/": "structure",
+  "/Database/SQL/": "structure",
+
   "/BackEnd/JavaSE/": "structure",
   "/BackEnd/JavaWeb/": "structure",
   "/BackEnd/MyBatis/": "structure",
@@ -13,23 +26,10 @@ export const zhSidebar = sidebar({
   "/FrontEnd/CSS/": "structure",
   "/FrontEnd/JavaScript/": "structure",
   "/FrontEnd/Vue/": "structure",
-
-  "/Tools/Git/": "structure",
-  "/Tools/Git/*": "structure",
-  "/Tools/MarkDown/": "structure",
-  
-  "/Database/Basic/Language/": "structure",
-  "/Database/Basic/Principle/": "structure",
-  "/Database/NoSQL/": "structure",
-  "/Database/SQL/": "structure",
   
   "/project/reggietakeout/": "structure",
   "/project/reggietakeout/*": "structure",
 
-  "/ComputerBasics/ComputerNetwork/": "structure",
-  "/ComputerBasics/Algorithm/": "structure",
-  "/ComputerBasics/Algorithm/*": "structure",
-  
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",
 });
