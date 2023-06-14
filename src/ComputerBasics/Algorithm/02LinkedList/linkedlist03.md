@@ -89,7 +89,7 @@ class MyLinkedList {
         size--;
         if (index == 0) {
             head = head.next;
-	    return;
+        return;
         }
         ListNode pred = head;
         for (int i = 0; i < index ; i++) {
@@ -99,6 +99,9 @@ class MyLinkedList {
     }
 }
 
+```
+
+```java
 //双链表
 class ListNode{
     int val;
