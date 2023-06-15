@@ -182,8 +182,6 @@ Redis hash 是一个string类型的 field 和 value 的映射表，hash特别适
 - **HVALS** key                              获取哈希表中所有值
 - **HGETALL** key                         获取在哈希表中指定 key 的所有字段和值
 
-![image-20210927113014567](assets/image-20210927113014567.png)
-
 ### 4.3 列表list操作命令
 
 Redis 列表是简单的字符串列表，按照插入顺序排序，常用命令：
@@ -193,8 +191,6 @@ Redis 列表是简单的字符串列表，按照插入顺序排序，常用命�
 - **RPOP** key                                       移除并获取列表最后一个元素
 - **LLEN** key                                        获取列表长度
 - **BRPOP** key1 [key2 ] timeout       移出并获取列表的最后一个元素， 如果列表没有元素会阻塞列表直到等待超    时或发现可弹出元素为止
-
-![image-20210927113312384](assets/image-20210927113312384.png)
 
 ### 4.4 集合set操作命令
 
@@ -208,8 +204,6 @@ Redis set 是string类型的无序集合。集合成员是唯一的，这就意�
 - **SDIFF** key1 [key2]                                      返回给定所有集合的差集
 - **SREM** key member1 [member2]            移除集合中一个或多个成员
 
-![image-20210927113632472](assets/image-20210927113632472.png)
-
 ### 4.5 有序集合sorted set操作命令
 
 Redis sorted set 有序集合是 string 类型元素的集合，且不允许重复的成员。每个元素都会关联一个double类型的分数(score) 。redis正是通过分数来为集合中的成员进行从小到大排序。有序集合的成员是唯一的，但分数却可以重复。
@@ -220,8 +214,6 @@ Redis sorted set 有序集合是 string 类型元素的集合，且不允许重�
 - **ZRANGE** key start stop [WITHSCORES]                     通过索引区间返回有序集合中指定区间内的成员
 - **ZINCRBY** key increment member                              有序集合中对指定成员的分数加上增量 increment
 - **ZREM** key member [member ...]                                移除有序集合中的一个或多个成员
-
-![image-20210927114003383](assets/image-20210927114003383.png)
 
 ### 4.6 通用命令
 
