@@ -245,13 +245,13 @@ Jedis 是 Redis 的 Java 版本的客户端实现。
 
 maven坐标：
 
-~~~xml
+```xml
 <dependency>
     <groupId>redis.clients</groupId>
     <artifactId>jedis</artifactId>
     <version>2.8.0</version>
 </dependency>
-~~~
+```
 
 使用 Jedis 操作 Redis 的步骤：
 
@@ -261,7 +261,7 @@ maven坐标：
 
 示例代码：
 
-~~~java
+```java
 package com.itheima.test;
 
 import org.junit.Test;
@@ -299,7 +299,7 @@ public class JedisTest {
         jedis.close();
     }
 }
-~~~
+```
 
 ### 5.3 Spring Data Redis
 
@@ -311,22 +311,22 @@ Spring Data Redis 是 Spring 的一部分，提供了在 Spring 应用中通过�
 
 maven坐标：
 
-~~~xml
+```xml
 <dependency>
     <groupId>org.springframework.data</groupId>
     <artifactId>spring-data-redis</artifactId>
     <version>2.4.8</version>
 </dependency>
-~~~
+```
 
 Spring Boot提供了对应的Starter，maven坐标：
 
-~~~xml
+```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-redis</artifactId>
 </dependency>
-~~~
+```
 
 Spring Data Redis中提供了一个高度封装的类：**RedisTemplate**，针对 Jedis 客户端中大量api进行了归类封装,将同一类型操作封装为operation接口，具体分类如下：
 
@@ -342,7 +342,7 @@ Spring Data Redis中提供了一个高度封装的类：**RedisTemplate**，针�
 
 第一步：创建maven项目springdataredis_demo，配置pom.xml文件
 
-~~~xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -385,11 +385,11 @@ Spring Data Redis中提供了一个高度封装的类：**RedisTemplate**，针�
         </plugins>
     </build>
 </project>
-~~~
+```
 
 第二步：编写启动类
 
-~~~java
+```java
 package com.itheima;
 
 import org.springframework.boot.SpringApplication;
@@ -403,11 +403,11 @@ public class App {
     }
 
 }
-~~~
+```
 
 第三步：配置application.yml
 
-~~~yaml
+```yaml
 spring:
   application:
     name: springdataredis_demo
@@ -424,7 +424,7 @@ spring:
         max-wait: 1ms #连接池最大阻塞等待时间
         max-idle: 4 #连接池中的最大空闲连接
         min-idle: 0 #连接池中的最小空闲连接
-~~~
+```
 
 解释说明：
 
@@ -434,7 +434,7 @@ spring:
 
 第四步：提供配置类
 
-~~~java
+```java
 package com.itheima.config;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -465,7 +465,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
 }
-~~~
+```
 
 解释说明：
 
@@ -473,7 +473,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
 第五步：提供测试类
 
-~~~java
+```java
 package com.itheima.test;
 
 import org.junit.runner.RunWith;
@@ -489,11 +489,11 @@ public class SpringDataRedisTest {
     private RedisTemplate redisTemplate;
     
 }
-~~~
+```
 
 ##### 5.3.2.2 操作字符串类型数据
 
-~~~java
+```java
 /**
  * 操作String类型数据
 */
@@ -513,11 +513,11 @@ public void testString(){
     Boolean aBoolean = redisTemplate.opsForValue().setIfAbsent("city1234", "nanjing");
     System.out.println(aBoolean);
 }
-~~~
+```
 
 ##### 5.3.2.3 操作哈希类型数据
 
-~~~java
+```java
 /**
  * 操作Hash类型数据
 */
@@ -546,11 +546,11 @@ public void testHash(){
         System.out.println(value);
     }
 }
-~~~
+```
 
 ##### 5.3.2.4 操作列表类型数据
 
-~~~java
+```java
 /**
  * 操作List类型的数据
 */
@@ -577,11 +577,11 @@ public void testList(){
         System.out.println(element);
     }
 }
-~~~
+```
 
 ##### 5.3.2.5 操作集合类型数据
 
-~~~java
+```java
 /**
  * 操作Set类型的数据
 */
@@ -608,11 +608,11 @@ public void testSet(){
     }
 
 }
-~~~
+```
 
 ##### 5.3.2.6 操作有序集合类型数据
 
-~~~java
+```java
 /**
  * 操作ZSet类型的数据
 */
@@ -650,11 +650,11 @@ public void testZset(){
         System.out.println(s);
     }
 }
-~~~
+```
 
 ##### 5.3.2.7 通用操作
 
-~~~java
+```java
 /**
  * 通用操作，针对不同的数据类型都可以操作
 */
@@ -678,4 +678,4 @@ public void testCommon(){
     System.out.println(dataType.name());
 
 }
-~~~
+```
