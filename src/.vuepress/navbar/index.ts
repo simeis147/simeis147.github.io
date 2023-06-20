@@ -75,6 +75,7 @@ export const zhNavbar = navbar([
               children: [
                   { text: "MyBatisPlus", link: "/BackEnd/MyBatisPlus/"},
                   { text: "MyBatis", link: "/BackEnd/MyBatis/"},
+                  { text: "SpringCloud", link: "/BackEnd/SpringCloud/"},
                   { text: "SpringBoot", link: "/BackEnd/SpringBoot/"},
                   { text: "SpringMVC", link: "/BackEnd/SpringMVC/"},
                   { text: "Spring", link: "/BackEnd/Spring/"},

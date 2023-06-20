@@ -20,6 +20,7 @@ export const zhSidebar = sidebar({
   "/BackEnd/MybatisPlus/": "structure",
   "/BackEnd/Spring/": "structure",
   "/BackEnd/SpringBoot/": "structure",
+  "/BackEnd/SpringCloud/": "structure",
   "/BackEnd/SpringMVC/": "structure",
 
   "/FrontEnd/HTML/": "structure",
