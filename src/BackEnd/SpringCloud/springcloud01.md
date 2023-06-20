@@ -405,9 +405,9 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 为什么我们只输入了service名称就可以访问了呢？之前还要获取ip和端口。
 
-显然有人帮我们根据service名称，获取到了服务实例的ip和端口。它就是`LoadBalancerInterceptor`，这个类会在对RestTemplate的请求进行拦截，然后从Eureka根据服务id获取服务列表，随后利用负载均衡算法得到真实的服务地址信息，替换服务id。
+显然根据service名称，可以获取服务实例的ip和端口。它就是`LoadBalancerInterceptor`，这个类会在对RestTemplate的请求进行拦截，然后从Eureka根据服务id获取服务列表，随后利用负载均衡算法得到真实的服务地址信息，替换服务id。
 
-我们进行源码跟踪：
+**进行源码跟踪**：
 
 #### 1）LoadBalancerIntercepor
 
@@ -522,11 +522,11 @@ SpringCloudRibbon的底层采用了一个拦截器，拦截了RestTemplate发出
         NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 负载均衡规则 
     ```
 
-> **注意**，一般用默认的负载均衡规则，不做修改。
+> **注意**：一般用默认的负载均衡规则，不做修改
 
 ### 3.4 饥饿加载
 
-Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长。
+Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长
 
 而饥饿加载则会在项目启动时创建，降低第一次访问的耗时，通过下面配置开启饥饿加载：
 
