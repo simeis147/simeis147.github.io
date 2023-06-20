@@ -21,7 +21,7 @@ category:
 
 ### 1.2 服务拆分示例
 
-以课前资料中的微服务cloud-demo为例，其结构如下：
+以微服务cloud-demo为例，其结构如下：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620185740.png)
 
@@ -50,7 +50,7 @@ cloud-order表中初始数据如下：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620185838.png)
 
-cloud-order表中持有cloud-user表中的id字段。
+> cloud-order表中持有cloud-user表中的id字段
 
 #### 1.2.2 导入demo工程
 
@@ -100,21 +100,23 @@ cloud-order表中持有cloud-user表中的id字段。
 
 #### 1.3.1 案例需求
 
-修改order-service中的根据id查询订单业务，要求在查询订单的同时，根据订单中包含的userId查询出用户信息，一起返回。
+修改order-service中的根据id查询订单业务，要求在查询订单的同时，根据订单中包含的userId查询出用户信息，一起返回
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620190052.png)
 
-因此，我们需要在order-service中 向user-service发起一个http的请求，调用[http://localhost:8081/user/{userId}](http://localhost:8081/user/{userId})这个接口。
+因此，需要在order-service中向user-service发起http的请求[http://localhost:8081/user/{userId}](http://localhost:8081/user/{userId})  
 
-大概的步骤是这样的：
+:::tip 大概的步骤：
 
 - 注册一个RestTemplate的实例到Spring容器
 - 修改order-service服务中的OrderService类中的queryOrderById方法，根据Order对象中的userId查询User
 - 将查询的User填充到Order对象，一起返回
 
+:::
+
 #### 1.3.2 注册RestTemplate
 
-首先，我们在order-service服务中的OrderApplication启动类中，注册RestTemplate实例：
+首先，在order-service服务中的OrderApplication启动类中，注册RestTemplate实例：
 
 ```java
 package cn.itcast.order;
@@ -167,23 +169,21 @@ public class OrderApplication {
 
 ## 2 Eureka注册中心
 
-假如我们的服务提供者user-service部署了多个实例，如图：
+假如服务提供者user-service部署了多个实例，如图：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620190117.png)
 
-大家思考几个问题：
+几个问题：
 
-- order-service在发起远程调用的时候，该如何得知user-service实例的ip地址和端口？
-- 有多个user-service实例地址，order-service调用时该如何选择？
-- order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？
+1. order-service在发起远程调用的时候，该如何得知user-service实例的ip地址和端口？
+1. 有多个user-service实例地址，order-service调用时该如何选择？
+1. order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？
 
 ### 2.1 Eureka的结构和作用
 
 这些问题都需要利用SpringCloud中的注册中心来解决，其中最广为人知的注册中心就是Eureka，其结构如下：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620190125.png)
-
-回答之前的各个问题。
 
 问题1：order-service如何得知user-service实例地址？
 
@@ -193,10 +193,14 @@ public class OrderApplication {
 - eureka-server保存服务名称到服务实例地址列表的映射关系
 - order-service根据服务名称，拉取实例地址列表。这个叫服务发现或服务拉取
 
+---
+
 问题2：order-service如何从多个user-service实例中选择具体的实例？
 
 - order-service从实例列表中利用负载均衡算法选中一个实例地址
 - 向该实例地址发起远程调用
+
+---
 
 问题3：order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？
 
@@ -278,8 +282,6 @@ eureka:
 #### 2.2.5 启动服务
 
 启动微服务，然后在浏览器访问：[http://127.0.0.1:10086](http://127.0.0.1:10086)
-
-看到下面结果应该是成功了：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230620190234.png)
 
