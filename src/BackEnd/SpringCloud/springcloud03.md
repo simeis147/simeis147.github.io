@@ -339,4 +339,3 @@ UserController：
 ```java
 @EnableFeignClients(clients = {UserClient.class})
 ```
-
