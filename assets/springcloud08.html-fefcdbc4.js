@@ -1,1 +1,0 @@
-import{_ as e}from"./plugin-vue_export-helper-c27b6911.js";import{o as c,c as o}from"./app-261004a7.js";const r={};function t(n,_){return c(),o("div")}const a=e(r,[["render",t],["__file","springcloud08.html.vue"]]);export{a as default};
