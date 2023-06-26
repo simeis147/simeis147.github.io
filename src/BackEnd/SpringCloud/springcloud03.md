@@ -16,9 +16,9 @@ category:
 
 存在下面的问题：
 
-•代码可读性差，编程体验不统一
+- 代码可读性差，编程体验不统一
 
-•参数复杂URL难以维护
+- 参数复杂URL难以维护
 
 Feign是一个声明式的http客户端，官方地址：[https://github.com/OpenFeign/feign]
 
@@ -81,8 +81,6 @@ public interface UserClient {
 修改order-service中的OrderService类中的queryOrderById方法，使用Feign客户端代替RestTemplate：
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230621185741.png)
-
-是不是看起来优雅多了。
 
 #### 5）总结
 
@@ -260,7 +258,6 @@ UserController：
 缺点：
 
 - 服务提供方、服务消费方紧耦合
-
 - 参数列表中的注解映射并不会继承，因此Controller中必须再次声明方法、参数列表、注解
 
 #### 1.4.2 抽取方式
