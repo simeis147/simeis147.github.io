@@ -1,6 +1,5 @@
 ---
 order: 8
-cover: https://pic.peo.pw/a/2023/04/27/6449fc351b3ef.jpg
 date: 2023-04-20
 category:
   - SpringBoot

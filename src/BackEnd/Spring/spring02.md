@@ -1,6 +1,5 @@
 ---
 order: 2
-cover: https://pic.peo.pw/a/2023/04/27/6449fc3357caa.jpg
 date: 2023-04-17
 category: 
   - Spring
