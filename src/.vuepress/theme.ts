@@ -13,7 +13,7 @@ export default hopeTheme({
 
   iconAssets: [
     "iconfont", 
-    "//at.alicdn.com/t/c/font_4010207_zfris1seurl.css",
+    "//at.alicdn.com/t/c/font_4010207_pipfznycg3.css",
   ],
   iconPrefix: "iconfont icon-",
 
@@ -29,12 +29,6 @@ export default hopeTheme({
 
   darkmode : "toggle", //在深色模式和浅色模式之间切换 
  
-  // themeColor: {
-  //   red: "#f26d6d",
-  //   blue: "#2196f3",
-  //   orange: "#fb9b5f",
-  //   gary: "#7f8c8d",
-  // },
   // fullscreen: true,
 
   // 页面元数据：贡献者，最后修改时间，编辑链接
