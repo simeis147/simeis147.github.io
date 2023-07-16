@@ -10,11 +10,6 @@ heroText: Simeis 147
 tagline: Keep on going
 
 projects:
-  - icon: study
-    name: JavaWeb
-    desc: 目前学习进度
-    link: https://simeis147.github.io/BackEnd/JavaWeb/
-
   - icon: link
     name: Java
     desc: Java全栈知识体系
