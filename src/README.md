@@ -23,7 +23,7 @@ projects:
   - icon: keyboard
     name: zfrontier
     desc: 装备前线
-    link: https://www.zfrontier.com/app/#new
+    link: https://www.zfrontier.com/app/user/zae5QEwJmVroZk
 
   - icon: douban
     name: douban

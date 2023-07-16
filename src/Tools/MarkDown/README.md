@@ -4,7 +4,6 @@ star: true
 index: true
 order: number
 date: 2023-03-02
-cover: https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230627144839.png
 category: 
   - Markdown
 ---
