@@ -29,23 +29,19 @@ highlights:
     bgImage: https://theme-hope-assets.vuejs.press/bg/4-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/4-dark.svg
     highlights:
-      - title: 仓库地址
-        icon: box
+      - title: 📦️ 仓库地址
         details: SpringBoot + SpringMVC + MyBatis + Mysql + Redis
         link: https://github.com/simeis147/sky-take-out
 
-      - title: 视频地址
-        icon: actions
+      - title: 🎥 视频地址
         details: B站学习
         link: https://www.bilibili.com/video/BV1TP411v7v6
 
-      - title: 项目介绍
-        icon: emmet
+      - title: 📑 项目介绍
         details: 产品原型、技术选型以、开发环境搭建、接口文档
         link: http://www.yangeit.cn:21010/skytakeoutproject2023/day01.html#_2-%E8%8B%8D%E7%A9%B9%E5%A4%96%E5%8D%96%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D
 
-      - title: 笔记
-        icon: note
+      - title: 📖 笔记
         details: 需求分析、设计、编码、测试
         link: http://www.yangeit.cn:21010/skytakeoutproject2023/day02.html
 
@@ -56,28 +52,23 @@ highlights:
     bgImage: https://theme-hope-assets.vuejs.press/bg/3-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/3-dark.svg
     highlights:
-      - title: 仓库地址
-        icon: box
+      - title: 📦️ 仓库地址
         details: SpringBoot + MybatisPlus + MySQL + Redis
         link: https://github.com/simeis147/reggie_take_out
 
-      - title: 视频地址
-        icon: actions
+      - title: 🎥 视频地址
         details: B站学习
         link: https://www.bilibili.com/video/BV13a411q753
 
-      - title: 项目介绍
-        icon: line
+      - title: 📑 项目介绍
         details: 产品原型、技术选型、功能架构、角色分工
         link: ./reggietakeout
 
-      - title: 笔记
-        icon: editor
+      - title: 📖 笔记
         details: 开发环境搭建、功能实现、完善、测试等
         link: ./reggietakeout/01projectbasic/day01.html
 
-      - title: 项目优化
-        icon: config
+      - title: 🏗️ 项目优化
         details: 1 缓存优化、2 缓存短信验证码、3 缓存菜品数据、4 Spring Cache、5 缓存套餐数据
         link: https://github.com/simeis147/reggie_take_out_optimization
 ---

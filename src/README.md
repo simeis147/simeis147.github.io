@@ -2,8 +2,7 @@
 home: true
 layout: BlogHome
 
-icon: home
-title: Home
+title: 🏠️ Home
 
 bgImage: /assets/bgImage/iTab-1k6ljv.jpg
 heroFullScreen: true

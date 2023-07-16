@@ -5,8 +5,7 @@ export const zhNavbar = navbar([
   
   { 
       text: '工具',
-      link: '/Tools/',
-      icon: "tool",
+      link: '🔧 Tools',
       children: [
         {
           text: '文档',
@@ -24,12 +23,12 @@ export const zhNavbar = navbar([
   },
   { 
     text: '计算机基础',
-    link: '/ComputerBasics/',
+    link: '💻 CSBasics',
     children: [
       {
         text: '计算机网络',
         children: [
-          { text: "计算机网络", icon: 'change', link: "/ComputerBasics/ComputerNetwork/" },
+          { text: "计算机网络", icon: 'Web', link: "/ComputerBasics/ComputerNetwork/" },
         ]
       },
       {
@@ -42,7 +41,7 @@ export const zhNavbar = navbar([
   },
   { 
     text: '数据库',
-    link: '/Database/',
+    link: '🧾 Database',
     children: [
       {
         text: '数据库基础和原理',
@@ -68,24 +67,24 @@ export const zhNavbar = navbar([
   
   { 
       text: '后端相关',
-      link: '/BackEnd/',
+      link: '🛫 BackEnd',
       children: [
           {
               text: '框架',
               children: [
-                  { text: "MyBatisPlus", link: "/BackEnd/MyBatisPlus/"},
-                  { text: "MyBatis", link: "/BackEnd/MyBatis/"},
-                  { text: "SpringCloud", link: "/BackEnd/SpringCloud/"},
-                  { text: "SpringBoot", link: "/BackEnd/SpringBoot/"},
-                  { text: "SpringMVC", link: "/BackEnd/SpringMVC/"},
-                  { text: "Spring", link: "/BackEnd/Spring/"},
+                  { text: "MyBatisPlus", icon: 'setup', link: "/BackEnd/MyBatisPlus/"},
+                  { text: "MyBatis", icon: 'draw',link: "/BackEnd/MyBatis/"},
+                  { text: "SpringCloud", icon: 'cloud',link: "/BackEnd/SpringCloud/"},
+                  { text: "SpringBoot", icon: 'notebook',link: "/BackEnd/SpringBoot/"},
+                  { text: "SpringMVC", icon: 'monitor',link: "/BackEnd/SpringMVC/"},
+                  { text: "Spring", icon: 'notebook1',link: "/BackEnd/Spring/"},
               ]
           },
           {
               text: '理论知识',
               children: [
-                  { text: "JavaWeb", link: "/BackEnd/JavaWeb/" },
-                  { text: "JavaSE", link: "/BackEnd/JavaSE/"}
+                  { text: "JavaWeb", icon: 'Web',link: "/BackEnd/JavaWeb/" },
+                  { text: "JavaSE", icon: 'java',link: "/BackEnd/JavaSE/"}
               ]
           }
           
@@ -94,7 +93,7 @@ export const zhNavbar = navbar([
 
   { 
       text: '前端相关',
-      link: '/FrontEnd/',
+      link: '🛫 FrontEnd',
       children: [
           {
               text: '框架',
@@ -113,7 +112,7 @@ export const zhNavbar = navbar([
       ]
   },
 
-  { text: 'Project', icon: 'code', link: '/project/' },
+  { text: '📝 Project', link: '/project/' },
 
   // { 
   //   text: 'Others',
