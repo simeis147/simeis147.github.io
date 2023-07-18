@@ -1,10 +1,8 @@
 ---
-index: true
-order: number
+order: 1
 date: 2023-07-18
 category: 
-  - 项目
   - 苍穹外卖
 ---
 
-# 苍穹外卖
+# Day01

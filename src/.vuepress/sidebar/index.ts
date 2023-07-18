@@ -31,6 +31,8 @@ export const zhSidebar = sidebar({
   "/project/reggietakeout/": "structure",
   "/project/reggietakeout/*": "structure",
 
+  "/project/skytakeout/": "structure",
+
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",
 });
