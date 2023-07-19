@@ -15,12 +15,12 @@ projects:
     desc: Java全栈知识体系
     link: https://pdai.tech/
 
-  - icon: customize
+  - icon: notebook1
     name: acwing
     desc: 算法学习
     link: https://www.acwing.com/
 
-  - icon: keyboard
+  - icon: jianpan
     name: zfrontier
     desc: 装备前线
     link: https://www.zfrontier.com/app/user/zae5QEwJmVroZk

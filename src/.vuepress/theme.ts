@@ -12,8 +12,7 @@ export default hopeTheme({
   pageInfo: ['Author', 'Date', 'Original',  'Word', 'ReadingTime', 'PageView', 'Category', 'Tag'],
 
   iconAssets: [
-    "iconfont", 
-    "//at.alicdn.com/t/c/font_4010207_7oyqrjnzy7w.css",
+    "//at.alicdn.com/t/c/font_4010207_lnf1z756n8m.css",
   ],
   iconPrefix: "iconfont icon-",
 
@@ -28,13 +27,7 @@ export default hopeTheme({
   // pure: true, //纯净模式！
 
   darkmode : "toggle", //在深色模式和浅色模式之间切换 
- 
-  // themeColor: {
-  //   red: "#f26d6d",
-  //   blue: "#2196f3",
-  //   orange: "#fb9b5f",
-  //   gary: "#7f8c8d",
-  // },
+
   // fullscreen: true,
 
   // 页面元数据：贡献者，最后修改时间，编辑链接
