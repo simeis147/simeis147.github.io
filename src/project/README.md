@@ -68,7 +68,7 @@ highlights:
 
       - title: 📑 项目介绍
         details: 产品原型、技术选型、功能架构、角色分工
-        link: ./reggietakeout
+        link: ./reggietakeout/
 
       - title: 📖 笔记
         details: 开发环境搭建、功能实现、完善、测试等

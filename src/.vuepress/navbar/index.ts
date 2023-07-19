@@ -10,7 +10,7 @@ export const zhNavbar = navbar([
         {
           text: '文档',
           children: [
-            {text: 'Markdown', link: '/Tools/Markdown/'},
+            {text: 'Markdown', link: '/Tools/MarkDown/'},
           ]
         },
         {
@@ -34,7 +34,7 @@ export const zhNavbar = navbar([
       {
         text: '算法',
         children: [
-          { text: '算法',  link: "/ComputerBasics/Algorithm" },
+          { text: '算法',  link: "/ComputerBasics/Algorithm/" },
         ],
       }
     ]
@@ -72,7 +72,7 @@ export const zhNavbar = navbar([
           {
               text: '框架',
               children: [
-                  { text: "MyBatisPlus",  link: "/BackEnd/MyBatisPlus/"},
+                  { text: "MyBatisPlus",  link: "/BackEnd/MybatisPlus/"},
                   { text: "MyBatis", link: "/BackEnd/MyBatis/"},
                   { text: "SpringCloud", link: "/BackEnd/SpringCloud/"},
                   { text: "SpringBoot", link: "/BackEnd/SpringBoot/"},

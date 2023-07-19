@@ -7,6 +7,7 @@ category:
 ---
 
 # MyBatisPlus
+<!-- more -->
 
 [MyBatis-Plus](https://baomidou.com/)（简称 MP）是一个 [MyBatis](https://mybatis.org/mybatis-3/) 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化CRUD操作
 
