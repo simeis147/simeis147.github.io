@@ -3,7 +3,9 @@ containerClass: home
 home: true
 title: 主页
 icon: home
-heroImage: /assets/icon/heroImageDark.png
+heroFullScreen: false
+heroImage: /assets/icon/open1.png
+heroImageDark: /assets/icon/open2.png
 bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
 bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
 bgImageStyle:
