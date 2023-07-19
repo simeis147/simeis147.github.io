@@ -58,7 +58,9 @@ Orange
 :wink: :cry: :laughing: :yum:  
 8-) :) :* :( :-) :-( ;)
 
-## 3 其他 <span class="vp-badge danger">重要</span>
+## 3 其他
+
+### 3.1 配置<span class="vp-badge danger">重要</span>
 
 <span class="vp-badge info">class="vp-badge info"</span>  
 <span class="vp-badge danger">class="vp-badge danger"</span>  
@@ -69,3 +71,30 @@ Orange
 ```md
 <span class="vp-badge info">支持页面配置</span>
 ```
+
+### 3.2 更改字体、大小、颜色
+
+```html
+<font face="黑体">我是黑体字</font>
+<font face="微软雅黑">我是微软雅黑</font>
+<font face="STCAIYUN">我是华文彩云</font>
+<font color=red>我是红色</font>
+<font color=#008000>我是绿色</font>
+<font color=Blue>我是蓝色</font>
+<font size=5>我是尺寸</font>
+<font face="黑体" color=green size=5>我是黑体，绿色，尺寸为5</font>
+```
+
+效果
+
+![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202045.png)
+
+### 3.3 为文字添加背景色
+
+```html
+<table><tr><td bgcolor=cyan>背景颜色cyan</td></tr></table>
+```
+
+效果
+
+![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202130.png)
