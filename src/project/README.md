@@ -10,15 +10,16 @@ bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
 bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
 bgImageStyle:
   background-attachment: fixed
-heroText: Simeis147's Project
+heroText: Simeis147's Projects
 tagline: -- Simeis147的个人项目库
 actions:
   - text: 仓库地址 🧭
-    link: https://github.com/simeis147
+    link: https://github.com/simeis147?tab=repositories
     type: primary
 
-  # - text: 介绍 💡
-  #   link: ./guide/get-started/intro.html
+  - text: Hope 💡
+    link: https://theme-hope.vuejs.press/zh/
+    type: primary
 
   # - text: 配置 🛠
   #   link: ./config/
@@ -49,7 +50,7 @@ highlights:
 
       - title: 💡 复习笔记
         details: 项目复盘、知识点总结、阶段性总结
-        link: ./skytakeout
+        link: ./skytakeout/
 
 
   - header: 瑞吉外卖
