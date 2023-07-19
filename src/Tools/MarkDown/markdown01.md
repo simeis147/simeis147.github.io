@@ -29,6 +29,22 @@ category:
 ::: details details
 :::
 
+::: tabs
+
+@tab apple
+
+Apple [选项卡](https://theme-hope.vuejs.press/zh/guide/markdown/tabs.html#%E6%A1%88%E4%BE%8B)
+
+@tab banana
+
+Banana
+
+@tab orange
+
+Orange
+
+:::
+
 ## 2 [Emoji表情](https://www.webfx.com/tools/emoji-cheat-sheet/)
 
 ```md
@@ -41,3 +57,15 @@ category:
 
 :wink: :cry: :laughing: :yum:  
 8-) :) :* :( :-) :-( ;)
+
+## 3 其他 <span class="vp-badge danger">重要</span>
+
+<span class="vp-badge info">class="vp-badge info"</span>  
+<span class="vp-badge danger">class="vp-badge danger"</span>  
+<span class="vp-badge note">class="vp-badge note"</span>  
+<span class="vp-badge tip">class="vp-badge tip"</span>  
+<span class="vp-badge warning">class="vp-badge warning"</span>
+
+```md
+<span class="vp-badge info">支持页面配置</span>
+```

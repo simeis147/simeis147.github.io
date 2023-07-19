@@ -38,7 +38,7 @@ highlights:
         link: https://www.bilibili.com/video/BV1TP411v7v6
 
       - title: 📑 项目介绍
-        details: 产品原型、技术选型以、开发环境搭建、接口文档
+        details: 产品原型、技术选型、开发环境搭建、接口文档
         link: http://www.yangeit.cn:21010/skytakeoutproject2023/day01.html#_2-%E8%8B%8D%E7%A9%B9%E5%A4%96%E5%8D%96%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D
 
       - title: 📖 笔记
