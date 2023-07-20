@@ -10,22 +10,22 @@ heroText: Simeis 147
 tagline: Keep on going
 
 projects:
-  - icon: link
+  - icon: /assets/icon/system.svg
     name: Java
     desc: Java全栈知识体系
     link: https://pdai.tech/
 
-  - icon: notebook1
+  - icon: /assets/icon/notebook.svg
     name: acwing
     desc: 算法学习
     link: https://www.acwing.com/
 
-  - icon: jianpan
+  - icon: /assets/icon/keyboard.svg
     name: zfrontier
     desc: 装备前线
     link: https://www.zfrontier.com/app/user/zae5QEwJmVroZk
 
-  - icon: douban
+  - icon: /assets/icon/douban.svg
     name: douban
     desc: 豆瓣
     link: https://www.douban.com/people/229859072/?_i=9476148sUkMeo6,9476174sUkMeo6
