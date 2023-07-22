@@ -58,14 +58,14 @@ Orange
 :wink: :cry: :laughing: :yum:  
 8-) :) :* :( :-) :-( ;)
 
-## 3 其他
+## 3 字体颜色
 
 ### 3.1 配置<span class="vp-badge danger">重要</span>
 
 <span class="vp-badge info">class="vp-badge info"</span>  
 <span class="vp-badge danger">class="vp-badge danger"</span>  
 <span class="vp-badge note">class="vp-badge note"</span>  
-<span class="vp-badge tip">class="vp-badge tip"</span>  
+<span class="vp-badge tip">class="vp-badge tip"</span>
 <span class="vp-badge warning">class="vp-badge warning"</span>
 
 ```md
@@ -98,3 +98,28 @@ Orange
 效果
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202130.png)
+
+## 4. 卡片
+
+```card:json
+{
+  "title": "Mr.Hope",
+  "desc": "Where there is light, there is hope",
+  "logo": "https://mister-hope.com/logo.svg",
+  "link": "https://mister-hope.com",
+  "color": "rgba(253, 230, 138, 0.15)"
+}
+```
+
+```java
+
+  ```card:json
+  {
+    "title": "Mr.Hope",
+    "desc": "Where there is light, there is hope",
+    "logo": "https://mister-hope.com/logo.svg",
+    "link": "https://mister-hope.com",
+    "color": "rgba(253, 230, 138, 0.15)"
+  }
+
+```
