@@ -1,7 +1,7 @@
 import { defineUserConfig } from "vuepress";
 import theme from "./theme.js";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
-
+import { componentsPlugin } from "vuepress-plugin-components";
 
 export default defineUserConfig({
   base: "/",
@@ -22,8 +22,16 @@ export default defineUserConfig({
       // 索引全部内容
       indexContent: true,
     }),
+    componentsPlugin({
+      // 插件选项
+      components: [       
+        "SiteInfo",       
+      ]
+    }),
 
   ],
+
+  
   // Enable it with pwa
   // shouldPrefetch: false,
 });
