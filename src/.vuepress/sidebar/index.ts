@@ -4,6 +4,7 @@ export const zhSidebar = sidebar({
   "/Tools/Git/": "structure",
   "/Tools/Git/*": "structure",
   "/Tools/MarkDown/": "structure",
+  "/Tools/Resource/": "structure",
 
   "/ComputerBasics/ComputerNetwork/": "structure",
   "/ComputerBasics/Algorithm/": "structure",

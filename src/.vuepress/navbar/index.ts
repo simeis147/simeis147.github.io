@@ -11,6 +11,7 @@ export const zhNavbar = navbar([
           text: '文档',
           children: [
             {text: 'Markdown', link: '/Tools/MarkDown/'},
+            {text: '资源整合', link: '/Tools/Resource/'},
           ]
         },
         {
