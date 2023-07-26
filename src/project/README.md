@@ -11,7 +11,7 @@ bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
 bgImageStyle:
   background-attachment: fixed
 heroText: Simeis147's Projects
-tagline: -- 真正能给你撑腰的，是丰富的知识储备，足够的经济基础，持续的情绪稳定，可控的生活节奏，和那个打不败的战绩
+tagline: 人所有的拖沓其实代表你并非真正地热爱
 actions:
   - text: 仓库地址 🧭
     link: https://github.com/simeis147?tab=repositories
