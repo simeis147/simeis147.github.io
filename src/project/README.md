@@ -11,7 +11,7 @@ bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
 bgImageStyle:
   background-attachment: fixed
 heroText: Simeis147's Projects
-tagline: -- Simeis147的个人项目库
+tagline: -- 时光闷如惊雷
 actions:
   - text: 仓库地址 🧭
     link: https://github.com/simeis147?tab=repositories
