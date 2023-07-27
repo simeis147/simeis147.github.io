@@ -12,6 +12,10 @@ comment: false
 sidebar: false
 # 页脚
 footer: false
+# 贡献者
+contributors: false
+# 编辑此页链接
+editLink: false
 tag: 
   - 资源整合
 ---
