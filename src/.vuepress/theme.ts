@@ -58,7 +58,7 @@ export default hopeTheme({
       sidebar: zhSidebar,
       footer: "Powered by <a href=\"https://v2.vuepress.vuejs.org/zh/\" target=\"_blank\"> VuePress </a> | Theme <a href=\"https://theme-hope.vuejs.press/zh/\" target=\"_blank\"> Hope </a>",
       displayFooter: true,
-      copyright: 'Copyright © 2023 - present  <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>本站总访问量<span id="busuanzi_value_site_pv"></span>次👀 | 本站访客数<span id="busuanzi_value_site_uv"></span>人次👦</center>&nbsp&nbsp <img align="right" src="http://views.whatilearened.today/views/github/simeis/views.svg"/>',
+      copyright: 'Copyright © 2023 - present  <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>本站总访问量 <span id="busuanzi_value_site_pv"> </span>次 | 本站访客数 <span id="busuanzi_value_site_uv"> </span>人次</center>',
       metaLocales: {
         editLink: "在 GitHub 上编辑此页",
       },
