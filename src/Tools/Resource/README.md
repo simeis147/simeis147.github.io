@@ -14,6 +14,8 @@ sidebar: false
 footer: false
 # 贡献者
 contributors: false
+# 更新时间
+lastUpdated: false
 # 编辑此页链接
 editLink: false
 tag: 
