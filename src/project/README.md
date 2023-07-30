@@ -13,7 +13,7 @@ bgImageStyle:
 heroText: Simeis147's Projects
 tagline: 人所有的拖沓其实代表你并非真正地热爱
 actions:
-  - text: 仓库地址 🧭
+  - text: 前往Github克隆项目 🧭
     link: https://github.com/simeis147?tab=repositories
     type: primary
 
