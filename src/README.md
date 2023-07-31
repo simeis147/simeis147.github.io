@@ -4,7 +4,7 @@ layout: BlogHome
 
 title: 🏠️ Home
 
-bgImage: /assets/bgImage/iTab-1k6ljv.jpg
+bgImage: /assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true
 heroText: Simeis 147
 tagline: Keep on going
