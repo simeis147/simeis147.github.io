@@ -8,30 +8,4 @@ $colors: #c0392b, #d35400, #f39c12, #27ae60, #16a085, #2980b9, #8e44ad, #2c3e50,
 
 $content-class: ".theme-hope-content";
 
-// wide screen
-$pc: 1440px !default;
-
-// desktop
-$laptop: 1280px !default;
-
-// narrow desktop / iPad
-$pad: 959px !default;
-
-// wide mobile
-$tablet: 719px !default;
-
-// narrow mobile
-$mobile: 419px !default;
-
-/* Code Block */
-// only available with shiki highlighter
-$code-color: (
-  light: #383a42,
-  dark: #abb2bf,
-) !default;
-$code-bg-color: (
-  light: #ecf4fa,
-  dark: #282c34,
-) !default;
-
 $code-lang: 'css' 'html' 'js' 'ts' 'vue';
