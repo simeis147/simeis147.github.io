@@ -10,11 +10,10 @@
   width: 25px;
 }
 
-.vp-navbar {
-  background-color: rgba(0, 0, 0, 0); /* 将背景色设置为完全透明 */
-  /* 其他导航栏样式，例如高度、边框、内外边距等可以根据需要设置 */
- 
-}
+// .vp-navbar {
+//   background-color: rgba(0, 0, 0, 0); /* 将背景色设置为完全透明 */
+//   /* 其他导航栏样式，例如高度、边框、内外边距等可以根据需要设置 */
+// }
 
 .vp-card {
   margin-left: 20px;
@@ -41,19 +40,20 @@
 //   // background-color: #f0f0f0; 
 // }
 
-// .vp-sidebar{
-//    /* 设置背景图片 */
-//    background-image: url('/assets/bgImage/iTab-dpvvgm.jpg');  /* 将路径替换为您的背景图片路径 */
+.vp-project-home {
+  background-image: url('/assets/bgImage/iTab-e7q1er.webp');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
 
-//    /* 背景图片平铺方式 */
-//    background-repeat: no-repeat; /* 您可以设置为repeat、repeat-x、repeat-y等 */
-   
-//    /* 背景图片位置 */
-//    background-position: center center; /* 您可以设置为left top、right bottom等 */
-   
-//    /* 背景图片尺寸 */
-//    background-size: cover; /* 您可以设置为contain等 */
-   
+// 友链卡片
+// .vp-site-info {
+//   width: calc(33.5% - 24px) !important;
+// }
+
+
+// 侧边栏
 // }
 // .vp-sidebar-links {
 //   position: absolute; /* 设置侧边栏为绝对定位 */
