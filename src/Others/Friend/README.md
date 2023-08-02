@@ -24,6 +24,7 @@ comment: false
 # footer: false
 # 返回顶部按钮
 backtotop: false
+article: false
 category:
   - 友链
 tag:
