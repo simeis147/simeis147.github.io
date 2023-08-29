@@ -669,158 +669,132 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
-import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.EmployeeDTO;
-import com.sky.dto.EmployeeLoginDTO;
-import com.sky.dto.EmployeePageQueryDTO;
-import com.sky.entity.Employee;
-import com.sky.exception.AccountLockedException;
-import com.sky.exception.AccountNotFoundException;
-import com.sky.exception.PasswordErrorException;
-import com.sky.mapper.EmployeeMapper;
+import com.sky.dto.CategoryDTO;
+import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.entity.Category;
+import com.sky.exception.DeletionNotAllowedException;
+import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
-import com.sky.service.EmployeeService;
+import com.sky.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 分类业务层
+ */
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+@Slf4j
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private DishMapper dishMapper;
+    @Autowired
+    private SetmealMapper setmealMapper;
 
     /**
-     * 员工登录
-     *
-     * @param employeeLoginDTO
-     * @return
+     * 新增分类
+     * @param categoryDTO
      */
-    public Employee login(EmployeeLoginDTO employeeLoginDTO) {
-        String username = employeeLoginDTO.getUsername();
-        String password = employeeLoginDTO.getPassword();
+    public void save(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        //属性拷贝
+        BeanUtils.copyProperties(categoryDTO, category);
 
-        //1、根据用户名查询数据库中的数据
-        Employee employee = employeeMapper.getByUsername(username);
+        //分类状态默认为禁用状态0
+        category.setStatus(StatusConstant.DISABLE);
 
-        //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
-        if (employee == null) {
-            //账号不存在
-            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
-        }
+        //设置创建时间、修改时间、创建人、修改人
+        //category.setCreateTime(LocalDateTime.now());
+        //category.setUpdateTime(LocalDateTime.now());
+        //category.setCreateUser(BaseContext.getCurrentId());
+        //category.setUpdateUser(BaseContext.getCurrentId());
 
-        //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
-        password = DigestUtils.md5DigestAsHex(password.getBytes());
-        if (!password.equals(employee.getPassword())) {
-            //密码错误
-            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
-        }
-
-        if (employee.getStatus() == StatusConstant.DISABLE) {
-            //账号被锁定
-            throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
-        }
-
-        //3、返回实体对象
-        return employee;
-    }
-
-    /**
-     * 新增员工
-     *
-     * @param employeeDTO
-     */
-    public void save(EmployeeDTO employeeDTO) {
-        Employee employee = new Employee();
-
-        //对象属性拷贝
-        BeanUtils.copyProperties(employeeDTO, employee);
-
-        //设置账号的状态，默认正常状态 1表示正常 0表示锁定
-        employee.setStatus(StatusConstant.ENABLE);
-
-        //设置密码，默认密码123456
-        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
-
-        //设置当前记录的创建时间和修改时间
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-
-        //设置当前记录创建人id和修改人id
-        employee.setCreateUser(BaseContext.getCurrentId());//目前写个假数据，后期修改
-        employee.setUpdateUser(BaseContext.getCurrentId());
-
-        employeeMapper.insert(employee);
+        categoryMapper.insert(category);
     }
 
     /**
      * 分页查询
-     *
-     * @param employeePageQueryDTO
+     * @param categoryPageQueryDTO
      * @return
      */
-    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
-        // select * from employee limit 0,10
-        //开始分页查询
-        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
-
-        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
-
-        long total = page.getTotal();
-        List<Employee> records = page.getResult();
-
-        return new PageResult(total, records);
+    public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
+        PageHelper.startPage(categoryPageQueryDTO.getPage(),categoryPageQueryDTO.getPageSize());
+        //下一条sql进行分页，自动加入limit关键字分页
+        Page<Category> page = categoryMapper.pageQuery(categoryPageQueryDTO);
+        return new PageResult(page.getTotal(), page.getResult());
     }
 
     /**
-     * 启用禁用员工账号
-     *
+     * 根据id删除分类
+     * @param id
+     */
+    public void deleteById(Long id) {
+        //查询当前分类是否关联了菜品，如果关联了就抛出业务异常
+        Integer count = dishMapper.countByCategoryId(id);
+        if(count > 0){
+            //当前分类下有菜品，不能删除
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+
+        //查询当前分类是否关联了套餐，如果关联了就抛出业务异常
+        count = setmealMapper.countByCategoryId(id);
+        if(count > 0){
+            //当前分类下有菜品，不能删除
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
+
+        //删除分类数据
+        categoryMapper.deleteById(id);
+    }
+
+    /**
+     * 修改分类
+     * @param categoryDTO
+     */
+    public void update(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryDTO,category);
+
+        //设置修改时间、修改人
+        //category.setUpdateTime(LocalDateTime.now());
+        //category.setUpdateUser(BaseContext.getCurrentId());
+
+        categoryMapper.update(category);
+    }
+
+    /**
+     * 启用、禁用分类
      * @param status
      * @param id
      */
     public void startOrStop(Integer status, Long id) {
-        Employee employee = Employee.builder()
-                .status(status)
+        Category category = Category.builder()
                 .id(id)
+                .status(status)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
                 .build();
-
-        employeeMapper.update(employee);
+        categoryMapper.update(category);
     }
 
     /**
-     * 根据id查询员工
-     *
-     * @param id
+     * 根据类型查询分类
+     * @param type
      * @return
      */
-    public Employee getById(Long id) {
-        Employee employee = employeeMapper.getById(id);
-        employee.setPassword("****");
-        return employee;
+    public List<Category> list(Integer type) {
+        return categoryMapper.list(type);
     }
-
-    /**
-     * 编辑员工信息
-     *
-     * @param employeeDTO
-     */
-    public void update(EmployeeDTO employeeDTO) {
-        Employee employee = new Employee();
-        BeanUtils.copyProperties(employeeDTO, employee);
-
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
-
-        employeeMapper.update(employee);
-    }
-
 }
 
 ```
