@@ -18,7 +18,7 @@ category:
 
 ## 登录功能 ✏️
 
-![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719174114.png)
+![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230830120343.png)
 
 ::: tabs
 
