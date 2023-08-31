@@ -508,6 +508,8 @@ public class DishVO implements Serializable {
 
 ## 4. 删除菜品 🚩
 
+### 4.1 根据id查询菜品实现
+
 ::: tabs
 
 @tab Controller层
@@ -739,6 +741,113 @@ SetmealDishMapper.xml
      */
     @Select("select * from dish_flavor where dish_id = #{dishId}")
     List<DishFlavor> getByDishId(Long dishId);
+```
+
+:::
+
+### 4.2 修改菜品实现
+
+::: tabs
+
+@tab Controller层
+
+根据修改菜品的接口定义在DishController中创建方法：
+
+```java
+  /**
+     * 修改菜品
+     *
+     * @param dishDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改菜品")
+    public Result update(@RequestBody DishDTO dishDTO) {
+        log.info("修改菜品：{}", dishDTO);
+        dishService.updateWithFlavor(dishDTO);
+        return Result.success();
+    }
+```
+
+@tab Service层
+
+在DishService接口中声明updateWithFlavor方法：
+
+```java
+  /**
+     * 根据id修改菜品基本信息和对应的口味信息
+     *
+     * @param dishDTO
+     */
+    void updateWithFlavor(DishDTO dishDTO);
+```
+
+@tab Service层实现类
+
+在DishServiceImpl中实现updateWithFlavor方法：
+
+```java
+	/**
+     * 根据id修改菜品基本信息和对应的口味信息
+     *
+     * @param dishDTO
+     */
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+
+        //修改菜品表基本信息
+        dishMapper.update(dish);
+
+        //删除原有的口味数据
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+
+        //重新插入口味数据
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+
+        if (flavors != null && flavors.size() > 0) {
+
+            flavors.forEach(dishFlavor -> {
+                dishFlavor.setDishId(dishDTO.getId());
+            });
+
+            //向口味表插入n条数据
+            dishFlavorMapper.insertBatch(flavors);
+        }
+    }
+```
+
+@tab Mapper层
+
+在DishMapper中，声明update方法：
+
+```java
+/**
+    * 根据id动态修改菜品数据
+    *
+    * @param dish
+    */
+@AutoFill(value = OperationType.UPDATE)
+void update(Dish dish);
+```
+
+并在DishMapper.xml文件中编写SQL:
+
+```java
+<update id="update">
+update dish
+<set>
+    <if test="name != null">name = #{name},</if>
+    <if test="categoryId != null">category_id = #{categoryId},</if>
+    <if test="price != null">price = #{price},</if>
+    <if test="image != null">image = #{image},</if>
+    <if test="description != null">description = #{description},</if>
+    <if test="status != null">status = #{status},</if>
+    <if test="updateTime != null">update_time = #{updateTime},</if>
+    <if test="updateUser != null">update_user = #{updateUser},</if>
+</set>
+where id = #{id}
+</update>
 ```
 
 :::
