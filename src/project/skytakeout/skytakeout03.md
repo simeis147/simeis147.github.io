@@ -508,8 +508,6 @@ public class DishVO implements Serializable {
 
 ## 4. 删除菜品 🚩
 
-### 4.1 根据id查询菜品实现
-
 ::: tabs
 
 @tab Controller层
@@ -666,6 +664,8 @@ SetmealDishMapper.xml
 
 ## 5. 修改菜品 🚩
 
+### 5.1 根据id查询菜品实现
+
 ::: tabs
 
 @tab Controller层
@@ -745,7 +745,7 @@ SetmealDishMapper.xml
 
 :::
 
-### 4.2 修改菜品实现
+### 5.2 修改菜品实现
 
 ::: tabs
 
