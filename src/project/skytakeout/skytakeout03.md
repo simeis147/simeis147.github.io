@@ -51,7 +51,7 @@ public enum OperationType {
 **自定义切面 AutoFillAspect**  
 在sky-server模块，创建com.sky.aspect包。
 
-**自定义切面 AutoFillAspect 的 autoFill 方法**
+**自定义切面 AutoFillAspect 的 autoFill 方法**:
 
 ```java {14,20,25-27}
 package com.sky.aspect;
@@ -130,7 +130,7 @@ public class AutoFillAspect {
 
 @tab 步骤三
 
-**在Mapper接口的方法上加入 AutoFill 注解**
+**在Mapper接口的方法上加入 AutoFill 注解**:
 
 以CategoryMapper为例，分别在新增和修改方法添加@AutoFill()注解，也需要EmployeeMapper做相同操作
 
@@ -787,7 +787,7 @@ SetmealDishMapper.xml
 在DishServiceImpl中实现updateWithFlavor方法：
 
 ```java
-	/**
+  /**
      * 根据id修改菜品基本信息和对应的口味信息
      *
      * @param dishDTO
