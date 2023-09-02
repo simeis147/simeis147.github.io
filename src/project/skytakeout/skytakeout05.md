@@ -111,7 +111,7 @@ public class ShopController {
 在WebMvcConfiguration.java中，分别扫描com.sky.controller.admin和com.sky.controller.user这两个包
 
 ```java
-	@Bean
+  @Bean
     public Docket docket1(){
         log.info("准备生成接口文档...");
         ApiInfo apiInfo = new ApiInfoBuilder()
