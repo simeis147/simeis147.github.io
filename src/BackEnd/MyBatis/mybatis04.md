@@ -21,7 +21,7 @@ Mybatis操作数据库步骤：
 
 ### 2.1 项目创建
 
-创建springboot工程，并导入 mybatis 的起步依赖、 mysql 的驱动包。
+创建springboot工程，并导入 mybatis 的起步依赖、 mysql 的驱动包
 
 ![ ](./assets/image-20221209162827242.png =600x)
 
@@ -54,7 +54,7 @@ Mybatis操作数据库步骤：
 
 ### 2.2 数据准备
 
-创建用户表user，并创建对应的实体类User。
+创建用户表user，并创建对应的实体类User
 
 - 用户表：
 
@@ -81,7 +81,7 @@ insert into user(id, name, age, gender, phone) VALUES (null,'光明右使',48,'1
 
 - 实体类
 
-实体类的属性名与表中的字段名一一对应。
+实体类的属性名与表中的字段名一一对应
 
 ```java
 public class User {
@@ -112,7 +112,7 @@ MySQL驱动类
 
 :::
 
-基于上述分析，在Mybatis中要连接数据库，同样也需要以上4个参数配置。
+基于上述分析，在Mybatis中要连接数据库，同样也需要以上4个参数配置
 
 application.properties:
 
@@ -129,7 +129,7 @@ spring.datasource.password=1234
 
 ### 2.4 编写SQL语句
 
-在springboot工程中，引导类所在包下，再创建一个包mapper。在mapper包下创建一个接口UserMapper，这是一个持久层接口（Mybatis的持久层接口规范一般都叫 XxxMapper）。
+在springboot工程中，引导类所在包下，再创建一个包mapper。在mapper包下创建一个接口UserMapper，这是一个持久层接口（Mybatis的持久层接口规范一般都叫 XxxMapper）
 
 ![ ](./assets/image-20221209175843651.png)
 
@@ -159,9 +159,9 @@ public interface UserMapper {
 
 ### 2.5 单元测试
 
-在SpringBoot工程中，在src下的test目录下，已经自动帮我们创建好了测试类 ，并且在测试类上已经添加了注解 @SpringBootTest，代表该测试类已经与SpringBoot整合。
+在SpringBoot工程中，在src下的test目录下，已经自动帮我们创建好了测试类 ，并且在测试类上已经添加了注解 @SpringBootTest，代表该测试类已经与SpringBoot整合
 
-该测试类在运行时，会自动通过引导类加载Spring的环境（IOC容器）。 **要测试哪个bean对象，直接通过 @Autowired 注解直接将其注入就行，然后就可以测试了。**
+该测试类在运行时，会自动通过引导类加载Spring的环境（IOC容器）。 **要测试哪个bean对象，直接通过 @Autowired 注解直接将其注入就行，然后就可以测试了**
 
 测试类代码如下
 
@@ -196,7 +196,7 @@ User{id=6, name='光明右使', age=48, gender=1, phone='18800000005'}
 
 ## 3 解决SQL警告与提示
 
-默认在UserMapper接口上加的 @Select 注解中编写SQL语句是没有提示的。 如果想让idea提示对应的SQL语句，需要在IDEA中配置与MySQL数据库的链接。
+默认在UserMapper接口上加的 @Select 注解中编写SQL语句是没有提示的。 如果想让idea提示对应的SQL语句，需要在IDEA中配置与MySQL数据库的链接
 
 ![ ](./assets/image-20221210143348119.png)
 

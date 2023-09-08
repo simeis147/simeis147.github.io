@@ -24,15 +24,15 @@ category:
 
 2. XML映射文件的namespace属性为Mapper接口全限定名一致
 
-3. XML映射文件中sql语句的id与Mapper接口中的方法名一致，并保持返回类型一致。
+3. XML映射文件中sql语句的id与Mapper接口中的方法名一致，并保持返回类型一致
 
 :::
 
 ![ ](./assets/image-20221212153529732.png)
 
-\<select>标签：就是用于编写select查询语句的。
+\<select>标签：就是用于编写select查询语句的
 
-- resultType属性，指的是查询返回的单条记录所封装的类型。
+- resultType属性，指的是查询返回的单条记录所封装的类型
 
 ## 2 XML配置文件实现
 

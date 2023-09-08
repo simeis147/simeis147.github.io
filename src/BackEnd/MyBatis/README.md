@@ -14,14 +14,14 @@ category:
 ::: info
 MyBatis 本是 Apache 的一个开源项目 iBatis  
 
-2010年 这个项目由 apache software foundation 迁移到了google code，并且改名为MyBatis 。  
+2010年 这个项目由 apache software foundation 迁移到了google code，并且改名为MyBatis  
 
 2013年11月迁移到Github
 :::
 
 ## 持久层
 
-持久层：指的是就是数据访问层(dao)，是用来操作数据库的。
+持久层：指的是就是数据访问层(dao)，是用来操作数据库的
 
 ![ ](./assets/image-20220901114951631.png)
 

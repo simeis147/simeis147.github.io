@@ -11,7 +11,7 @@ category:
 
 需求说明：
 
-根据资料中提供的《tlias智能学习辅助系统》页面原型及需求，完成员工管理的需求开发。
+根据资料中提供的《tlias智能学习辅助系统》页面原型及需求，完成员工管理的需求开发
 
 ![ ](./assets/image-20221210180155700.png =600x)
 
@@ -171,7 +171,7 @@ public interface EmpMapper {
 
 ![ ](./assets/image-20221210183336095.png)
 
-> 当我们点击后面的"删除"按钮时，前端页面会给服务端传递一个参数，也就是该行数据的ID。 我们接收到ID后，根据ID删除数据即可。
+> 点击后面的"删除"按钮时，前端页面会给服务端传递一个参数，也就是该行数据的ID，根据ID删除数据即可
 
 **功能**：根据主键删除数据
 
@@ -219,9 +219,9 @@ class SpringbootMybatisCrudApplicationTests {
 
 ### 3.2 日志输入
 
-在Mybatis当中可以借助日志，查看到sql语句的执行、执行传递的参数以及执行结果。  
+在Mybatis当中可以借助日志，查看到sql语句的执行、执行传递的参数以及执行结果  
 
-具体操作如下：
+具体操作如下
 
 1. 打开application.properties文件
 
@@ -236,14 +236,14 @@ mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
 
 ![ ](./assets/image-20220901164225644.png)
 
-但是输出的SQL语句：delete from emp where id = ?，输入的参数16并没有在后面拼接，id的值是使用`?`进行占位。这种SQL语句我们称为预编译SQL。
+但是输出的SQL语句：delete from emp where id = ?，输入的参数16并没有在后面拼接，id的值是使用`?`进行占位。这种SQL语句称为预编译SQL
 
 ### 3.3 预编译SQL
 
 ::: tip 预编译SQL的两个优势
 
 1. 性能更高：预编译SQL，编译一次之后会将编译后的SQL语句缓存起来，后面再次执行这条语句时，不会再次编译。（只是输入的参数不同）
-2. 更安全(防止SQL注入)：将敏感字进行转义，保障SQL的安全性。
+2. 更安全(防止SQL注入)：将敏感字进行转义，保障SQL的安全性
 
 :::
 
@@ -262,7 +262,7 @@ mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
 
 :::warning
 
-- 拼接SQL。直接将参数拼接在SQL语句中，存在SQL注入问题
+- 拼接SQL，直接将参数拼接在SQL语句中，存在SQL注入问题
 - 使用时机：如果对表名、列表进行动态设置时使用
 
 :::
@@ -292,7 +292,10 @@ values ('songyuanqiao','宋远桥',1,'1.jpg',2,'2012-10-09',2,'2022-10-01 10:00:
 @Mapper
 public interface EmpMapper {
 
-    @Insert("insert into emp(username, name, gender, image, job, entrydate, dept_id, create_time, update_time) values (#{username}, #{name}, #{gender}, #{image}, #{job}, #{entrydate}, #{deptId}, #{createTime}, #{updateTime})")
+    @Insert("
+    insert into emp(username, name, gender, image, job, entrydate, dept_id, create_time, update_time) 
+    values (#{username}, #{name}, #{gender}, #{image}, #{job}, #{entrydate}, #{deptId}, #{createTime}, #{updateTime})
+    ")
     public void insert(Emp emp);
 
 }
@@ -336,22 +339,23 @@ class SpringbootMybatisCrudApplicationTests {
 
 ### 4.2 主键返回
 
-概念：在数据添加成功后，需要获取插入数据库数据的主键。
+概念：在数据添加成功后，需要获取插入数据库数据的主键
 
-如：添加套餐数据时，还需要维护套餐菜品关系表数据。
+如：添加套餐数据时，还需要维护套餐菜品关系表数据
 
 ![ ](./assets/image-20221211150353385.png)
 
-业务场景：苍穹外卖菜品与套餐模块的表结构，菜品与套餐是多对多的关系，一个套餐对应多个菜品。既然是多对多的关系，是不是有一张套餐菜品中间表来维护它们之间的关系。
+业务场景：苍穹外卖菜品与套餐模块的表结构，菜品与套餐是多对多的关系，一个套餐对应多个菜品。既然是多对多的关系，是不是有一张套餐菜品中间表来维护它们之间的关系
 
 ![ ](./assets/image-20221212093655389.png)
 
-在添加套餐的时候，我们需要在界面当中来录入套餐的基本信息，还需要来录入套餐与菜品的关联信息。这些信息录入完毕之后，我们一点保存，就需要将套餐的信息以及套餐与菜品的关联信息都需要保存到数据库当中。  
-其实具体的过程包括两步，首先第一步先需要将套餐的基本信息保存了，接下来第二步再来保存套餐与菜品的关联信息。套餐与菜品的关联信息就是往中间表当中来插入数据，来维护它们之间的关系。而中间表当中有两个外键字段，一个是菜品的ID，就是当前菜品的ID，还有一个就是套餐的ID，而这个套餐的 ID 指的就是此次我所添加的套餐的ID，所以我们在第一步保存完套餐的基本信息之后，就需要将套餐的主键值返回来供第二步进行使用。这个时候就需要用到主键返回功能。
+在添加套餐的时候，我们需要在界面当中来录入套餐的基本信息，还需要来录入套餐与菜品的关联信息。这些信息录入完毕之后，我们一点保存，就需要将套餐的信息以及套餐与菜品的关联信息都需要保存到数据库当中  
+
+其实具体的过程包括两步，首先第一步先需要将套餐的基本信息保存了，接下来第二步再来保存套餐与菜品的关联信息。套餐与菜品的关联信息就是往中间表当中来插入数据，来维护它们之间的关系。而中间表当中有两个外键字段，一个是菜品的ID，就是当前菜品的ID，还有一个就是套餐的ID，而这个套餐的 ID 指的就是此次我所添加的套餐的ID，所以我们在第一步保存完套餐的基本信息之后，就需要将套餐的主键值返回来供第二步进行使用。这个时候就需要用到主键返回功能
 
 那要如何实现在插入数据之后返回所插入行的主键值呢？
 
-- 默认情况下，执行插入操作时，是不会主键值返回的。如果想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性useGeneratedKeys=true和keyProperty="实体类属性名"
+- 默认情况下，执行插入操作时，是不会主键值返回的。如果想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性 useGeneratedKeys=true 和 keyProperty="实体类属性名"
 
 主键返回代码实现：
 
@@ -361,7 +365,8 @@ public interface EmpMapper {
     
     //会自动将生成的主键值，赋值给emp对象的id属性
     @Options(useGeneratedKeys = true,keyProperty = "id")
-    @Insert("insert into emp(username, name, gender, image, job, entrydate, dept_id, create_time, update_time) values (#{username}, #{name}, #{gender}, #{image}, #{job}, #{entrydate}, #{deptId}, #{createTime}, #{updateTime})")
+    @Insert("insert into emp(username, name, gender, image, job, entrydate, dept_id, create_time, update_time) 
+    values (#{username}, #{name}, #{gender}, #{image}, #{job}, #{entrydate}, #{deptId}, #{createTime}, #{updateTime})")
     public void insert(Emp emp);
 
 }
@@ -457,7 +462,7 @@ class SpringbootMybatisCrudApplicationTests {
 
 ### 6.1 根据ID查询
 
-在员工管理的页面中，当我们进行更新数据时，会点击 “编辑” 按钮，然后此时会发送一个请求到服务端，会根据Id查询该员工信息，并将员工数据回显在页面上。
+在员工管理的页面中，当我们进行更新数据时，会点击 “编辑” 按钮，然后此时会发送一个请求到服务端，会根据Id查询该员工信息，并将员工数据回显在页面上
 
 ![ ](./assets/image-20221212101331292.png)
 
@@ -501,8 +506,8 @@ class SpringbootMybatisCrudApplicationTests {
 
 原因如下：
 
-- 实体类属性名和数据库表查询返回的字段名一致，mybatis会自动封装。
-- 如果实体类属性名和数据库表查询返回的字段名不一致，不能自动封装。
+- 实体类属性名和数据库表查询返回的字段名一致，mybatis会自动封装
+- 如果实体类属性名和数据库表查询返回的字段名不一致，不能自动封装
 
 ::: note 解决方案
 
@@ -546,13 +551,13 @@ mybatis.configuration.map-underscore-to-camel-case=true
 
 ::: warning
 
-要使用驼峰命名前提是 实体类的属性 与 数据库表 中的字段名严格遵守驼峰命名。
+要使用驼峰命名前提是 实体类的属性 与 数据库表 中的字段名严格遵守驼峰命名
 
 :::
 
 ### 6.3 条件查询
 
-在员工管理的列表页面中，我们需要根据条件查询员工信息，查询条件包括：姓名、性别、入职时间。
+在员工管理的列表页面中，我们需要根据条件查询员工信息，查询条件包括：姓名、性别、入职时间
 
 ![ ](./assets/image-20221212113422924.png)
 
@@ -576,7 +581,7 @@ order by update_time desc;
 
 接口方法：
 
-使用MySQL提供的字符串拼接函数：concat('%' , '关键字' , '%'),解决SQL注入风险
+使用MySQL提供的字符串拼接函数：concat('%' , '关键字' , '%')，解决SQL注入风险
 
 ```java
 @Mapper
