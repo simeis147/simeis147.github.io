@@ -33,6 +33,7 @@ export const zhSidebar = sidebar({
   "/project/reggietakeout/*": "structure",
 
   "/project/skytakeout/": "structure",
+  "/project/huike/": "structure",
 
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",

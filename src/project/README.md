@@ -26,11 +26,37 @@ actions:
 
 highlights:
 
+  - header: huike CRM
+    description: 客达天下是一款以客户为中心应用于市场销售的管理系统。辅助市场及销售人员对销售线索、商机、客户进行跟进转化，提高转化效率，实现销售线索的价值最大化
+    image: /assets/projectImage/huike.png
+    bgImage: https://theme-hope-assets.vuejs.press/bg/4-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/4-dark.svg
+    highlights:
+      - title: 📦️ 仓库地址
+        details: SpringBoot + SpringMVC + MyBatis + Mysql + Redis
+        link: https://github.com/simeis147/huike-crm
+
+      - title: 🎥 演示地址
+        details: 点击体验
+        link: http://huike-crm.itheima.net/#/login
+
+      - title: 📑 项目介绍
+        details: 功能数量、页面数量、接口数量、解决方案
+        link: https://pip.itcast.cn/java-hk?javaeezly
+
+      - title: 📖 产品文档
+        details: 背景介绍、术语解释、系统角色定义、功能结构图
+        link: https://app.mockplus.cn/app/share-9faea72911ef86bf8e3842177b0785feshare-J75ri9TemI9U/prototype/A7-VLp1ILFI
+
+      - title: 💡 复习笔记
+        details: 项目复盘、知识点总结、阶段性总结
+        link: ./huike/
+
   - header: 苍穹外卖
     description: 专门为餐饮企业（餐厅、饭店）定制的一款软件产品，包括 系统管理后台 💻 和 小程序端应用📱 两部分
     image: /assets/projectImage/sky_take_out.png
-    bgImage: https://theme-hope-assets.vuejs.press/bg/4-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/4-dark.svg
+    bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/1-dark.svg
     highlights:
       - title: 📦️ 仓库地址
         details: SpringBoot + SpringMVC + MyBatis + Mysql + Redis
@@ -51,7 +77,6 @@ highlights:
       - title: 💡 复习笔记
         details: 项目复盘、知识点总结、阶段性总结
         link: ./skytakeout/
-
 
   - header: 瑞吉外卖
     description: 专为餐饮企业（餐厅、饭店）定制的一款软件产品，包括 系统管理后台 和 移动端应用 两部分
