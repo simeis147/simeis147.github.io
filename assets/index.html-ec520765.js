@@ -1,0 +1,1 @@
+import{_ as t}from"./plugin-vue_export-helper-c27b6911.js";import{o as r,c,d as e,e as a}from"./app-cb6e75f7.js";const o={},n=e("h1",{id:"汇客crm",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#汇客crm","aria-hidden":"true"},"#"),a(" 汇客CRM")],-1),s=[n];function d(_,i){return r(),c("div",null,s)}const m=t(o,[["render",d],["__file","index.html.vue"]]);export{m as default};
