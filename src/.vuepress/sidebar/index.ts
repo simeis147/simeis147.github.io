@@ -35,6 +35,7 @@ export const zhSidebar = sidebar({
   "/project/skytakeout/": "structure",
   "/project/huike/": "structure",
   "/project/chuanzhihealth/": "structure",
+  "/project/tjxt/": "structure",
 
   // "/Others/Flim": "structure",
   // "/Others/Keyborad": "structure",

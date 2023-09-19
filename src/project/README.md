@@ -26,6 +26,32 @@ actions:
 
 highlights:
 
+  - header: 天机学堂
+    description: 天机学堂是一个基于微服务架构的生产级在线教育项目，能学习到在线教育中核心的学习辅助系统、考试系统，电商类项目的促销优惠系统等等
+    image: /assets/projectImage/tjxt.jpg
+    bgImage: https://theme-hope-assets.vuejs.press/bg/1-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/1-dark.svg
+    highlights:
+      - title: 📦️ 仓库地址
+        details: SpringCloud + Redis + MySQL + nacaos + ES + jenkins + gogs
+        link: 
+
+      - title: 🎥 演示地址
+        details: 点击体验
+        link: https://tjxt-user.itheima.net/#/main/index
+
+      - title: 📑 项目介绍
+        details: 功能数量、页面数量、接口数量、解决方案
+        link: https://pip-dev.itcast.cn/java-tjxt
+
+      - title: 📖 产品文档
+        details: 背景介绍、环境搭建、修复BUG、测试部署
+        link: https://b11et3un53m.feishu.cn/wiki/wikcnrigEuKkRaba6YaZubSuINf
+
+      - title: 💡 复习笔记
+        details: 项目复盘、知识点总结、阶段性总结
+        link: ./tjxt/
+
   - header: 传智健康
     description: 传智健康管理系统是一款应用于健康管理机构的业务系统，实现健康管理机构工作内容可视化、患者管理专业化、健康评估数字化、知识库集成化，增强管理者对健康管理机构运营情况的了解
     image: /assets/projectImage/chuanzhi.jpg
@@ -55,8 +81,8 @@ highlights:
   - header: Huike CRM
     description: 客达天下是一款以客户为中心应用于市场销售的管理系统。辅助市场及销售人员对销售线索、商机、客户进行跟进转化，提高转化效率，实现销售线索的价值最大化
     image: /assets/projectImage/huike.png
-    bgImage: https://theme-hope-assets.vuejs.press/bg/1-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/1-dark.svg
+    bgImage: https://theme-hope-assets.vuejs.press/bg/5-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/5-dark.svg
     highlights:
       - title: 📦️ 仓库地址
         details: SpringBoot + SpringMVC + MyBatis + Mysql + Redis
