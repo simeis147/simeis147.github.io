@@ -36,6 +36,16 @@ tag:
 }
 ```
 
+```card:json
+{
+  "title": "AI工具集",
+  "desc": "各种 artificial intelligence 工具",
+  "logo": "/assets/resource/aitools.svg",
+  "link": "https://ai-bot.cn/",
+  "color": "rgba(200, 200, 200, 0.15)"
+}
+```
+
 ## 2. 图片转换
 
 ```card:json
@@ -59,16 +69,6 @@ tag:
 ```
 
 ## 3. [ChatGPT](https://chat.openai.com/) 🪐
-
-```card:json
-{
-  "title": "免费学习测试",
-  "desc": "ChatGPT API进行二次开发的网站",
-  "logo": "/assets/resource/chatgpt.svg",
-  "link": "https://chat.wuguokai.cn/",
-  "color": "rgba(200, 200, 200, 0.15)"
-}
-```
 
 ```card:json
 {
