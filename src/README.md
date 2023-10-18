@@ -14,7 +14,7 @@ projects:
   - icon: /assets/icon/javaguide.svg
     name: JavaGuide
     desc: Java面试 + 学习指南
-    link: https://leetcode.cn/
+    link: https://javaguide.cn/
 
   - icon: /assets/icon/system.svg
     name: Java
