@@ -6,8 +6,8 @@ title: 🏠️ Home
 
 bgImage: /assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true
-heroText: KEEP ON GOING
-tagline: 
+heroText: In Time
+tagline: 0058.03.4.23.59.59 
 
 projects:
 
