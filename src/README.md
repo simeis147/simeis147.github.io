@@ -6,8 +6,8 @@ title: 🏠️ Home
 
 bgImage: /assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true
-heroText: Simeis 147
-tagline: Keep on going
+heroText: KEEP ON GOING
+tagline: 
 
 projects:
 
