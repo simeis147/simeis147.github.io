@@ -32,7 +32,7 @@ projects:
     link: https://leetcode.cn/
 
   - icon: /assets/icon/comupter.svg
-    name: Computer
+    name: Electronics
     desc: 记录使用过的电子产品
     link: Others/ElectronicProduct/
 
