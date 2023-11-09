@@ -7,14 +7,14 @@ title: 🏠️ Home
 bgImage: /assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true
 heroText: In Time
-tagline: 0058.03.4.23.59.59 
+tagline: 0058.02.4.23.59.59 
 
 projects:
 
   - icon: /assets/icon/javaguide.svg
     name: JavaGuide
     desc: Java面试 + 学习指南
-    link: https://leetcode.cn/
+    link: https://javaguide.cn/home.html
 
   - icon: /assets/icon/system.svg
     name: Java
