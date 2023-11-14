@@ -2,12 +2,13 @@
 collapsible: true
 date: 2023-04-06
 index: true
-order: number
+dir:
+    order: 1
 category: 
   - SQL基础
 ---
 
-# MySQL基础
+# MySQL
 <!-- more -->
 
 ## 1 数据库相关概念
@@ -26,7 +27,7 @@ category:
 
 ### 1.3  常见的数据库管理系统
 
-![ ](./assets/image-20210721184354001.png)
+![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20231114171950.png)
 
 * Oracle：收费的大型数据库
 * **MySQL**： 开源免费的中小型数据库。后来 Sun 公司收购了 MySQL，而 Sun 公司又被 Oracle 收购
@@ -44,7 +45,7 @@ category:
 
 关系型数据库是 由多张能互相连接的 **二维表** 组成的数据库
 
-![ ](./assets/image-20210721214029913.png)
+![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20231114172045.png)
 
 上图中右边的 `db.frm` 是表文件，`db.MYD` 是数据文件，通过这两个文件就可以查询到数据展示成二维表的效果。
 
@@ -77,7 +78,7 @@ SQL语句根据其功能被分为四大类：DDL、DML、DQL、DCL
 | DQL      | Data Query Language         | 数据查询语言，用来查询数据库中表的记录                 |
 | DCL      | Data Control  Language      | 数据控制语言，用来创建数据库用户、控制数据库的访问权限 |
 
-![ ](./assets/image-20221205152804250.png)  
+![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20231114182047.png)
 
 > 注意： 开发中最常用操作就是 `DML` 和 `DQL`
 
@@ -85,7 +86,7 @@ SQL语句根据其功能被分为四大类：DDL、DML、DQL、DCL
 
 MySQL中的数据类型有很多，主要分为三类：数值类型、字符串类型、日期时间类型。
 
-![ ](./assets/20230318221311.png)
+![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20231114182100.png)
 
 ### 4.1 数值类型
 
