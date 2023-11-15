@@ -17,8 +17,8 @@ category:
 
 ### 1.1 数据库
 
-* DataBase，简称 DB。
-* 存储和管理数据的仓库。
+* DataBase，简称 DB
+* 存储和管理数据的仓库
 
 ### 1.2  数据库管理系统
 
@@ -84,7 +84,7 @@ SQL语句根据其功能被分为四大类：DDL、DML、DQL、DCL
 
 ## 4 数据类型
 
-MySQL中的数据类型有很多，主要分为三类：数值类型、字符串类型、日期时间类型。
+MySQL中的数据类型有很多，主要分为三类：数值类型、字符串类型、日期时间类型
 
 ![ ](https://sky-take-out-dcp.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20231114182100.png)
 
