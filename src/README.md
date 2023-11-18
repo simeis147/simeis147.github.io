@@ -4,7 +4,7 @@ layout: BlogHome
 
 title: 🏠️ Home
 
-bgImage: /assets/bgImage/iTab-1k6ljv.webp
+bgImage: https://cdn.jsdelivr.net/gh/simeis147/simeis147.github.io@main/src/.vuepress/public/assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true
 heroText: In Time
 tagline: 0058.02.4.23.59.59 
