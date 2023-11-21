@@ -114,7 +114,7 @@ export const zhNavbar = navbar([
   },
 
   { text: '📝 Project', link: '/project/' },
-
+  { text: '🔥 Bug memoir', link: '/bug-memoir/' },
   // { 
   //   text: 'Others',
   //   link: '/Others/',
