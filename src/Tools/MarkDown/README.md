@@ -15,13 +15,15 @@ category:
 Markdown 是一种轻量级标记语言，创始人为约翰·格鲁伯（John Gruber）和亚伦·斯沃茨（Aaron Swartz）。它允许人们 “ 使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档 ”
 
 [Markdown 教程](https://markdown.com.cn/)  
+
 [Markdown 示例](https://theme-hope.vuejs.press/zh/cookbook/markdown/demo.html)  
+
 [Markdown 增强](https://theme-hope.vuejs.press/zh/guide/markdown/intro.html)  
 :::
 
 ## 基本语法
 
-这些是 John Gruber 的原始设计文档中列出的元素。所有 Markdown 应用程序都支持这些元素。
+这些是 John Gruber 的原始设计文档中列出的元素。所有 Markdown 应用程序都支持这些元素
 
 | 元素| Markdown 语法 |
 | :---- | :----- |
@@ -38,7 +40,7 @@ Markdown 是一种轻量级标记语言，创始人为约翰·格鲁伯（John G
 
 ## 扩展语法
 
-这些元素通过添加额外的功能扩展了基本语法。但是，并非所有 Markdown 应用程序都支持这些元素。
+这些元素通过添加额外的功能扩展了基本语法。但是，并非所有 Markdown 应用程序都支持这些元素
 
 | 元素| Markdown 语法 |
 | :---- | :----- |

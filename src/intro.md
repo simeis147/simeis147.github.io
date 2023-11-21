@@ -82,8 +82,13 @@ tag:
 ## Miscellaneous
 
 - 🪧 Want to pass CET-6, so this resume is written in English
+
 - 🏂 May be an extreme sports enthusiasts in the future
+
 - 💪 Like fitness, computer peripherals, recently became obsessed with keyboards
+
 - 🧍‍♂️ Used to be a member of the Model team School of Computer Science and Computing, Guizhou University
+
 - 🏃‍♂️ Used to be a member of the track team of Guizhou University
+
 - :telescope: Childhood dream was to be an astronomer
