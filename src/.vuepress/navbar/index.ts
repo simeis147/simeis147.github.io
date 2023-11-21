@@ -18,6 +18,7 @@ export const zhNavbar = navbar([
           text: '工具',
           children: [
             { text: "Git",  link: "/Tools/Git/" },
+            { text: 'Bug memoir', link: 'https://simeis147.github.io/bug-memoir/' },
           ]
         }
       ]
@@ -114,7 +115,7 @@ export const zhNavbar = navbar([
   },
 
   { text: '📝 Project', link: '/project/' },
-  { text: '🔥 Bug memoir', link: '/bug-memoir/' },
+  
   // { 
   //   text: 'Others',
   //   link: '/Others/',
