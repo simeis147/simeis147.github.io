@@ -1,7 +1,7 @@
 {
-  "name": "vuepress-theme-hope-template",
+  "name": "src",
   "version": "2.0.0",
-  "description": "dongcp's Blog",
+  "description": "blog",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -11,12 +11,12 @@
     "docs:update-package": "pnpm dlx vp-update"
   },
   "devDependencies": {
-    "@vuepress/client": "2.0.0-beta.66",
-    "@vuepress/utils": "2.0.0-beta.66",
-    "vue": "^3.3.4",
-    "vuepress": "2.0.0-beta.66",
-    "vuepress-plugin-components": "2.0.0-beta.233",
-    "vuepress-plugin-search-pro": "2.0.0-beta.233",
-    "vuepress-theme-hope": "2.0.0-beta.233"
+    "@vuepress/client": "2.0.0-rc.0",
+    "@waline/client": "3.0.0-alpha.2",
+    "vue": "^3.3.8",
+    "vuepress": "2.0.0-rc.0",
+    "vuepress-plugin-components": "2.0.0-rc.0",
+    "vuepress-plugin-search-pro": "2.0.0-rc.0",
+    "vuepress-theme-hope": "2.0.0-rc.0"
   }
 }

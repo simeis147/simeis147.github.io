@@ -17,9 +17,9 @@ projects:
     link: https://javaguide.cn/home.html
 
   - icon: /assets/icon/system.svg
-    name: Java
-    desc: Java全栈知识体系
-    link: https://pdai.tech/
+    name: 小林coding
+    desc: 计算机网络、操作系统、计算机组成、数据库
+    link: https://www.xiaolincoding.com/
 
   - icon: /assets/icon/pic.svg
     name: Acwing

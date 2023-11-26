@@ -1,14 +1,16 @@
 ---
 # 这是文章的标题
 title: 页面配置
+# 你可以自定义封面图片
+cover: /assets/bgImage/iTab-dpvvgm.jpg
 # 这是页面的图标
-icon: page
+icon: file
 # 这是侧边栏的顺序
 order: 1
 # 设置作者
-author: Dongcp
+author: Ms.Hope
 # 设置写作时间
-date: 2023-01-01
+date: 2020-01-01
 # 一个页面可以有多个分类
 category:
   - 使用指南
@@ -34,6 +36,7 @@ copyright: 无版权
 
 你可以在 Markdown 的 Frontmatter 中设置页面信息。
 
+- 作者设置为 Ms.Hope。
 - 写作日期为 2020 年 1 月 1 日
 - 分类为 “使用指南”
 - 标签为 “页面配置” 和 “使用指南”
@@ -50,7 +53,7 @@ copyright: 无版权
 
 :::
 
-主题包含了一个自定义徽章可以使用: <Badge text="wenzi" color="#777" />
+主题包含了一个自定义徽章可以使用:
 
 > 文字结尾应该有深蓝色的 徽章文字 徽章。 <Badge text="徽章文字" color="#242378" />
 
