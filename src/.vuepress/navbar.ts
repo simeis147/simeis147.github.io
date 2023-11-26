@@ -28,9 +28,9 @@ export default navbar([
     link: '💻 CSBasics',
     children: [
       {
-        text: '计算机网络',
+        text: '408',
         children: [
-          { text: "计算机网络",  link: "/ComputerBasics/ComputerNetwork/" },
+          { text: "计算机基础",  link: "/ComputerBasics/ComputerNetwork/" },
         ]
       },
       {

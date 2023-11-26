@@ -2,6 +2,7 @@ import { defineUserConfig } from "vuepress";
 import theme from "./theme.js";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
 import { componentsPlugin } from "vuepress-plugin-components";
+import { commentPlugin } from "vuepress-plugin-comment2";
 
 export default defineUserConfig({
   base: "/",
@@ -14,6 +15,14 @@ export default defineUserConfig({
   theme,
 
   plugins: [
+    commentPlugin({
+      provider: "Giscus", // Artalk | Giscus | Waline | Twikoo
+      repo: "simeis147/BlogGiscus",
+      repoId: "R_kgDOKyHOLw",
+      category: "Announcements",
+      categoryId: "DIC_kwDOKyHOL84CbRA3",
+      
+    }),
     componentsPlugin({
       // 插件选项
       components: [
