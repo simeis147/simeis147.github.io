@@ -59,7 +59,6 @@ tag:
   link="https://cdkm.com/cn/png-to-ico"
   background="rgba(253, 230, 138, 0.15)"
 />
-/>
 
 ## 3. [ChatGPT](https://chat.openai.com/) 🪐
 
