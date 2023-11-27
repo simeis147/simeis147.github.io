@@ -4,7 +4,7 @@ export default navbar([
   "/",
   
   { 
-      text: '🔧 工具',
+      text: '🔧 便捷工具',
       // link: '🔧 Tools',
       children: [
         {
@@ -24,7 +24,7 @@ export default navbar([
       ]
   },
   { 
-    text: '💻 计算机基础',
+    text: '💻 基础知识',
     // link: '💻 CSBasics',
     children: [
       {
@@ -42,7 +42,7 @@ export default navbar([
     ]
   },
   { 
-    text: '🧾 数据库',
+    text: '🗂 数据存储',
     // link: '🧾 Database',
     children: [
       {
