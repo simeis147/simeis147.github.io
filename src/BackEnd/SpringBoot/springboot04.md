@@ -452,7 +452,7 @@ spring.servlet.multipart.max-request-size=100MB
 
 ![ ](./assets/springboot04/image-20220904200320964.png)
 
-::: danger
+::: caution
 直接存储在服务器的磁盘目录中，存在以下缺点：
 
 - 不安全：磁盘如果损坏，所有的文件就会丢失

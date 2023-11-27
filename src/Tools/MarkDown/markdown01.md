@@ -10,6 +10,10 @@ category:
 
 ## 1 提示信息
 
+::: important important
+
+:::
+
 ::: info info
   
 :::
@@ -23,7 +27,7 @@ category:
 ::: warning warning
 :::
 
-::: danger danger
+::: caution caution
 :::
 
 ::: details details

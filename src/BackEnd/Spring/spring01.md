@@ -65,7 +65,7 @@ category:
 
 4. 当IOC容器中创建好service和dao对象后，程序能正确执行么?
 
-    ::: danger 不行
+    ::: caution 不行
 
     因为service运行需要依赖dao对象  
 

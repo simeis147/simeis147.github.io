@@ -58,6 +58,12 @@ VuePress 会使用 [markdown-it](https://github.com/markdown-it/markdown-it) 来
 const a = 1;
 ```
 
+::: before 重要容器
+
+重要容器
+
+:::
+
 :::
 
 ::: tip 自定义标题
@@ -72,7 +78,7 @@ const a = 1;
 
 :::
 
-::: danger 自定义标题
+::: caution 自定义标题
 
 危险容器
 
