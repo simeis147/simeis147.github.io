@@ -18,7 +18,7 @@ projects:
 
   - icon: /assets/icon/system.svg
     name: 小林coding
-    desc: 计算机网络、操作系统、计算机组成、数据库
+    desc: 计算机基础
     link: https://www.xiaolincoding.com/
 
   - icon: /assets/icon/pic.svg

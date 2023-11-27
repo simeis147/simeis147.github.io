@@ -103,27 +103,4 @@ Orange
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202130.png)
 
-## 4. 卡片
 
-```card:json
-{
-  "title": "Mr.Hope",
-  "desc": "Where there is light, there is hope",
-  "logo": "https://mister-hope.com/logo.svg",
-  "link": "https://mister-hope.com",
-  "color": "rgba(253, 230, 138, 0.15)"
-}
-```
-
-```java
-
-  ```card:json
-  {
-    "title": "Mr.Hope",
-    "desc": "Where there is light, there is hope",
-    "logo": "https://mister-hope.com/logo.svg",
-    "link": "https://mister-hope.com",
-    "color": "rgba(253, 230, 138, 0.15)"
-  }
-
-```
