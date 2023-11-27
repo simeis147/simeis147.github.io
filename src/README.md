@@ -2,7 +2,7 @@
 home: true
 layout: BlogHome
 
-title: 🏠️ Home
+title: 🏠️ 主页
 
 bgImage: https://cdn.jsdelivr.net/gh/simeis147/simeis147.github.io@main/src/.vuepress/public/assets/bgImage/iTab-1k6ljv.webp
 heroFullScreen: true

@@ -4,8 +4,8 @@ export default navbar([
   "/",
   
   { 
-      text: '工具',
-      link: '🔧 Tools',
+      text: '🔧 工具',
+      // link: '🔧 Tools',
       children: [
         {
           text: '文档',
@@ -24,8 +24,8 @@ export default navbar([
       ]
   },
   { 
-    text: '计算机基础',
-    link: '💻 CSBasics',
+    text: '💻 计算机基础',
+    // link: '💻 CSBasics',
     children: [
       {
         text: '408',
@@ -42,8 +42,8 @@ export default navbar([
     ]
   },
   { 
-    text: '数据库',
-    link: '🧾 Database',
+    text: '🧾 数据库',
+    // link: '🧾 Database',
     children: [
       {
         text: '数据库基础和原理',
@@ -68,8 +68,8 @@ export default navbar([
   },
   
   { 
-      text: '后端相关',
-      link: '🛫 BackEnd',
+      text: '🏗 后端相关',
+      // link: '🛫 BackEnd',
       children: [
           {
               text: '框架',
@@ -94,8 +94,8 @@ export default navbar([
   },
 
   { 
-      text: '前端相关',
-      link: '🛫 FrontEnd',
+      text: '🏛 前端相关',
+      // link: '🛫 FrontEnd',
       children: [
           {
               text: '框架',
@@ -114,7 +114,7 @@ export default navbar([
       ]
   },
 
-  { text: '📝 Project', link: '/project/' },
+  { text: '📝 项目资源', link: '/project/' },
   
   // { 
   //   text: 'Others',

@@ -21,13 +21,13 @@ export default defineUserConfig({
       repoId: "R_kgDOKyHOLw",
       category: "Announcements",
       categoryId: "DIC_kwDOKyHOL84CbRA3",
-      
     }),
     componentsPlugin({
       // 插件选项
       components: [
         "SiteInfo",
         "VPCard",
+        "FontIcon",
       ],
     }),
     // 本地搜索，删除上方 docsearchPlugin 区块后生效
