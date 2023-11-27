@@ -4,7 +4,7 @@ export default navbar([
   "/",
   
   { 
-      text: '🔧 便捷工具',
+      text: '⚙️ 便捷工具',
       // link: '🔧 Tools',
       children: [
         {
@@ -42,7 +42,7 @@ export default navbar([
     ]
   },
   { 
-    text: '🗂 数据存储',
+    text: '📑 数据存储',
     // link: '🧾 Database',
     children: [
       {
@@ -68,8 +68,8 @@ export default navbar([
   },
   
   { 
-      text: '🏗 后端相关',
-      // link: '🛫 BackEnd',
+      text: '🔬 后端相关',
+      // link: '🏗 BackEnd',
       children: [
           {
               text: '框架',
@@ -94,8 +94,8 @@ export default navbar([
   },
 
   { 
-      text: '🏛 前端相关',
-      // link: '🛫 FrontEnd',
+      text: '🔭 前端相关',
+      // link: '🏛 FrontEnd',
       children: [
           {
               text: '框架',
