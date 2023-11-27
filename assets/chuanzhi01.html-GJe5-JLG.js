@@ -1,1 +1,0 @@
-import{_ as a}from"./plugin-vue_export-helper-x3n3nnut.js";import{o as t,c,d as e,e as o}from"./app-YWwWUqmj.js";const r={},n=e("h1",{id:"day01",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#day01","aria-hidden":"true"},"#"),o(" DAY01")],-1),s=[n];function d(_,h){return t(),c("div",null,s)}const f=a(r,[["render",d],["__file","chuanzhi01.html.vue"]]);export{f as default};
