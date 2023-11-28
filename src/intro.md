@@ -22,7 +22,7 @@ next: false
 # 评论
 comment: false
 # 页脚
-# footer: false
+footer: false
 # 返回顶部按钮
 backtotop: false
 
@@ -37,19 +37,7 @@ tag:
   - 个人简介
 ---
 
-<!-- <div style="float: left;display: flex;flex-wrap: wrap;width: 75%;justify-content: space-between;">
-    <div style="width: 45%;font-weight: 500;color: #4c4c4c;font-size: 14px;margin: 5px;">姓名： 吴彦祖</div>
-    <div style="width: 45%;font-weight: 500;color: #4c4c4c;font-size: 14px;margin: 5px;">出生年月： 1988-8</div>
-    <div style="width: 45%;font-weight: 500;color: #4c4c4c;font-size: 14px;margin: 5px;">电话： 13888888888</div>
-    <div style="width: 45%;font-weight: 500;color: #4c4c4c;font-size: 14px;margin: 5px;">邮箱： wuyanzu@qq.com</div>
-</div>
-<div>
-    <div style="float: right;margin-right: 10px;">
-        <img src=""  width="100px" height="140px" style="box-shadow: 5px 5px 5px rgba(0,0,0,.5);">
-    </div>
-</div> -->
-
-<div style="text-align:center;color:#f0f0f0; background-image: url('assets/intro/star.jpg'); opacity: 1; background-size: 400px">
+<div style="text-align:center;color:#f0f0f0; background-image: url('assets/intro/star.jpg'); opacity: 1; background-size:900px">
 
 地球这样的行星，是产生不了重元素的，你身体里的铁，来自璀璨的超新星爆炸。
 

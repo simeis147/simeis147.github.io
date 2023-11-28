@@ -26,6 +26,8 @@ tag:
 
 ## 1. [ChatGPT](https://chat.openai.com/) 🪐
 
+<!-- more -->
+
 ## 2. 资源整合网站 🌏
 
 <VPCard
