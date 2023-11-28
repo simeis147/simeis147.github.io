@@ -28,6 +28,7 @@ export default defineUserConfig({
         "SiteInfo",
         "VPCard",
         "FontIcon",
+        "Badge",
       ],
     }),
     // 本地搜索，删除上方 docsearchPlugin 区块后生效

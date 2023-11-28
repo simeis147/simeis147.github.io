@@ -24,7 +24,9 @@ tag:
 
 # 资源整合
 
-## 1. 资源整合网站 🌏
+## 1. [ChatGPT](https://chat.openai.com/) 🪐
+
+## 2. 资源整合网站 🌏
 
 <VPCard
   title="开源工具导航"
@@ -42,7 +44,7 @@ tag:
   background="rgba(253, 230, 138, 0.15)"
 />
 
-## 2. 图片转换
+## 3. 图片转换
 
 <VPCard
   title="removebg"
@@ -59,8 +61,6 @@ tag:
   link="https://cdkm.com/cn/png-to-ico"
   background="rgba(253, 230, 138, 0.15)"
 />
-
-## 3. [ChatGPT](https://chat.openai.com/) 🪐
 
 ## 4. 矢量图标库
 

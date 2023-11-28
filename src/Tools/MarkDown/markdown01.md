@@ -6,9 +6,9 @@ category:
   - Markdown
 ---
 
-# Markdown方言（Vuepress）
+# Markdown方言（ hope ）
 
-## 1 提示信息
+## 1 [提示信息](https://theme-hope.vuejs.press/zh/guide/markdown/hint.html)
 
 ::: important important
 
@@ -64,16 +64,23 @@ Orange
 
 ## 3 字体颜色
 
-### 3.1 配置<span class="vp-badge danger">重要</span>
+### 3.1 [徽章](https://plugin-components.vuejs.press/zh/guide/utilities/badge.html)<span class="vp-badge danger">重要</span>
 
 <span class="vp-badge info">class="vp-badge info"</span>  
 <span class="vp-badge danger">class="vp-badge danger"</span>  
 <span class="vp-badge note">class="vp-badge note"</span>  
-<span class="vp-badge tip">class="vp-badge tip"</span>
+<span class="vp-badge tip">class="vp-badge tip"</span>  
 <span class="vp-badge warning">class="vp-badge warning"</span>
+
+top<Badge text="构建中" type="warning" vertical = "top"/> middle<Badge text="新" type="tip"  vertical = "middle"/> baseline<Badge text="MrHope" type="info" vertical = "baseline"/> bottom<Badge text="MrHope" color="grey" vertical = "bottom"/>
 
 ```md
 <span class="vp-badge info">支持页面配置</span>
+
+<Badge text="构建中" type="warning" vertical = "top"/> 
+<Badge text="新" type="tip"  vertical = "middle"/> 
+<Badge text="MrHope" type="info" vertical = "baseline"/>
+<Badge text="MrHope" color="grey" vertical = "bottom"/>
 ```
 
 ### 3.2 更改字体、大小、颜色
@@ -92,15 +99,3 @@ Orange
 效果
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202045.png)
-
-### 3.3 为文字添加背景色
-
-```html
-<table><tr><td bgcolor=cyan>背景颜色cyan</td></tr></table>
-```
-
-效果
-
-![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/BackEnd/SpringCloud/20230719202130.png)
-
-
