@@ -18,11 +18,8 @@ actions:
     type: primary
 
   - text: Hope 💡
-    link: https://theme-hope.vuejs.press/zh/
+    link: https://theme-hope.vuejs.press/zh/demo/projects.html
     type: primary
-
-  # - text: 配置 🛠
-  #   link: ./config/
 
 highlights:
 
@@ -51,32 +48,6 @@ highlights:
       - title: 💡 复习笔记
         details: 项目复盘、知识点总结、阶段性总结
         link: ./tjxt/
-
-  - header: 传智健康
-    description: 传智健康管理系统是一款应用于健康管理机构的业务系统，实现健康管理机构工作内容可视化、患者管理专业化、健康评估数字化、知识库集成化，增强管理者对健康管理机构运营情况的了解
-    image: /assets/projectImage/chuanzhi.jpg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/4-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/4-dark.svg
-    highlights:
-      - title: 📦️ 仓库地址
-        details: SSM + Zookeeper + Dubbo + Spring Security
-        link: https://github.com/simeis147/huike-crm
-
-      - title: 🎥 视频地址
-        details: B站学习
-        link: https://www.bilibili.com/video/BV1Bo4y117zV?p=1
-
-      - title: 📑 项目介绍
-        details: 功能数量、页面数量、接口数量、解决方案
-        link: https://pip.itcast.cn/java-hk?javaeezly
-
-      - title: 📖 产品文档
-        details: 技术架构、功能架构、软件开发流程
-        link: ./chuanzhihealth/
-
-      - title: 💡 复习笔记
-        details: 项目复盘、知识点总结、阶段性总结
-        link: ./chuanzhihealth/chuanzhi01/
 
   - header: Huike CRM
     description: 客达天下是一款以客户为中心应用于市场销售的管理系统。辅助市场及销售人员对销售线索、商机、客户进行跟进转化，提高转化效率，实现销售线索的价值最大化
