@@ -4,6 +4,7 @@ star: true
 index: true
 order: number
 date: 2023-07-23
+toc: false
 # 路径导航
 breadcrumb: false
 # 评论
@@ -24,11 +25,11 @@ tag:
 
 # 资源整合
 
-## 1. [ChatGPT](https://chat.openai.com/) 🪐
+## 1. 🪐 [ChatGPT](https://chat.openai.com/)
 
 <!-- more -->
 
-## 2. 资源整合网站 🌏
+## 2. 🌏 资源整合网站 
 
 <VPCard
   title="开源工具导航"
@@ -46,7 +47,7 @@ tag:
   background="rgba(253, 230, 138, 0.15)"
 />
 
-## 3. 图片转换
+## 3. 🌁 图片转换 
 
 <VPCard
   title="removebg"
@@ -64,7 +65,7 @@ tag:
   background="rgba(253, 230, 138, 0.15)"
 />
 
-## 4. 矢量图标库
+## 4. 🏙️ 矢量图标库 
 
 <VPCard
   title="Fontawesome"
@@ -97,5 +98,3 @@ tag:
   link="https://www.webfx.com/tools/emoji-cheat-sheet/"
   background="rgba(253, 230, 138, 0.15)"
 />
-
-
