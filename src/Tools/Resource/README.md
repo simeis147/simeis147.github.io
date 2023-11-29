@@ -7,7 +7,7 @@ date: 2023-07-23
 # 路径导航
 breadcrumb: false
 # 评论
-comment: false
+# comment: false
 # 侧边栏
 sidebar: false
 # 页脚
@@ -67,18 +67,26 @@ tag:
 ## 4. 矢量图标库
 
 <VPCard
-  title="阿里巴巴"
-  desc="阿里巴巴矢量图标库"
-  logo="/assets/resource/alibaba.svg"
-  link="https://www.iconfont.cn/"
-  background="rgba(253, 230, 138, 0.15)"
-/>
-
-<VPCard
   title="Fontawesome"
   desc="fontawesome矢量图标库"
   logo="/assets/resource/font-awesome.svg"
   link="https://fontawesome.com/"
+  background="rgba(253, 230, 138, 0.15)"
+/>
+
+<VPCard
+  title="Iconify "
+  desc="可用的所有图标都是开源的"
+  logo="/assets/resource/logo-iconify.svg"
+  link="https://icon-sets.iconify.design/"
+  background="rgba(253, 230, 138, 0.15)"
+/>
+
+<VPCard
+  title="阿里巴巴"
+  desc="阿里巴巴矢量图标库"
+  logo="/assets/resource/alibaba.svg"
+  link="https://www.iconfont.cn/"
   background="rgba(253, 230, 138, 0.15)"
 />
 
@@ -89,3 +97,5 @@ tag:
   link="https://www.webfx.com/tools/emoji-cheat-sheet/"
   background="rgba(253, 230, 138, 0.15)"
 />
+
+
