@@ -16,37 +16,37 @@ projects:
     desc: Java面试 + 学习指南
     link: https://javaguide.cn/home.html
 
-  - icon: /assets/icon/system.svg
+  - icon: /assets/icon/xiaolin.svg
     name: 小林coding
     desc: 计算机基础
     link: https://www.xiaolincoding.com/
 
-  - icon: /assets/icon/pic.svg
+  - icon: /assets/icon/acwing.svg
     name: Acwing
     desc: 算法学习
     link: https://www.acwing.com/
 
-  - icon: /assets/icon/code.svg
+  - icon: /assets/icon/leetcode.svg
     name: Leetcode
     desc: 力扣
     link: https://leetcode.cn/
 
-  - icon: /assets/icon/comupter.svg
+  - icon: /assets/icon/laptop.svg
     name: Electronics
     desc: 记录使用过的电子产品
     link: Others/ElectronicProduct/
 
-  - icon: /assets/icon/keyboard.svg
+  - icon: /assets/icon/zf.svg
     name: Zfrontier
     desc: 装备前线
     link: https://www.zfrontier.com/app/user/zae5QEwJmVroZk
 
-  - icon: /assets/icon/life.svg
+  - icon: /assets/icon/douban.svg
     name: Douban
     desc: 豆瓣
     link: https://www.douban.com/people/229859072/?_i=9476148sUkMeo6,9476174sUkMeo6
 
-  - icon: /assets/icon/time.svg
+  - icon: /assets/icon/hourglass.svg
     name: Life blog
     desc: 生活博客
     link: 
