@@ -36,7 +36,7 @@ export default navbar([
       {
         text: '算法',
         children: [
-          { text: '算法',  icon: '/assets/icon/thinking-face.svg', link: "/ComputerBasics/Algorithm/" },
+          { text: '算法',  icon: '/assets/icon/algorithms.svg', link: "/ComputerBasics/Algorithm/" },
         ],
       }
     ]
