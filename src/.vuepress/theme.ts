@@ -4,6 +4,7 @@ import sidebar from "./sidebar.js";
 
 export default hopeTheme({
   hostname: "https://github.com/simeis147",
+   
   author: {
     name: "Dongcp",
     url: "https://github.com/simeis147",
@@ -65,6 +66,12 @@ export default hopeTheme({
         editLink: "在 GitHub 上编辑此页",
       },
     },
+  },
+
+  navbarLayout: {
+    start: ["Brand"],
+    center: ["Links"],
+    end: ["Language", "Repo", "Outlook", "Search"],
   },
 
   plugins: {
