@@ -18,15 +18,15 @@ category:
 
 Redis是一个基于**内存**的key-value结构数据库。Redis 是互联网技术领域使用最为广泛的存储中间件，它是「**Re**mote **Di**ctionary **S**ervice」的首字母缩写，也就是「远程字典服务」
 
-- [ ] 基于内存存储，读写性能高
+- [x] 基于内存存储，读写性能高
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/project/reggietakeout/04redis/20230612141249.png)
 
-- [ ] 适合存储热点数据（热点商品、资讯、新闻）
+- [x] 适合存储热点数据（热点商品、资讯、新闻）
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/project/reggietakeout/04redis/20230612141304.png)
 
-- [ ] 企业应用广泛
+- [x] 企业应用广泛
 
 ![ ](https://simeis147-github-io.oss-cn-shenzhen.aliyuncs.com/project/reggietakeout/04redis/20230612141323.png)
 
