@@ -29,16 +29,13 @@ export default sidebar({
   "/FrontEnd/JavaScript/": "structure",
   "/FrontEnd/Vue/": "structure",
   
-  "/project/reggietakeout/": "structure",
-  "/project/reggietakeout/*": "structure",
+  "/Project/reggietakeout/": "structure",
+  "/Project/reggietakeout/*": "structure",
+  "/Project/skytakeout/": "structure",
+  "/Project/huike/": "structure",
+  "/Project/chuanzhihealth/": "structure",
+  "/Project/tjxt/": "structure",
 
-  "/project/skytakeout/": "structure",
-  "/project/huike/": "structure",
-  "/project/chuanzhihealth/": "structure",
-  "/project/tjxt/": "structure",
+  "/Demo/": "structure",
 
-  "/demo/": "structure",
-
-  // "/Others/Flim": "structure",
-  // "/Others/Keyborad": "structure",
 });
