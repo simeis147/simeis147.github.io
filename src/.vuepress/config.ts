@@ -3,6 +3,7 @@ import theme from "./theme.js";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
 import { componentsPlugin } from "vuepress-plugin-components";
 import { commentPlugin } from "vuepress-plugin-comment2";
+import { googleAnalyticsPlugin } from '@vuepress/plugin-google-analytics';
 
 export default defineUserConfig({
   base: "/",
@@ -21,6 +22,11 @@ export default defineUserConfig({
       repoId: "R_kgDOKyHOLw",
       category: "Announcements",
       categoryId: "DIC_kwDOKyHOL84CbRA3",
+    }),
+    googleAnalyticsPlugin({
+      // 配置项
+      id: 'G-28BK3X8X3R',
+      debug: true,
     }),
     componentsPlugin({
       // 插件选项
