@@ -9,7 +9,7 @@ export default defineUserConfig({
   base: "/",
   port: 7070,
 
-  //头部引入，这里引入的是 51la 统计
+  //头部引入
   head: [["script", { type: "text/javascript", src: "/assets/js/51la.js" }]],
 
   lang: "zh-CN",
