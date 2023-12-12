@@ -17,7 +17,7 @@ export default navbar([
         text: '工具',
         children: [
           { text: "Git",       icon: '/assets/icon/git.svg', link: "/Tools/Git/" },
-          { text: 'BugMemoir', icon: '/assets/icon/bug.svg', link: '/bug-memoir/' },
+          { text: 'BugMemoir', icon: '/assets/icon/bug.svg', link: 'https://simeis147.github.io/bug-memoir/' },
         ]
       }
     ]
@@ -70,22 +70,22 @@ export default navbar([
     text: '🔬 后端相关',
     children: [
       {
-          text: '框架',
-          children: [
-            { text: "MyBatisPlus",  icon: '/assets/icon/mybatisplus.svg',  link: "/BackEnd/MybatisPlus/" },
-            { text: "MyBatis",      icon: '/assets/icon/mybatis.svg',      link: "/BackEnd/MyBatis/" },
-            { text: "SpringCloud",  icon: '/assets/icon/springcloud.svg',  link: "/BackEnd/SpringCloud/" },
-            { text: "SpringBoot",   icon: '/assets/icon/springboot.svg',   link: "/BackEnd/SpringBoot/" },
-            { text: "SpringMVC",    icon: '/assets/icon/springMVC.svg',    link: "/BackEnd/SpringMVC/" },
-            { text: "Spring",       icon: '/assets/icon/spring.svg',       link: "/BackEnd/Spring/" },
-          ]
+        text: '框架',
+        children: [
+          { text: "MyBatisPlus",  icon: '/assets/icon/mybatisplus.svg',  link: "/BackEnd/MybatisPlus/" },
+          { text: "MyBatis",      icon: '/assets/icon/mybatis.svg',      link: "/BackEnd/MyBatis/" },
+          { text: "SpringCloud",  icon: '/assets/icon/springcloud.svg',  link: "/BackEnd/SpringCloud/" },
+          { text: "SpringBoot",   icon: '/assets/icon/springboot.svg',   link: "/BackEnd/SpringBoot/" },
+          { text: "SpringMVC",    icon: '/assets/icon/springMVC.svg',    link: "/BackEnd/SpringMVC/" },
+          { text: "Spring",       icon: '/assets/icon/spring.svg',       link: "/BackEnd/Spring/" },
+        ]
       },
       {
-          text: '理论知识',
-          children: [
-            { text: "JavaWeb",  icon: '/assets/icon/javaweb.svg',  link: "/BackEnd/JavaWeb/" },
-            { text: "JavaSE",   icon: '/assets/icon/java.svg',     link: "/BackEnd/JavaSE/" }
-          ]
+        text: '理论知识',
+        children: [
+          { text: "JavaWeb",  icon: '/assets/icon/javaweb.svg',  link: "/BackEnd/JavaWeb/" },
+          { text: "JavaSE",   icon: '/assets/icon/java.svg',     link: "/BackEnd/JavaSE/" }
+        ]
       }
         
     ]
