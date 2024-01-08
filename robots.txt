@@ -2,4 +2,4 @@
 User-agent:*
 Disallow:
 
-Sitemap: https://github.com/simeis147/sitemap.xml
+Sitemap: https://tech.dongcp.top/sitemap.xml
