@@ -3,7 +3,7 @@ import { navbar } from "vuepress-theme-hope";
 export default navbar([
   "/",
   
-  { 
+  {
     text: '⚙️ 便捷工具',
     children: [
       {
