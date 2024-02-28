@@ -41,6 +41,7 @@ public ListNode removeElements(ListNode head, int val) {
     }
     return dummy.next;
 }
+
 /**
  * 不添加虚拟节点方式
  * 时间复杂度 O(n)
@@ -70,6 +71,7 @@ public ListNode removeElements(ListNode head, int val) {
     }
     return head;
 }
+
 /**
  * 不添加虚拟节点and pre Node方式
  * 时间复杂度 O(n)
