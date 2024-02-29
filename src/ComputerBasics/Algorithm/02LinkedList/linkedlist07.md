@@ -44,7 +44,7 @@ public class Solution {
         // 求长度差
         int gap = lenA - lenB;
         // 让curA和curB在同一起点上（末尾位置对齐）
-        while (gap-- > 0) {
+        while (gap--) {
             curA = curA.next;
         }
         // 遍历curA 和 curB，遇到相同则直接返回
