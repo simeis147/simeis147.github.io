@@ -111,6 +111,6 @@ export default navbar([
     ]
   },
 
-  { text: '📝 项目资源', link: '/Project/' },
+  { text: '📝 项目资源', link: '/project/' },
   
 ]);
