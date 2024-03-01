@@ -1,4 +1,5 @@
 import { defineUserConfig } from "vuepress";
+import { viteBundler } from '@vuepress/bundler-vite'
 import theme from "./theme.js";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
 import { componentsPlugin } from "vuepress-plugin-components";
@@ -17,6 +18,11 @@ export default defineUserConfig({
   description: "Simeis 147's Blog",
 
   theme,
+
+  bundler: viteBundler({
+    viteOptions: {},
+    vuePluginOptions: {},
+  }),
 
   plugins: [
     commentPlugin({

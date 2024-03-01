@@ -17,12 +17,12 @@ class Solution {
         Arrays.sort(nums);
        
         for (int i = 0; i < nums.length; i++) {
-		
+                  
             // nums[i] > target 直接返回, 剪枝操作
             if (nums[i] > 0 && nums[i] > target) {
                 return result;
             }
-		
+
             if (i > 0 && nums[i - 1] == nums[i]) {    // 对nums[i]去重
                 continue;
             }
@@ -36,7 +36,7 @@ class Solution {
                 int left = j + 1;
                 int right = nums.length - 1;
                 while (right > left) {
-		    // nums[k] + nums[i] + nums[left] + nums[right] > target int会溢出
+                // nums[k] + nums[i] + nums[left] + nums[right] > target int会溢出
                     long sum = (long) nums[i] + nums[j] + nums[left] + nums[right];
                     if (sum > target) {
                         right--;
