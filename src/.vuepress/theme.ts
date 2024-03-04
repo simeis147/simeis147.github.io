@@ -77,6 +77,36 @@ export default hopeTheme({
   plugins: {
     blog: true,
 
+    searchPro: {
+      // 索引全部内容
+      indexContent: true,
+      // 为分类和标签添加索引
+      customFields: [
+        {
+          getter: (page) => page.frontmatter.category,
+          formatter: "分类：$content",
+        },
+        {
+          getter: (page) => page.frontmatter.tag,
+          formatter: "标签：$content",
+        },
+      ],
+    },
+    components: {
+      components: [
+        "SiteInfo",
+        "VPCard",
+        "FontIcon",
+        "Badge",
+      ]
+    },
+    comment: {
+      provider: "Giscus", // Artalk | Giscus | Waline | Twikoo
+      repo: "simeis147/BlogGiscus",
+      repoId: "R_kgDOKyHOLw",
+      category: "Announcements",
+      categoryId: "DIC_kwDOKyHOL84CbRA3",
+    },
     // install @waline/client before enabling it
     // WARNING: This is a test server for demo only.
     // You should create and use your own comment service in production.

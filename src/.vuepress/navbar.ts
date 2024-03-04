@@ -27,15 +27,17 @@ export default navbar([
     text: '💻 基础知识',
     children: [
       {
-        text: '408',
+        text: '基础',
         children: [
           { text: "计算机网络",  icon: '/assets/icon/network.svg', link: "/ComputerBasics/ComputerNetwork/" },
+          { text: "操作系统", icon: '/assets/icon/os.svg', link: "/ComputerBasics/OpreatingSystem/" }
         ]
       },
       {
         text: '算法',
         children: [
-          { text: '算法',  icon: '/assets/icon/algorithms.svg', link: "/ComputerBasics/Algorithm/" },
+          { text: '数据结构', icon: '/assets/icon/dataStructure.svg', link: "/ComputerBasics/DataStructure/" },
+          { text: '算法',  icon: '/assets/icon/algorithm.svg', link: "/ComputerBasics/Algorithm/" }
         ],
       }
     ]
