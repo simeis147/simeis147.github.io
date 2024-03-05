@@ -10,6 +10,8 @@ category:
 
 [151.翻转字符串里的单词](https://leetcode.cn/problems/reverse-words-in-a-string/)
 
+## 写法
+
 ```java
 class Solution {
    /**

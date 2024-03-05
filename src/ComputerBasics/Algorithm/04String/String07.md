@@ -10,6 +10,8 @@ category:
 
 [459.重复的子字符串](https://leetcode.cn/problems/repeated-substring-pattern/)
 
+## 写法
+
 ```java
 class Solution {
     public boolean repeatedSubstringPattern(String s) {

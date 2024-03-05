@@ -10,6 +10,8 @@ category:
 
 [第454题.四数相加II](https://leetcode.cn/problems/4sum-ii/description/)
 
+## 写法
+
 ```java
 class Solution {
     public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {

@@ -10,6 +10,8 @@ category:
 
 [383. 赎金信](https://leetcode.cn/problems/ransom-note/description/)
 
+## 写法
+
 ```java
 class Solution {
     public boolean canConstruct(String ransomNote, String magazine) {

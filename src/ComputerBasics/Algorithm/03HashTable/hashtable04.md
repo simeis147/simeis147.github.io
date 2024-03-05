@@ -10,6 +10,8 @@ category:
 
 [第202题. 快乐数](https://leetcode.cn/problems/happy-number/description/)
 
+## 写法
+
 ```java
 class Solution {
     public boolean isHappy(int n) {

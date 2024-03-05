@@ -10,6 +10,8 @@ category:
 
 [142.环形链表II](https://leetcode.cn/problems/linked-list-cycle-ii/)
 
+## 写法
+
 ```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {

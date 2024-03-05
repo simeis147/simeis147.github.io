@@ -10,6 +10,8 @@ category:
 
 [206.反转链表](https://leetcode.cn/problems/reverse-linked-list/)
 
+## 写法
+
 ```java
 // 双指针
 class Solution {

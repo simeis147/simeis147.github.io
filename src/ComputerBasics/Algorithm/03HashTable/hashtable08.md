@@ -10,6 +10,8 @@ category:
 
 [第15题. 三数之和](https://leetcode.cn/problems/3sum/)
 
+## 写法
+
 ```java
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {

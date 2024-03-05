@@ -10,6 +10,8 @@ category:
 
 [右旋字符串](https://kamacoder.com/problempage.php?pid=1065)
 
+## 写法
+
 ```java
 // 版本一
 import java.util.Scanner;

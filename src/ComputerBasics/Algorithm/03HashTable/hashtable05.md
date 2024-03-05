@@ -10,6 +10,8 @@ category:
 
 [1. 两数之和](https://leetcode.cn/problems/two-sum/description/)
 
+## 写法
+
 ```java
 public int[] twoSum(int[] nums, int target) {
     int[] res = new int[2];

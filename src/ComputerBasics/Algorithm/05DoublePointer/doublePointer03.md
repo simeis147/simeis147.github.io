@@ -10,6 +10,8 @@ category:
 
 [替换数字](https://kamacoder.com/problempage.php?pid=1064)
 
+## 写法
+
 ```java
 import java.util.Scanner;
 

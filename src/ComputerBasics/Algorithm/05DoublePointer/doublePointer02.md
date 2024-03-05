@@ -10,6 +10,8 @@ category:
 
 [344.反转字符串](https://leetcode.cn/problems/reverse-string/)
 
+## 写法
+
 ```java
 class Solution {
     public void reverseString(char[] s) {

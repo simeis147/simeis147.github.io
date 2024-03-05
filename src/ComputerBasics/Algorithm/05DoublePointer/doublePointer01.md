@@ -10,6 +10,8 @@ category:
 
 [27. 移除元素](https://leetcode.cn/problems/remove-element/)
 
+## 写法
+
 ```java
 class Solution {
     public int removeElement(int[] nums, int val) {

@@ -10,6 +10,8 @@ category:
 
 [19.删除链表的倒数第N个节点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 
+## 写法
+
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n){
     ListNode dummyNode = new ListNode(0);

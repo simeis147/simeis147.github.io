@@ -10,6 +10,8 @@ category:
 
 [第18题. 四数之和](https://leetcode.cn/problems/4sum/)
 
+## 写法
+
 ```java
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
