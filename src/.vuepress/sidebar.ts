@@ -9,6 +9,10 @@ export default sidebar({
   "/ComputerBasics/ComputerNetwork/": "structure",
   "/ComputerBasics/Algorithm/": "structure",
   "/ComputerBasics/Algorithm/*": "structure",
+  "/ComputerBasics/OperatingSystem/": "structure",
+  "/ComputerBasics/OperatingSystem/*": "structure",
+  "/ComputerBasics/DataStructure/": "structure",
+  "/ComputerBasics/DataStructure/*": "structure",
 
   "/Database/Basic/Language/": "structure",
   "/Database/Basic/Principle/": "structure",
