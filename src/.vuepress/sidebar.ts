@@ -29,12 +29,12 @@ export default sidebar({
   "/FrontEnd/JavaScript/": "structure",
   "/FrontEnd/Vue/": "structure",
   
-  "/Project/reggietakeout/": "structure",
-  "/Project/reggietakeout/*": "structure",
-  "/Project/skytakeout/": "structure",
-  "/Project/huike/": "structure",
-  "/Project/chuanzhihealth/": "structure",
-  "/Project/tjxt/": "structure",
+  "/Projects/reggietakeout/": "structure",
+  "/Projects/reggietakeout/*": "structure",
+  "/Projects/skytakeout/": "structure",
+  "/Projects/huike/": "structure",
+  "/Projects/chuanzhihealth/": "structure",
+  "/Projects/tjxt/": "structure",
 
   "/Demo/": "structure",
 
