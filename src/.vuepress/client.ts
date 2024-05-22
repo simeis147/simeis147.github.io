@@ -1,6 +1,10 @@
 // .vuepress/client.ts
 import { defineClientConfig } from "vuepress/client";
 import { setupRunningTimeFooter } from "vuepress-theme-hope/presets/footerRunningTime.js";
+import { setupTransparentNavbar } from "vuepress-theme-hope/presets/transparentNavbar.js";
+import "vuepress-theme-hope/presets/round-blogger-avatar.scss";
+import "vuepress-theme-hope/presets/shinning-feature-panel.scss";
+import "vuepress-theme-hope/presets/bounce-icon.scss";
 
 export default defineClientConfig({
   setup() {
@@ -11,5 +15,6 @@ export default defineClientConfig({
       },
       true,
     );
+    setupTransparentNavbar({ type: "homepage" });
   },
 });

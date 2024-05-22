@@ -48,10 +48,7 @@ export default hopeTheme({
     description: "Master's degree in reading",
     intro: "/intro.html",
     avatar: "assets/theme/logo.png", //博客头像
-    roundAvatar: true, //圆形
     medias: {
-      Gmail: "mailto:cpdong@gmail.com",
-      Email: "mailto:24726259408@qq.com",
       GitHub: "https://github.com/simeis147",
       Gitee: "https://gitee.com/dong-chengpeng",
     },
@@ -78,20 +75,22 @@ export default hopeTheme({
     blog: true,
 
     searchPro: {
-      // 索引全部内容
       indexContent: true,
-      // 为分类和标签添加索引
       customFields: [
-        {
-          getter: (page) => page.frontmatter.category,
-          formatter: "分类：$content",
-        },
-        {
-          getter: (page) => page.frontmatter.tag,
-          formatter: "标签：$content",
-        },
-      ],
-    },
+      {
+      getter: (page) => page.frontmatter.author,
+      formatter: "作者：$content",
+      },
+      {
+      getter: (page) => page.frontmatter.tag,
+      formatter: "标签：$content",
+      },
+      {
+      getter: (page) => page.frontmatter.category,
+      formatter: "分类：$content",
+      },
+      ]
+    }, 
     components: {
       components: [
         "SiteInfo",

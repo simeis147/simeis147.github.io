@@ -8,8 +8,7 @@ export default defineUserConfig({
 
   //头部引入
   head: [
-    ["link", { rel: "stylesheet", href: "https://cdn.staticfile.net/lxgw-wenkai-webfont/1.7.0/style.css" }],
-    ["script", { type: "text/javascript", src: "/assets/js/51la.js" }]
+    ["link", { rel: "stylesheet", href: "https://cdn.staticfile.net/lxgw-wenkai-webfont/1.7.0/style.css" }]
   ],
 
   lang: "zh-CN",
