@@ -8,7 +8,7 @@ export default defineUserConfig({
 
   //头部引入
   head: [
-    ["link", { rel: "stylesheet", href: "https://cdn.staticfile.net/lxgw-wenkai-webfont/1.7.0/style.css" }]
+    ["link", { rel: "stylesheet",  href: "https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/lxgwwenkaiscreen.css", media: "print", onload:"this.media='all'"}]
   ],
 
   lang: "zh-CN",

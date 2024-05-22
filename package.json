@@ -18,5 +18,8 @@
     "vuepress-plugin-components": "2.0.0-rc.43",
     "vuepress-plugin-search-pro": "2.0.0-rc.43",
     "vuepress-theme-hope": "2.0.0-rc.43"
+  },
+  "dependencies": {
+    "lxgw-wenkai-screen-webfont": "^1.7.0"
   }
 }
