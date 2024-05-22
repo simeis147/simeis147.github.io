@@ -7,7 +7,10 @@ export default defineUserConfig({
   port: 7070,
 
   //头部引入
-  head: [["script", { type: "text/javascript", src: "/assets/js/51la.js" }]],
+  head: [
+    ["link", { rel: "stylesheet", href: "https://cdn.staticfile.net/lxgw-wenkai-webfont/1.7.0/style.css" }],
+    ["script", { type: "text/javascript", src: "/assets/js/51la.js" }]
+  ],
 
   lang: "zh-CN",
   title: "Simeis 147",
