@@ -12,10 +12,10 @@ actions:
     link: ./
 
   - text: 主机 🖥
-    link: ./computer/
+    link: ./computer
 
   - text: 显示屏 🌏
-    link: ./screen/
+    link: ./screen
     type: primary
 
   - text: 鼠标 🖱

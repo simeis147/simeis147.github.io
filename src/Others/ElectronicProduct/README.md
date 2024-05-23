@@ -13,10 +13,10 @@ actions:
     type: primary
 
   - text: 主机 🖥
-    link: ./computer/
+    link: ./computer
 
   - text: 显示屏 🌏
-    link: ./screen/
+    link: ./screen
 
   - text: 鼠标 🖱
     link: https://www.zfrontier.com/app/user/zae5QEwJmVroZk
