@@ -5,12 +5,13 @@ import sidebar from "./sidebar.js";
 export default hopeTheme({
   hostname: "https://tech.dongcp.top",
    
-  author: {
-    name: "Dongcp",
-    url: "https://github.com/simeis147",
-  },
+  // author: {
+  //   name: "Dongcp",
+  //   url: "https://github.com/simeis147",
+  // },
   
-  pageInfo: ['Author', 'Date', 'Original', 'Word', 'ReadingTime', 'PageView', 'Category', 'Tag'],
+  // 'Author', 
+  pageInfo: ['Date', 'Original', 'Word', 'ReadingTime', 'PageView', 'Category', 'Tag'],
 
   iconAssets: [
     "//at.alicdn.com/t/c/font_4010207_lnf1z756n8m.css",
@@ -35,8 +36,8 @@ export default hopeTheme({
   lastUpdated: true,
   editLink: false,
 
-  breadcrumb: true, //路径导航
-  breadcrumbIcon : true, //路径导航图标
+  breadcrumb: false, //路径导航
+  breadcrumbIcon: false, //路径导航图标
 
   // navbar
   navbar,
@@ -45,7 +46,7 @@ export default hopeTheme({
   sidebar,
 
   blog: {
-    description: "Master's degree in reading",
+    description: "世界和平",
     intro: "/intro.html",
     avatar: "assets/theme/logo.png", //博客头像
     medias: {
@@ -79,10 +80,6 @@ export default hopeTheme({
     searchPro: {
       indexContent: true,
       customFields: [
-      {
-      getter: (page) => page.frontmatter.author,
-      formatter: "作者：$content",
-      },
       {
       getter: (page) => page.frontmatter.tag,
       formatter: "标签：$content",

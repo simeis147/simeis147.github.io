@@ -9,7 +9,7 @@ category:
 
 # Markdown方言（ hope ）
 
-## 1 [提示信息](https://theme-hope.vuejs.press/zh/guide/markdown/hint.html)
+## 1 [提示信息](https://theme-hope.vuejs.press/zh/guide/markdown/stylize/hint.html)
 
 ::: important important
 
@@ -38,7 +38,7 @@ category:
 
 @tab apple
 
-Apple [选项卡](https://theme-hope.vuejs.press/zh/guide/markdown/tabs.html#%E6%A1%88%E4%BE%8B)
+Apple [选项卡](https://theme-hope.vuejs.press/zh/guide/markdown/content/tabs.html)
 
 @tab banana
 

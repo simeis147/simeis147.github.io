@@ -8,7 +8,7 @@ toc: false
 # 路径导航
 breadcrumb: false
 # 评论
-# comment: false
+comment: false
 # 侧边栏
 sidebar: false
 # 页脚
