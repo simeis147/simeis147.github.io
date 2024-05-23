@@ -7,7 +7,7 @@ import "vuepress-theme-hope/presets/shinning-feature-panel.scss";
 import "vuepress-theme-hope/presets/bounce-icon.scss";
 
 export default defineClientConfig({
-  setup() {
+  setup:() => {
     setupRunningTimeFooter(
       new Date("2023-03-20"),
       {

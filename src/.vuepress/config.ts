@@ -8,7 +8,14 @@ export default defineUserConfig({
 
   //头部引入
   head: [
-    ["link", { rel: "stylesheet",  href: "https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/lxgwwenkaiscreen.css", media: "print", onload:"this.media='all'"}]
+    ["link", 
+    { rel: "stylesheet",  
+      href:"https://cdnjs.cloudflare.com/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.css", 
+      integrity:"sha512-A2sVEqmNCGCac7ji4czWLqCVSn28L0U5lSobS173H+gk+QTV6rH0EH0QEnYk5mz3KPRDmEr+GKM1hfdfLrsFpg==", 
+      crossorigin:"anonymous", 
+      referrerpolicy:"no-referrer" 
+    }],
+    
   ],
 
   lang: "zh-CN",
