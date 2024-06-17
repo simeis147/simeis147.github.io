@@ -368,7 +368,7 @@ REST（Representational State Transfer），表述性状态转换，它是一种
 
 **传统URL风格如下**:
 
-```url
+```md
 http://localhost:8080/user/getById?id=1     GET：查询id为1的用户
 http://localhost:8080/user/saveUser         POST：新增用户
 http://localhost:8080/user/updateUser       POST：修改用户
@@ -379,7 +379,7 @@ http://localhost:8080/user/deleteUser?id=1  GET：删除id为1的用户
 
 **基于REST风格URL如下：**
 
-```url
+```md
 http://localhost:8080/users/1  GET：查询id为1的用户
 http://localhost:8080/users    POST：新增用户
 http://localhost:8080/users    PUT：修改用户

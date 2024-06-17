@@ -357,7 +357,7 @@ public void testUpdate2(){
 
 SQL语句：
 
-```mysql
+```md
 delete from emp where id in (1,2,3);
 ```
 

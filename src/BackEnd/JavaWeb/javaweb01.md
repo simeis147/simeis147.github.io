@@ -104,7 +104,7 @@ install：安装 （ 安装项目到本地仓库 ）
 
 **安装命令演示：**
 
-```maven
+```html
 mvn install
 ```
 

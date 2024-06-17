@@ -97,7 +97,7 @@ dev
 
 提交记录如下：
 
-```git
+```md
   dev
 a - b - c
   v2
@@ -105,7 +105,7 @@ a - b - c
 
 开发期间，两个分支同时有新的commit ：
 
-```git
+```md
   dev
 a - b - c - d - e
     \ - f - g

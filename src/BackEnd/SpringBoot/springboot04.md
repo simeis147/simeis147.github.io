@@ -1425,7 +1425,7 @@ public class AliOSSUtils {
 
 这个警告提示是提示还需要引入一个依赖：
 
-```maven
+```md
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-configuration-processor</artifactId>

@@ -1790,7 +1790,7 @@ SpringMVC接收到请求和数据后，进行一些了的处理，当然这个�
 
 * webapp下创建page.jsp
 
-  ```jsp
+  ```html
   <html>
   <body>
   <h2>Hello Spring MVC!</h2>
